@@ -1,0 +1,83 @@
+set nocompatible
+filetype off
+
+set encoding=UTF-8
+set nomodeline
+set noswapfile
+set nobackup
+set viminfo=
+
+let mapleader = " "
+let maplocalleader = " "
+set timeoutlen=250
+
+"""
+if has('gui_running')
+  set guifont=JetBrainsMono_Nerd_Font:h18
+  set guioptions-=m  "remove menu bar
+  set guioptions-=T  "remove toolbar
+  set guioptions-=r  "remove right-hand scroll bar
+  set guioptions-=L  "remove left-hand scroll bar
+endif
+
+if has("termguicolors")
+  set termguicolors
+endif
+
+"Disable arrow keys in Normal mode
+no <Up> <Nop>
+no <Down> <Nop>
+no <Left> <Nop>
+no <Right> <Nop>
+
+"Disable arrow keys in Insert mode
+ino <Up> <Nop>
+ino <Down> <Nop>
+ino <Left> <Nop>
+ino <Right> <Nop>
+
+" number
+set relativenumber
+
+" scheme
+syntax on
+silent! colorscheme onedark
+set background=dark
+
+" search
+set incsearch
+set ignorecase
+set smartcase
+set hlsearch
+" press esc twice to turn off search highlight
+nnoremap <esc><esc> :silent! nohls<cr>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => lightline
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set laststatus=2
+set noshowmode
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Text, tab and indent related
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Use spaces instead of tabs
+set expandtab
+
+" Be smart when using tabs ;)
+set smarttab
+
+" 1 tab == 8 spaces
+set shiftwidth=4
+set tabstop=8
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Mouse and Clipboard
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set mouse=a
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Splits and Tabbed Files
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set splitbelow splitright
