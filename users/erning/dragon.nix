@@ -17,7 +17,7 @@ let
         path = "${config.home.homeDirectory}/.ssh/${name}";
         mode = "600";
       };
-      home.file.".ssh/${name}.pub".source = "${inputs.secrets}/${name}.pub";
+      home.file.".ssh/${name}.pub".source = "${inputs.secrets}/${file}.pub";
     };
 in
 {
