@@ -7,6 +7,7 @@
 }:
 
 {
+  user ? null,
   host,
   system,
 }:
@@ -14,18 +15,17 @@
 let
   isDarwin = if isNull (builtins.match ".*-darwin" system) then false else true;
   settings = {
+    inherit user;
     inherit host;
     inherit system;
     inherit isDarwin;
   };
-  helpers = import ./helpers { inherit settings config inputs; };
 in
 (if isDarwin then nix-darwin.lib.darwinSystem else nixpkgs.lib.nixosSystem) {
   inherit system;
   specialArgs = {
     inherit settings;
     inherit inputs;
-    inherit helpers;
   };
   modules = [
     (if isDarwin then ../hosts/common/darwin.nix else ../hosts/common/nixos.nix)
@@ -35,5 +35,6 @@ in
     ../hosts/common/packages.nix
     ../hosts/common/secrets.nix
     ../hosts/${host}
+    ../hosts/common/users.nix
   ];
 }

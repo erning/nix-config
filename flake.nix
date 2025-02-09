@@ -84,6 +84,7 @@
       # pineapple
       #
       darwinConfigurations."pineapple" = mkSystem {
+        user = "erning";
         host = "pineapple";
         system = "x86_64-darwin";
       };
