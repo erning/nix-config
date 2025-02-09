@@ -211,11 +211,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1739110023,
-        "narHash": "sha256-DEgOdKJqmWcJ2EVKEVKErmjQDlnwB9VNghmIcADLWNo=",
+        "lastModified": 1739119868,
+        "narHash": "sha256-rFr6oo4IhANlfdf75Kv3R6K2vm6kGqLl3DWgzD9tFr4=",
         "ref": "refs/heads/master",
-        "rev": "b142efa4885d561ef2503cfec85be655a1f00da8",
-        "revCount": 5,
+        "rev": "3680453cf2b72fc837069a1a691adb7c7c244e7c",
+        "revCount": 6,
         "type": "git",
         "url": "ssh://git@github.com/erning/nix-secrets.git"
       },
