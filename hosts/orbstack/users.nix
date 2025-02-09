@@ -1,6 +1,6 @@
 { settings, pkgs, ... }:
 
-if builtins.hasAttr "user" settings then
+if settings.user != null then
   {
     users.users.${settings.user} = {
       shell = pkgs.fish;
