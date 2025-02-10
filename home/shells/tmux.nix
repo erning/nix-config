@@ -24,6 +24,8 @@
       bind -r C-j resize-pane -D 5
       bind -r C-k resize-pane -U 5
       bind -r C-l resize-pane -R 5
+
+      if-shell "test -e ~/.config/tmux/tmux.conf.local" "source-file ~/.config/tmux/tmux.conf.local"
     '';
     plugins = with pkgs; [
       {
