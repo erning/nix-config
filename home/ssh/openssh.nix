@@ -1,4 +1,9 @@
-{ settings, ... }:
+{ settings, config, ... }:
+
+let
+  dotfiles = "${config.home.homeDirectory}/.dotfiles";
+  symlink = file: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${file}";
+in
 {
   programs.ssh = {
     enable = true;
@@ -12,6 +17,6 @@
     '';
   };
 
-  home.file.".ssh/conf.d/homelab.conf".source = ../../dotfiles/.ssh/conf.d/homelab.conf;
-  home.file.".ssh/conf.d/vps.conf".source = ../../dotfiles/.ssh/conf.d/vps.conf;
+  home.file.".ssh/conf.d/homelab.conf".source = symlink ".ssh/conf.d/homelab.conf";
+  home.file.".ssh/conf.d/vps.conf".source = symlink ".ssh/conf.d/vps.conf";
 }
