@@ -1,5 +1,9 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
+let
+  dotfiles = "${config.home.homeDirectory}/.dotfiles";
+  symlink = file: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${file}";
+in
 {
   programs.eza = {
     enable = true;
@@ -31,5 +35,5 @@
     package = pkgs.unstable.starship;
   };
 
-  xdg.configFile."starship.toml".source = ../../dotfiles/.config/starship.toml;
+  xdg.configFile."starship.toml".source = symlink ".config/starship.toml";
 }
