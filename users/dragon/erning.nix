@@ -6,11 +6,15 @@
 }:
 
 {
-  imports = [
-    ../../home/macos.nix
-    (import ../common/ssh_key.nix { inherit settings config inputs; } { name = "id_25519"; })
-    (import ../common/ssh_key.nix { inherit settings config inputs; } { name = "id_rsa"; })
-  ];
+  imports =
+    let
+      ssh_key = import ../common/ssh_key.nix { inherit settings config inputs; };
+    in
+    [
+      ../../home/macos.nix
+      (ssh_key { name = "id_ed25519"; })
+      (ssh_key { name = "id_rsa"; })
+    ];
 
   age.identityPaths = [
     "${config.home.homeDirectory}/.config/age/primary.key"
