@@ -2,6 +2,6 @@
 
 {
   imports = [
-    ../../home/linux-console.nix
+    ../../home-manager/linux-console.nix
   ];
 }

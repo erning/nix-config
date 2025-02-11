@@ -7,7 +7,7 @@
 
 {
   imports = [
-    ../../home/linux-console.nix
+    ../../home-manager/linux-console.nix
     (import ../common/ssh_key.nix { inherit settings config inputs; } { })
   ];
 }
