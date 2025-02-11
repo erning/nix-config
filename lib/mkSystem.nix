@@ -2,7 +2,6 @@
   nixpkgs,
   nix-darwin,
   inputs,
-  config,
   ...
 }:
 
@@ -28,13 +27,9 @@ in
     inherit inputs;
   };
   modules = [
-    (if isDarwin then ../hosts/common/darwin.nix else ../hosts/common/nixos.nix)
-    ../hosts/common/nix-settings.nix
-    ../hosts/common/nixpkgs-config.nix
-    ../hosts/common/nixpkgs-overlays.nix
-    ../hosts/common/packages.nix
-    ../hosts/common/secrets.nix
-    ../hosts/${host}
-    ../hosts/common/users.nix
+    ./nix-settings.nix
+    ./nixpkgs-config.nix
+    ./nixpkgs-overlays.nix
+    ../hosts
   ];
 }

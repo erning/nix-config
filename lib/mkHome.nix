@@ -28,12 +28,8 @@ home-manager.lib.homeManagerConfiguration {
     inherit inputs;
   };
   modules = [
-    ../hosts/common/nixpkgs-config.nix
-    ../hosts/common/nixpkgs-overlays.nix
-    (if isDarwin then ../users/common/darwin.nix else ../users/common/nixos.nix)
-    ../users/common/packages.nix
-    ../users/common/secrets.nix
-    ../home/home.nix
-    ../users/${user}/${host}.nix
+    ./nixpkgs-config.nix
+    ./nixpkgs-overlays.nix
+    ../users
   ];
 }

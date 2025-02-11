@@ -4,7 +4,7 @@
   nixpkgs.overlays =
     # Apply each overlay found in the /overlays directory
     let
-      path = ../../overlays;
+      path = ../overlays;
     in
     with builtins;
     map (n: import (path + ("/" + n))) (

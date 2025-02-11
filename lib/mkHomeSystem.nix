@@ -28,14 +28,10 @@ in
     inherit inputs;
   };
   modules = [
-    (if isDarwin then ../hosts/common/darwin.nix else ../hosts/common/nixos.nix)
-    ../hosts/common/nix-settings.nix
-    ../hosts/common/nixpkgs-config.nix
-    ../hosts/common/nixpkgs-overlays.nix
-    ../hosts/common/packages.nix
-    ../hosts/common/secrets.nix
-    ../hosts/${host}
-    ../hosts/common/users.nix
+    ./nix-settings.nix
+    ./nixpkgs-config.nix
+    ./nixpkgs-overlays.nix
+    ../hosts
     (if isDarwin then home-manager.darwinModules else home-manager.nixosModules).home-manager
     {
       home-manager.useGlobalPkgs = true;
@@ -45,13 +41,7 @@ in
         inherit inputs;
       };
       home-manager.users.${user} = {
-        imports = [
-          (if isDarwin then ../users/common/darwin.nix else ../users/common/nixos.nix)
-          ../users/common/packages.nix
-          ../users/common/secrets.nix
-          ../home/home.nix
-          ../users/${user}/${host}.nix
-        ];
+        imports = [ ../users ];
       };
       home-manager.backupFileExtension = "backup";
     }
