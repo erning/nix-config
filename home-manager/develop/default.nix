@@ -1,5 +1,6 @@
 {
   imports = [
+    ./build-essential.nix
     ./nix.nix
     ./rustup.nix
     ./zig.nix
