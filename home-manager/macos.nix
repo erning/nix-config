@@ -6,9 +6,9 @@ let
 in
 {
   imports = [
-    ./base.nix
-    ./fonts/nerdfont.nix
-    ./fonts/lxgw.nix
+    ./basic
+    ./develop
+    ./fonts
   ];
 
   xdg.configFile."zed/settings.json".source = symlink ".config/zed/settings.json";
