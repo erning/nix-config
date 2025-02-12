@@ -30,6 +30,6 @@ home-manager.lib.homeManagerConfiguration {
   modules = [
     ./nixpkgs-config.nix
     ./nixpkgs-overlays.nix
-    ../users
+    ../home-manager/home.nix
   ];
 }

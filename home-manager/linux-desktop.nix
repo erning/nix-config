@@ -1,7 +1,0 @@
-{
-  imports = [
-    ./basic
-    ./develop
-    ./fonts
-  ];
-}

@@ -1,11 +1,14 @@
 {
   imports = [
+    ./_basic.nix
+    ./neovim.nix
+
     ./build-essential.nix
-    ./nix.nix
     ./rustup.nix
+    ./nix.nix
     ./zig.nix
     ./go.nix
-    ./just.nix
+
     ./direnv.nix
   ];
 }

@@ -30,6 +30,6 @@ in
     ./nix-settings.nix
     ./nixpkgs-config.nix
     ./nixpkgs-overlays.nix
-    ../hosts
+    ../hosts/configuration.nix
   ];
 }
