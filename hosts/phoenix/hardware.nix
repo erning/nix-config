@@ -29,12 +29,12 @@
   boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/826db954-8f5f-460c-a33d-4b3102cc5923";
+    device = "/dev/disk/by-label/nixos";
     fsType = "ext4";
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/E652-BCEC";
+    device = "/dev/disk/by-label/boot";
     fsType = "vfat";
     options = [
       "fmask=0077"
@@ -43,7 +43,7 @@
   };
 
   swapDevices = [
-    { device = "/dev/disk/by-uuid/7299e009-9f18-483f-a4b2-6feab49036b2"; }
+    { device = "/dev/disk/by-label/swap"; }
   ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
