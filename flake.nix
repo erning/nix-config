@@ -31,13 +31,11 @@
       nixpkgs = inputs.nixpkgs-unstable;
       nix-darwin = inputs.nix-darwin-unstable;
       home-manager = inputs.home-manager-unstable;
-      config = self;
 
       mkSystem = import ./lib/mkSystem.nix {
         inherit nixpkgs;
         inherit nix-darwin;
         inherit inputs;
-        inherit config;
       };
 
       mkHomeSystem = import ./lib/mkHomeSystem.nix {
@@ -45,7 +43,6 @@
         inherit nix-darwin;
         inherit home-manager;
         inherit inputs;
-        inherit config;
       };
 
       mkHome = import ./lib/mkHome.nix {
@@ -53,7 +50,6 @@
         inherit nix-darwin;
         inherit home-manager;
         inherit inputs;
-        inherit config;
       };
     in
     {

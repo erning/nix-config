@@ -11,8 +11,9 @@
     tmux
 
     fd
-    fzf
     ripgrep
+    fzf
+    bat
     htop
 
     gnupg

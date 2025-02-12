@@ -73,4 +73,14 @@
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  #
+  #
+  #
+  imports = [
+    (if settings.isDarwin then ./common/darwin.nix else ./common/nixos.nix)
+    ./common/secrets.nix
+    ./users/${settings.user}/${settings.host}.nix
+  ];
+
 }
