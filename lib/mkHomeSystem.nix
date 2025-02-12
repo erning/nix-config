@@ -31,7 +31,7 @@ in
     ./nix-settings.nix
     ./nixpkgs-config.nix
     ./nixpkgs-overlays.nix
-    ../hosts
+    ../hosts/configuration.nix
     (if isDarwin then home-manager.darwinModules else home-manager.nixosModules).home-manager
     {
       home-manager.useGlobalPkgs = true;
@@ -41,7 +41,7 @@ in
         inherit inputs;
       };
       home-manager.users.${user} = {
-        imports = [ ../users ];
+        imports = [ ../home-manager/home.nix ];
       };
       home-manager.backupFileExtension = "backup";
     }

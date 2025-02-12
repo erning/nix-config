@@ -1,7 +1,7 @@
 #
 # agenix as the secret management tool
 #
-# preparing /run/bootstrap-key.txt on the target machine for decryption
+# preparing /etc/age/keys.txt on the target machine for decryption
 #
 {
   settings,
