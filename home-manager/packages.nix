@@ -1,10 +1,7 @@
-#
-# common packages that I use on all machines
-#
 { pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [
+  home.packages = with pkgs; [
     neofetch
     vim
     git

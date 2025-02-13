@@ -1,5 +1,16 @@
 {
-  description = "Home Manager configuration of erning";
+  description = "";
+
+  # # the nixConfig here only affects the flake itself, not the system configuration!
+  # nixConfig = {
+  #   # substituers will be appended to the default substituters when fetching packages
+  #   # nix com    extra-substituters = [munity's cache server
+  #   extra-substituters = [
+  #     "https://mirrors.ustc.edu.cn/nix-channels/store"
+  #     "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
+  #     "https://nix-community.cachix.org"
+  #   ];
+  # };
 
   inputs = {
     # stable
@@ -16,7 +27,7 @@
     home-manager-unstable.url = "github:nix-community/home-manager/master";
     home-manager-unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
-    # secrets
+    #
     agenix.url = "github:ryantm/agenix";
 
     secrets = {
@@ -28,34 +39,15 @@
   outputs =
     { self, ... }@inputs:
     let
-      nixpkgs = inputs.nixpkgs-unstable;
-      nix-darwin = inputs.nix-darwin-unstable;
-      home-manager = inputs.home-manager-unstable;
+      nixpkgs = inputs.nixpkgs-stable;
+      nix-darwin = inputs.nix-darwin-stable;
+      home-manager = inputs.home-manager-stable;
 
-      mkSystem = import ./lib/mkSystem.nix {
-        inherit nixpkgs;
-        inherit nix-darwin;
-        inherit inputs;
-      };
-
-      mkHomeSystem = import ./lib/mkHomeSystem.nix {
-        inherit nixpkgs;
-        inherit nix-darwin;
-        inherit home-manager;
-        inherit inputs;
-      };
-
-      mkHome = import ./lib/mkHome.nix {
-        inherit nixpkgs;
-        inherit nix-darwin;
-        inherit home-manager;
-        inherit inputs;
-      };
+      mkSystem = import ./lib/mkSystem.nix { inherit nixpkgs nix-darwin inputs; };
+      mkHome = import ./lib/mkHome.nix { inherit nixpkgs home-manager inputs; };
     in
     {
-      #
-      # dragon
-      #
+
       darwinConfigurations."dragon" = mkSystem {
         host = "dragon";
         system = "aarch64-darwin";
@@ -67,42 +59,17 @@
         system = "aarch64-darwin";
       };
 
-      #
-      # phoenix
-      #
-      nixosConfigurations."erning@phoenix" = mkHomeSystem {
+      nixosConfigurations."phoenix" = mkSystem {
+        host = "phoenix";
+        system = "x86_64-linux";
+      };
+
+      homeConfigurations."erning@phoenix" = mkHome {
         user = "erning";
         host = "phoenix";
         system = "x86_64-linux";
       };
 
-      #
-      # pineapple
-      #
-      darwinConfigurations."pineapple" = mkSystem {
-        user = "erning";
-        host = "pineapple";
-        system = "x86_64-darwin";
-      };
-
-      homeConfigurations."erning@pineapple" = mkHome {
-        user = "erning";
-        host = "pineapple";
-        system = "x86_64-darwin";
-      };
-
-      #
-      # mango
-      #
-      darwinConfigurations."erning@mango" = mkHomeSystem {
-        user = "erning";
-        host = "mango";
-        system = "x86_64-darwin";
-      };
-
-      #
-      # orbstack
-      #
       nixosConfigurations."orb-aarch64" = mkSystem {
         host = "orbstack";
         system = "aarch64-linux";
@@ -111,21 +78,6 @@
       homeConfigurations."erning@orb-aarch64" = mkHome {
         user = "erning";
         host = "orbstack";
-        system = "aarch64-linux";
-      };
-
-      nixosConfigurations."erning@orb-aarch64" = mkHomeSystem {
-        user = "erning";
-        host = "orbstack";
-        system = "aarch64-linux";
-      };
-
-      #
-      # vmware
-      #
-      nixosConfigurations."erning@vm-aarch64" = mkHomeSystem {
-        user = "erning";
-        host = "vmfusion";
         system = "aarch64-linux";
       };
     };
