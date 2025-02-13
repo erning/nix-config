@@ -10,26 +10,21 @@
   host,
   system,
 }:
-
 let
   pkgs = nixpkgs.legacyPackages.${system};
-  isDarwin = if isNull (builtins.match ".*-darwin" system) then false else true;
   settings = {
     inherit user;
     inherit host;
     inherit system;
-    isDarwin = isDarwin;
   };
+  rootDir = "${inputs.self}";
 in
 home-manager.lib.homeManagerConfiguration {
   inherit pkgs;
-  extraSpecialArgs = {
-    inherit settings;
-    inherit inputs;
-  };
+  extraSpecialArgs = { inherit settings inputs; };
   modules = [
-    ./nixpkgs-config.nix
-    ./nixpkgs-overlays.nix
-    ../home-manager/home.nix
+    "${rootDir}/modules/nixpkgs-overlays.nix"
+    "${rootDir}/home-manager/home.nix"
+    "${rootDir}/hosts/${host}/home.nix"
   ];
 }

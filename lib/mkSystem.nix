@@ -6,30 +6,25 @@
 }:
 
 {
-  user ? null,
   host,
   system,
 }:
-
 let
-  isDarwin = if isNull (builtins.match ".*-darwin" system) then false else true;
+  isDarwin = builtins.match ".*-darwin" system != null;
   settings = {
-    inherit user;
     inherit host;
     inherit system;
-    inherit isDarwin;
   };
+
+  rootDir = "${inputs.self}";
+
 in
 (if isDarwin then nix-darwin.lib.darwinSystem else nixpkgs.lib.nixosSystem) {
   inherit system;
-  specialArgs = {
-    inherit settings;
-    inherit inputs;
-  };
+  specialArgs = { inherit settings inputs; };
   modules = [
-    ./nix-settings.nix
-    ./nixpkgs-config.nix
-    ./nixpkgs-overlays.nix
-    ../hosts/configuration.nix
+    "${rootDir}/modules/system.nix"
+    "${rootDir}/hosts/${host}/configuration.nix"
   ];
+
 }

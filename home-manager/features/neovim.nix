@@ -1,22 +1,31 @@
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
+  cfg = config.features.neovim;
   lazyvim = "NVIM_APPNAME=nvim-lazyvim nvim";
 in
 {
-  home.packages = with pkgs; [
-    neovim
-    gcc # compiler for tree-sitter
-  ];
+  options.features.neovim.enable = lib.mkEnableOption "neovim";
 
-  xdg.configFile = {
-    "nvim-lazyvim" = {
-      source = ../../dotfiles/.config/nvim-lazyvim;
-      recursive = true;
+  config = lib.mkIf cfg.enable {
+    home.packages = with pkgs; [
+      neovim
+    ];
+
+    xdg.configFile = {
+      "nvim-lazyvim" = {
+        source = ../../dotfiles/.config/nvim-lazyvim;
+        recursive = true;
+      };
     };
-  };
 
-  programs.fish.shellAliases.vi = "${lazyvim}";
-  programs.bash.shellAliases.vi = "${lazyvim}";
-  programs.zsh.shellAliases.vi = "${lazyvim}";
+    programs.fish.shellAliases.vi = "${lazyvim}";
+    programs.bash.shellAliases.vi = "${lazyvim}";
+    programs.zsh.shellAliases.vi = "${lazyvim}";
+  };
 }
