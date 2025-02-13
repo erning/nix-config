@@ -9,6 +9,7 @@
 
   virtualisation.vmware.guest.enable = true;
 
+  programs.fish.enable = true;
   users.users.erning = {
     isSystemUser = true;
     uid = 501; # same as macOS
