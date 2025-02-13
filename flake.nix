@@ -80,5 +80,16 @@
         host = "orbstack";
         system = "aarch64-linux";
       };
+
+      nixosConfigurations."vm-aarch64" = mkSystem {
+        host = "vmfusion";
+        system = "aarch64-linux";
+      };
+
+      homeConfigurations."erning@vm-aarch64" = mkHome {
+        user = "erning";
+        host = "vmfusion";
+        system = "aarch64-linux";
+      };
     };
 }
