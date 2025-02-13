@@ -3,8 +3,6 @@
 {
   system.stateVersion = 5;
 
-  nix.useDaemon = true;
-
   networking.computerName = lib.mkDefault "${settings.host}";
   system.defaults.smb.NetBIOSName = lib.mkDefault "${settings.host}";
 
