@@ -39,9 +39,9 @@
   outputs =
     { self, ... }@inputs:
     let
-      nixpkgs = inputs.nixpkgs-stable;
-      nix-darwin = inputs.nix-darwin-stable;
-      home-manager = inputs.home-manager-stable;
+      nixpkgs = inputs.nixpkgs-unstable;
+      nix-darwin = inputs.nix-darwin-unstable;
+      home-manager = inputs.home-manager-unstable;
 
       mkSystem = import ./lib/mkSystem.nix { inherit nixpkgs nix-darwin inputs; };
       mkHome = import ./lib/mkHome.nix { inherit nixpkgs home-manager inputs; };
