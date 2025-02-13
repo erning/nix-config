@@ -20,7 +20,7 @@
     agenix.url = "github:ryantm/agenix";
 
     secrets = {
-      url = "git+ssh://git@github.com/erning/nix-secrets.git";
+      url = "git+ssh://git@github.com/erning/nix-secrets.git?shallow=1";
       flake = false;
     };
   };
