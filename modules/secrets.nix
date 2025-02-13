@@ -1,36 +1,30 @@
-#
-# agenix as the secret management tool
-#
-# preparing /etc/age/keys.txt on the target machine for decryption
-#
 {
-  settings,
   pkgs,
+  settings,
   inputs,
   ...
 }:
 
+let
+  agenixModules =
+    if builtins.match ".*-darwin" settings.system != null then
+      inputs.agenix.darwinModules.default
+    else
+      inputs.agenix.nixosModules.default;
+in
 {
-  imports = [
-    (
-      if settings.isDarwin then
-        inputs.agenix.darwinModules.default
-      else
-        inputs.agenix.nixosModules.default
-    )
-  ];
+  imports = [ agenixModules ];
 
   environment.systemPackages = with pkgs; [
     age
-    inputs.agenix.packages."${settings.system}".default
     ssh-to-age
+    inputs.agenix.packages."${pkgs.system}".default
   ];
 
   age.identityPaths = [
     "/etc/age/keys.txt"
     "/etc/age/ssh_host_ed25519.txt"
   ];
-  # ++ map (it: it.path) (lib.filter (it: it.type == "ed25519") config.services.openssh.hostKeys);
 
   system.activationScripts."age-ssh_host_ed25519.txt".text = ''
     if [ -f /etc/ssh/ssh_host_ed25519_key ]; then
