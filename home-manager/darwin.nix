@@ -1,6 +1,6 @@
-{ lib, pkgs, ... }:
+{ pkgs, ... }:
 
-lib.mkIf pkgs.stdenv.isDarwin {
+{
   home.sessionVariables = {
     HOMEBREW_PREFIX = if pkgs.stdenv.hostPlatform.isAarch64 then "/opt/homebrew" else "/usr/local";
 
