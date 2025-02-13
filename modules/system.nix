@@ -12,16 +12,12 @@ in
 {
   imports = [
     ./nix-settings.nix
+    ./nixpkgs-config.nix
     ./nixpkgs-overlays.nix
     (if isDarwin then ./darwin.nix else ./nixos.nix)
     ./packages.nix
     ./secrets.nix
   ];
-
-  # Enable alternative shell support in nix-darwin.
-  programs.fish.enable = true;
-  programs.bash.enable = true;
-  programs.zsh.enable = true;
 
   # shell
   environment.shells = with pkgs; [

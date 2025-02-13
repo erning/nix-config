@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  settings,
   ...
 }:
 
@@ -9,6 +10,7 @@ let
   cfg = config.features.ssh;
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
   symlink = file: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${file}";
+  isDarwin = builtins.match ".*-darwin" settings.system != null;
 in
 {
   options.features.ssh.enable = lib.mkEnableOption "ssh";
@@ -18,7 +20,7 @@ in
       enable = true;
       includes = [
         "conf.d/*.conf"
-      ] ++ (if pkgs.stdenv.isDarwin then [ "~/.orbstack/ssh/config" ] else [ ]);
+      ] ++ (if isDarwin then [ "~/.orbstack/ssh/config" ] else [ ]);
       # userKnownHostsFile = "/dev/null";
       extraConfig = ''
         NoHostAuthenticationForLocalhost yes

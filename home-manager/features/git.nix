@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  settings,
   ...
 }:
 
@@ -9,6 +10,7 @@ let
   cfg = config.features.git;
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
   symlink = file: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${file}";
+  isDarwin = builtins.match ".*-darwin" settings.system != null;
 in
 {
   options.features.git.enable = lib.mkEnableOption "git";
@@ -22,7 +24,7 @@ in
     xdg.configFile = {
       "git/config".source = symlink ".config/git/config";
       "git/config.darwin" = {
-        enable = pkgs.stdenv.isDarwin;
+        enable = isDarwin;
         source = symlink ".config/git/config.darwin";
       };
     };

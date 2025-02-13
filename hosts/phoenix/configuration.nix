@@ -1,6 +1,8 @@
 { pkgs, inputs, ... }:
 
 {
+  imports = [ ./hardware-configuration.nix ];
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -10,6 +12,7 @@
     dockerCompat = true;
   };
 
+  programs.fish.enable = true;
   users.users.erning = {
     isNormalUser = true;
     uid = 1000;
