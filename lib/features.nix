@@ -1,9 +1,12 @@
 let
   base = {
-    shell.enable = true;
-    shell.fish.enable = true;
-    shell.bash.enable = true;
-    shell.zsh.enable = true;
+    fish.enable = true;
+    bash.enable = true;
+    zsh.enable = true;
+    starship.enable = true;
+    eza.enable = true;
+    fzf.enable = true;
+    bat.enable = true;
 
     vim.enable = true;
     git.enable = true;
