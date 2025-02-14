@@ -10,6 +10,8 @@ let
 
     vim.enable = true;
     git.enable = true;
+
+    ssh.enable = true;
   };
 
   develop = {

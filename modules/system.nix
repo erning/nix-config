@@ -2,7 +2,6 @@
   lib,
   pkgs,
   settings,
-  inputs,
   ...
 }:
 
@@ -30,8 +29,8 @@ in
   services.openssh.enable = lib.mkDefault true;
 
   users.users.root = {
-    openssh.authorizedKeys.keyFiles = [
-      "${inputs.secrets}/ssh/erning/dragon/id_ed25519.pub"
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEtSVQmMAV9fgSl57vllhUhxAb1OLOgS0Aui8d2n/oYm erning@dragon"
     ];
   };
 
