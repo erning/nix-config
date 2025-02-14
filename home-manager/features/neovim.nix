@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -19,13 +20,15 @@ in
 
     xdg.configFile = {
       "nvim-lazyvim" = {
-        source = ../../dotfiles/.config/nvim-lazyvim;
+        source = "${inputs.self}/dotfiles/.config/nvim-lazyvim";
         recursive = true;
       };
     };
 
-    home.sessionVariables."EDITOR" = lib.mkDefault "${lazyvim}";
-    home.sessionVariables."VISUAL" = lib.mkDefault "${lazyvim}";
+    home.sessionVariables = {
+      "EDITOR" = lib.mkDefault "${lazyvim}";
+      "VISUAL" = lib.mkDefault "${lazyvim}";
+    };
 
     programs.fish.shellAliases.vi = "${lazyvim}";
     programs.bash.shellAliases.vi = "${lazyvim}";
