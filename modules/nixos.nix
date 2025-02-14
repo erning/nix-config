@@ -3,6 +3,9 @@
 {
   system.stateVersion = "24.11";
 
+  programs.fish.enable = true;
+  programs.zsh.enable = true;
+
   #
   services.openssh.settings.PasswordAuthentication = lib.mkDefault true;
   services.openssh.settings.PermitRootLogin = lib.mkDefault "yes";
