@@ -15,5 +15,9 @@ in
     (ssh-key "id_rsa")
   ];
 
+  age.identityPaths = [
+    "${config.home.homeDirectory}/.config/age/keys.txt"
+  ];
+
   features = features.desktop // features.develop;
 }
