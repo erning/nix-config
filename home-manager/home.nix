@@ -7,12 +7,12 @@ in
   home.username = "${settings.user}";
   home.homeDirectory = (if isDarwin then "/Users" else "/home") + "/${settings.user}";
 
-  home.stateVersion = "24.11"; # Please read the comment before changing.
-  programs.home-manager.enable = true;
-
   home.sessionPath = [
     "$HOME/.local/bin"
   ];
+
+  home.stateVersion = "24.11"; # Please read the comment before changing.
+  programs.home-manager.enable = true;
 
   #
   #
