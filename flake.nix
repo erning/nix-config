@@ -47,7 +47,6 @@
       mkHome = import ./lib/mkHome.nix { inherit nixpkgs home-manager inputs; };
     in
     {
-
       darwinConfigurations."dragon" = mkSystem {
         host = "dragon";
         system = "aarch64-darwin";
@@ -69,6 +68,10 @@
         host = "phoenix";
         system = "x86_64-linux";
       };
+
+      #
+      #
+      #
 
       nixosConfigurations."orb-aarch64" = mkSystem {
         host = "orbstack";
@@ -95,6 +98,17 @@
       #
       #
       #
+      darwinConfigurations."pineapple" = mkSystem {
+        host = "pineapple";
+        system = "x86_64-darwin";
+      };
+
+      homeConfigurations."erning@pineapple" = mkHome {
+        user = "erning";
+        host = "pineapple";
+        system = "x86_64-darwin";
+      };
+
       darwinConfigurations."mango" = mkSystem {
         host = "mango";
         system = "x86_64-darwin";
