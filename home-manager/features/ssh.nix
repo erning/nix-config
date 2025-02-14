@@ -27,6 +27,7 @@ in
       '';
     };
 
+    home.file.".ssh/authorized_keys".source = symlink ".ssh/authorized_keys";
     home.file.".ssh/conf.d/homelab.conf".source = symlink ".ssh/conf.d/homelab.conf";
     home.file.".ssh/conf.d/vps.conf".source = symlink ".ssh/conf.d/vps.conf";
   };
