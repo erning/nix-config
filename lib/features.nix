@@ -23,6 +23,8 @@ let
     rustup.enable = true;
     zig.enable = true;
     python.enable = true;
+
+    just.enable = true;
     direnv.enable = true;
   } // base;
 
