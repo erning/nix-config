@@ -6,6 +6,7 @@
   #
   services.openssh.settings.PasswordAuthentication = lib.mkDefault true;
   services.openssh.settings.PermitRootLogin = lib.mkDefault "yes";
+  services.openssh.authorizedKeysInHomedir = lib.mkDefault true;
 
   security.sudo.wheelNeedsPassword = lib.mkDefault false;
 
