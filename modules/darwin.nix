@@ -3,6 +3,10 @@
 {
   system.stateVersion = 5;
 
+  programs.fish.enable = true;
+  programs.bash.enable = true;
+  programs.zsh.enable = true;
+
   networking.computerName = lib.mkDefault "${settings.host}";
   system.defaults.smb.NetBIOSName = lib.mkDefault "${settings.host}";
 
