@@ -3,10 +3,12 @@
 {
   imports = [
     ./build-essential.nix
+    ./direnv.nix
     ./fonts.nix
     ./git.nix
     ./neovim.nix
     ./nix-support.nix
+    ./python.nix
     ./rustup.nix
     ./shell.nix
     ./ssh.nix
@@ -32,5 +34,8 @@
     nix-support.enable = lib.mkDefault false;
     rustup.enable = lib.mkDefault false;
     zig.enable = lib.mkDefault false;
+    python.enable = lib.mkDefault false;
+
+    direnv.enable = lib.mkDefault false;
   };
 }
