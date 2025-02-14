@@ -1,11 +1,8 @@
-{
-  features = {
-    tmux.enable = true;
-    neovim.enable = true;
+{ inputs, ... }:
 
-    build-essential.enable = true;
-    nix-support.enable = true;
-    rustup.enable = true;
-    zig.enable = true;
-  };
+let
+  features = import "${inputs.self}/lib/features.nix";
+in
+{
+  features = features.develop;
 }
