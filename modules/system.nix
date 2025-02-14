@@ -25,6 +25,11 @@ in
     fish
   ];
 
+  environment.variables = {
+    EDITOR = "vim";
+    VISUAL = "vim";
+  };
+
   # openssh
   services.openssh.enable = lib.mkDefault true;
 

@@ -24,6 +24,9 @@ in
       };
     };
 
+    home.sessionVariables."EDITOR" = lib.mkDefault "${lazyvim}";
+    home.sessionVariables."VISUAL" = lib.mkDefault "${lazyvim}";
+
     programs.fish.shellAliases.vi = "${lazyvim}";
     programs.bash.shellAliases.vi = "${lazyvim}";
     programs.zsh.shellAliases.vi = "${lazyvim}";
