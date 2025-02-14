@@ -5,5 +5,6 @@
     neofetch
     vim
     git
+    openssh
   ];
 }

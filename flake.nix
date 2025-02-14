@@ -91,5 +91,19 @@
         host = "vmfusion";
         system = "aarch64-linux";
       };
+
+      #
+      #
+      #
+      darwinConfigurations."mango" = mkSystem {
+        host = "mango";
+        system = "x86_64-darwin";
+      };
+
+      homeConfigurations."erning@mango" = mkHome {
+        user = "erning";
+        host = "mango";
+        system = "x86_64-darwin";
+      };
     };
 }
