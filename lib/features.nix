@@ -30,6 +30,10 @@ let
 
   desktop = {
     fonts.enable = true;
+    zed.enable = true;
+    ghostty.enable = true;
+    kitty.enable = true;
+    alacritty.enable = true;
   };
 in
 {
