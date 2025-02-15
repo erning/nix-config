@@ -23,5 +23,4 @@ in
     ./secrets.nix
     ./features
   ];
-
 }

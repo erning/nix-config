@@ -19,8 +19,9 @@
     wget
     curl
 
-    mtr
     dig
+    mtr
+    rsync
     ifstat-legacy
   ];
 }
