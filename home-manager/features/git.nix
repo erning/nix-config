@@ -18,7 +18,10 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
       git
+      git-lfs
+      git-crypt
       delta
+      lazygit
     ];
 
     xdg.configFile = {
@@ -27,6 +30,7 @@ in
         enable = isDarwin;
         source = symlink ".config/git/config.darwin";
       };
+      "lazygit/config.yml".source = symlink ".config/lazygit/config.yml";
     };
   };
 }

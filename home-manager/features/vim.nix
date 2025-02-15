@@ -25,7 +25,7 @@ in
     home.file.".vim/vimrc".source = symlink ".config/vim/vimrc";
 
     home.file = {
-      "${start}/onedark-vim".source = "${plugins.onedark-vim}";
+      "${start}/catppuccin-vim".source = "${plugins.catppuccin-vim}";
       "${start}/vim-polyglot".source = "${plugins.vim-polyglot}";
       "${start}/editorconfig-vim".source = "${plugins.editorconfig-vim}";
       "${start}/lightline-vim".source = "${plugins.lightline-vim}";

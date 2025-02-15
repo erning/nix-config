@@ -41,8 +41,9 @@ set relativenumber
 
 " scheme
 syntax on
-silent! colorscheme onedark
 set background=dark
+silent! colorscheme catppuccin_mocha
+let g:lightline = {'colorscheme': 'catppuccin_mocha'}
 
 " search
 set incsearch

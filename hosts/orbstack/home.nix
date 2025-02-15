@@ -4,5 +4,5 @@ let
   features = import "${inputs.self}/lib/features.nix";
 in
 {
-  features = features.develop;
+  features = features.console // features.develop;
 }
