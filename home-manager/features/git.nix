@@ -3,6 +3,7 @@
   lib,
   pkgs,
   settings,
+  inputs,
   ...
 }:
 
@@ -26,10 +27,11 @@ in
 
     xdg.configFile = {
       "git/config".source = symlink ".config/git/config";
-      "git/config.darwin" = {
+      "git/darwin.gitconfig" = {
         enable = isDarwin;
-        source = symlink ".config/git/config.darwin";
+        source = symlink ".config/git/darwin.gitconfig";
       };
+      "git/catppuccin.gitconfig".source = "${inputs.self}/dotfiles/.config/git/catppuccin.gitconfig";
       "lazygit/config.yml".source = symlink ".config/lazygit/config.yml";
     };
   };

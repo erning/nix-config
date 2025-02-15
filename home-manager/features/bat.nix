@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  inputs,
   ...
 }:
 
@@ -18,6 +19,9 @@ in
     };
 
     xdg.configFile."bat/config".source = symlink ".config/bat/config";
-    xdg.configFile."bat/themes".source = symlink ".config/bat/themes";
+    xdg.configFile."bat/themes" = {
+      source = "${inputs.self}/dotfiles/.config/bat/themes";
+      recursive = true;
+    };
   };
 }
