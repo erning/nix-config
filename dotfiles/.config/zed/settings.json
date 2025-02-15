@@ -9,8 +9,8 @@
 {
   "theme": {
     "mode": "dark",
-    "light": "One Light",
-    "dark": "One Dark"
+    "light": "Catppuccin Latte",
+    "dark": "Catppuccin Mocha"
   },
 
   "vim_mode": true,

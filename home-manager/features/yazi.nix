@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  inputs,
   ...
 }:
 
@@ -22,5 +23,7 @@ in
     };
 
     xdg.configFile."yazi/theme.toml".source = symlink ".config/yazi/theme.toml";
+    xdg.configFile."yazi/Catppuccin-mocha.tmTheme".source =
+      "${inputs.self}/dotfiles/.config/yazi/Catppuccin-mocha.tmTheme";
   };
 }
