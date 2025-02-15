@@ -7,6 +7,8 @@ in
   home.username = "${settings.user}";
   home.homeDirectory = (if isDarwin then "/Users" else "/home") + "/${settings.user}";
 
+  xdg.enable = true;
+
   home.sessionPath = [
     "$HOME/.local/bin"
   ];
