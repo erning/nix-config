@@ -11,9 +11,16 @@
     ripgrep
     fzf
     bat
-    htop
+    btop
 
     gnupg
     age
+
+    wget
+    curl
+
+    mtr
+    dig
+    ifstat-legacy
   ];
 }

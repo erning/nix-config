@@ -14,5 +14,5 @@ in
     (ssh-key "id_ed25519")
   ];
 
-  features = features.desktop // features.develop;
+  features = features.console // features.desktop // features.develop;
 }
