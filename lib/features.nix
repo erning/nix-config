@@ -23,6 +23,7 @@ let
     rustup.enable = true;
     zig.enable = true;
     python.enable = true;
+    go.enable = true;
 
     just.enable = true;
     direnv.enable = true;
