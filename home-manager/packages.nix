@@ -18,5 +18,9 @@
 
     wget
     curl
+
+    mtr
+    dig
+    ifstat-legacy
   ];
 }
