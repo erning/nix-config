@@ -28,16 +28,26 @@ let
     direnv.enable = true;
   } // base;
 
+  console = {
+    tmux.enable = true;
+    neovim.enable = true;
+    nushell.enable = true;
+    zellij.enable = true;
+    zoxide.enable = true;
+    yazi.enable = true;
+  } // base;
+
   desktop = {
     fonts.enable = true;
     zed.enable = true;
     ghostty.enable = true;
     kitty.enable = true;
     alacritty.enable = true;
-  };
+  } // base;
 in
 {
   inherit base;
   inherit develop;
+  inherit console;
   inherit desktop;
 }

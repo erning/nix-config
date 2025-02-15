@@ -19,5 +19,5 @@ in
     "${config.home.homeDirectory}/.config/age/keys.txt"
   ];
 
-  features = features.desktop // features.develop;
+  features = features.console // features.desktop // features.develop;
 }
