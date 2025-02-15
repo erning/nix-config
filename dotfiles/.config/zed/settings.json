@@ -20,10 +20,8 @@
   "buffer_line_height": "standard",
 
   //
-
   "restore_on_startup": "none",
 
-  //
   "languages": {
     "Nix": {
       "formatter": {
@@ -32,6 +30,12 @@
           "arguments": ["--quiet", "--"]
         }
       }
+    }
+  },
+
+  "git": {
+    "inline_blame": {
+      "enabled": false
     }
   },
 
