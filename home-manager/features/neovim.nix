@@ -18,16 +18,18 @@ in
       neovim
     ];
 
-    xdg.configFile = {
-      "nvim-lazyvim" = {
-        source = "${inputs.self}/dotfiles/.config/nvim-lazyvim";
-        recursive = true;
-      };
+    xdg.configFile."nvim-lazyvim" = {
+      source = "${inputs.self}/dotfiles/.config/nvim-lazyvim";
+      recursive = true;
+    };
+
+    home.file.".local/bin/lazyvim" = {
+      source = "${inputs.self}/dotfiles/.local/bin/lazyvim";
     };
 
     home.sessionVariables = {
-      "EDITOR" = lib.mkDefault "${lazyvim}";
-      "VISUAL" = lib.mkDefault "${lazyvim}";
+      "EDITOR" = "lazyvim";
+      "VISUAL" = "lazyvim";
     };
 
     programs.fish.shellAliases.vi = "${lazyvim}";
