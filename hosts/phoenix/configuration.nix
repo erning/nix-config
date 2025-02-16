@@ -3,6 +3,8 @@
 {
   imports = [ ./hardware-configuration.nix ];
 
+  boot.kernelParams = [ "consoleblank=30" ];
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
