@@ -18,12 +18,6 @@ in
   options.features.tmux.enable = lib.mkEnableOption "tmux";
 
   config = lib.mkIf cfg.enable {
-
-    home.packages = [
-      pkgs.tmuxPlugins.cpu
-      pkgs.tmuxPlugins.battery
-    ];
-
     programs.tmux = {
       enable = true;
       prefix = "C-a";
@@ -60,17 +54,12 @@ in
         run ${catppuccin-tmux}/catppuccin.tmux
 
         # Make the status line pretty and add some modules
-        set -g status-interval 5
         set -g status-right-length 100
         set -g status-left-length 100
-        set -g status-left "#{E:@catppuccin_status_session}"
+        set -g status-left ""
         set -g status-right "#{E:@catppuccin_status_application}"
-        set -agF status-right "#{E:@catppuccin_status_cpu}"
-        set -agF status-right "#{E:@catppuccin_status_battery}"
+        set -ag status-right "#{E:@catppuccin_status_session}"
         set -agF status-right "#{E:@catppuccin_status_date_time}"
-
-        run ${pkgs.tmuxPlugins.cpu.outPath}/share/tmux-plugins/cpu/cpu.tmux
-        run ${pkgs.tmuxPlugins.battery.outPath}/share/tmux-plugins/battery/battery.tmux
 
         #
         # local config
