@@ -1,12 +1,13 @@
 {
   config,
+  lib,
   inputs,
   settings,
   ...
 }:
 
 let
-  features = import "${inputs.self}/lib/features.nix";
+  features = import "${inputs.self}/lib/features.nix" { inherit lib; };
   ssh-key = (import "${inputs.self}/lib/ssh-key.nix" { inherit config inputs; }) settings.host;
 in
 {
@@ -19,5 +20,9 @@ in
     "${config.home.homeDirectory}/.config/age/keys.txt"
   ];
 
-  features = features.console // features.desktop // features.develop;
+  features = lib.mkMerge [
+    features.console
+    features.desktop
+    features.develop
+  ];
 }
