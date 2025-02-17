@@ -27,6 +27,8 @@ let
 
     just.enable = true;
     direnv.enable = true;
+
+    typst.enable = true;
   } // base;
 
   console = {
