@@ -45,6 +45,7 @@ let
   desktop = {
     fonts.enable = lib.mkDefault true;
     fonts.source-han.enable = lib.mkDefault true;
+
     zed.enable = lib.mkDefault true;
     ghostty.enable = lib.mkDefault true;
     kitty.enable = lib.mkDefault true;

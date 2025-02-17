@@ -1,6 +1,8 @@
+{ inputs, ... }:
+
+let
+  scanFiles = import "${inputs.self}/lib/scan-files.nix";
+in
 {
-  imports = [
-    ./standard.nix
-    ./source-han.nix
-  ];
+  imports = (scanFiles ./.);
 }

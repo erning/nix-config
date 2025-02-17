@@ -18,5 +18,6 @@ in
   features = lib.mkMerge [
     features.console
     features.develop
+    { fonts.enable = true; }
   ];
 }
