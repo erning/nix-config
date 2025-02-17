@@ -1,8 +1,11 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 
 let
-  features = import "${inputs.self}/lib/features.nix";
+  features = import "${inputs.self}/lib/features.nix" { inherit lib; };
 in
 {
-  features = features.console // features.develop;
+  features = lib.mkMerge [
+    features.console
+    features.develop
+  ];
 }
