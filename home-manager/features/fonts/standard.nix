@@ -18,6 +18,8 @@ in
       lxgw-neoxihei
       nerd-fonts.jetbrains-mono
       nerd-fonts._0xproto
+      font-awesome
+      nerd-fonts.symbols-only
     ];
   };
 }
