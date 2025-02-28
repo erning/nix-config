@@ -28,4 +28,6 @@
     createHome = true;
     shell = pkgs.fish;
   };
+
+  services.tailscale.enable = true;
 }
