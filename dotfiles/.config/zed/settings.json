@@ -23,6 +23,9 @@
   "restore_on_startup": "none",
 
   "languages": {
+    "Markdown": {
+      "remove_trailing_whitespace_on_save": false
+    },
     "Nix": {
       "formatter": {
         "external": {
@@ -42,12 +45,17 @@
   "assistant": {
     "default_model": {
       "provider": "zed.dev",
-      "model": "claude-3-5-sonnet-latest"
+      "model": "claude-3-7-sonnet-latest"
     },
     "version": "2"
   },
 
   "features": {
     "edit_prediction_provider": "zed"
+  },
+
+  "telemetry": {
+    "metrics": false,
+    "diagnostics": false
   }
 }
