@@ -31,6 +31,8 @@ let
     direnv.enable = lib.mkDefault true;
 
     typst.enable = lib.mkDefault true;
+
+    docker.enable = lib.mkDefault true;
   } // base;
 
   console = {
