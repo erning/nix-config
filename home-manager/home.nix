@@ -1,4 +1,4 @@
-{ settings, ... }:
+{ settings, lib, ... }:
 
 let
   isDarwin = builtins.match ".*-darwin" settings.system != null;
@@ -9,7 +9,7 @@ in
 
   xdg.enable = true;
 
-  home.sessionPath = [
+  home.sessionPath = lib.mkBefore [
     "$HOME/.local/bin"
   ];
 
