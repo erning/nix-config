@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   inputs,
   settings,
   ...
@@ -37,5 +38,10 @@ in
     features.console
     features.desktop
     features.develop
+  ];
+
+  home.packages = with pkgs; [
+    ffmpeg
+    mactop
   ];
 }
