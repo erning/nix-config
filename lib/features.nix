@@ -27,6 +27,10 @@ let
     python.enable = lib.mkDefault true;
     go.enable = lib.mkDefault true;
 
+    jdk.enable = lib.mkDefault true;
+    kotlin.enable = lib.mkDefault true;
+    gradle.enable = lib.mkDefault true;
+
     just.enable = lib.mkDefault true;
     direnv.enable = lib.mkDefault true;
 
