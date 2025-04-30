@@ -42,5 +42,6 @@ in
 
   home.packages = with pkgs; [
     ffmpeg
+    yt-dlp
   ];
 }
