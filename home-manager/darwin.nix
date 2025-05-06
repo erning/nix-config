@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   home.sessionVariables = {
@@ -12,7 +12,7 @@
     HOMEBREW_CURL_RETRIES = 3;
 
     HOMEBREW_MIRROR_PREFIX = "https://mirrors.ustc.edu.cn";
-    HOMEBREW_BOTTLE_DOMAIN = "$HOMEBREW_MIRROR_PREFIX/homebrew-bottles";
+    HOMEBREW_BOTTLE_DOMAIN = "${config.home.sessionVariables.HOMEBREW_MIRROR_PREFIX}/homebrew-bottles";
     # HOMEBREW_BREW_GIT_REMOTE = "$HOMEBREW_MIRROR_PREFIX/brew.git"
     # HOMEBREW_CORE_GIT_REMOTE = "$HOMEBREW_MIRROR_PREFIX/homebrew-core.git"
   };
