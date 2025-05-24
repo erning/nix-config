@@ -69,6 +69,12 @@
         system = "x86_64-linux";
       };
 
+      homeConfigurations."erning@dinosaur" = mkHome {
+        user = "erning";
+        host = "dinosaur";
+        system = "x86_64-linux";
+      };
+
       #
       #
       #
