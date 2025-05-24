@@ -14,10 +14,10 @@
 
   inputs = {
     # stable
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
-    nix-darwin-stable.url = "github:lnl7/nix-darwin/nix-darwin-24.11";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
+    nix-darwin-stable.url = "github:lnl7/nix-darwin/nix-darwin-25.05";
     nix-darwin-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
-    home-manager-stable.url = "github:nix-community/home-manager/release-24.11";
+    home-manager-stable.url = "github:nix-community/home-manager/release-25.05";
     home-manager-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
 
     # unstable
