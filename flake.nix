@@ -13,6 +13,8 @@
   # };
 
   inputs = {
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
+
     # stable
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
     nix-darwin-stable.url = "github:lnl7/nix-darwin/nix-darwin-25.05";
@@ -66,6 +68,17 @@
       homeConfigurations."erning@phoenix" = mkHome {
         user = "erning";
         host = "phoenix";
+        system = "x86_64-linux";
+      };
+
+      nixosConfigurations."pomelo" = mkSystem {
+        host = "pomelo";
+        system = "x86_64-linux";
+      };
+
+      homeConfigurations."erning@pomelo" = mkHome {
+        user = "erning";
+        host = "pomelo";
         system = "x86_64-linux";
       };
 
