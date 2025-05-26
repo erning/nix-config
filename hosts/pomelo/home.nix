@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   inputs,
   settings,
   ...
@@ -21,8 +22,10 @@ in
     features.develop
   ];
 
-  # home.packages = with pkgs; [
-  #   ffmpeg
-  #   yt-dlp
-  # ];
+  home.packages = with pkgs; [
+    zed-editor-fhs
+    ghostty
+    ffmpeg
+    yt-dlp
+  ];
 }

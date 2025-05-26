@@ -55,11 +55,9 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
-
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -78,6 +76,16 @@
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
+
+  i18n.inputMethod = {
+    enable = true;
+    type = "ibus";
+    ibus = {
+      engines = with pkgs.ibus-engines; [
+        libpinyin
+      ];
+    };
+  };
 
   services.flatpak.enable = true;
   programs.firefox.enable = true;
