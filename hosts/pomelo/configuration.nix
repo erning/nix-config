@@ -88,5 +88,10 @@
   };
 
   services.flatpak.enable = true;
-  programs.firefox.enable = true;
+
+  # sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+  systemd.targets.sleep.enable = false;
+  systemd.targets.suspend.enable = false;
+  systemd.targets.hibernate.enable = false;
+  systemd.targets.hybrid-sleep.enable = false;
 }
