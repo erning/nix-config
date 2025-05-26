@@ -49,6 +49,10 @@
       mkHome = import ./lib/mkHome.nix { inherit nixpkgs home-manager inputs; };
     in
     {
+      #
+      # MacBookPro18,2 (16-inch, 2021)
+      #
+      # macOS + nix-darwin + home-manager
       darwinConfigurations."dragon" = mkSystem {
         host = "dragon";
         system = "aarch64-darwin";
@@ -60,6 +64,20 @@
         system = "aarch64-darwin";
       };
 
+      #
+      # MacBookPro16,1 (16-inch, 2019)
+      #
+      # Fedora + nix + home-manager
+      homeConfigurations."erning@dinosaur" = mkHome {
+        user = "erning";
+        host = "dinosaur";
+        system = "x86_64-linux";
+      };
+
+      #
+      # MacBookPro6,1 (17-inch, Mid 2010)
+      #
+      # NixOS + home-manager
       nixosConfigurations."phoenix" = mkSystem {
         host = "phoenix";
         system = "x86_64-linux";
@@ -71,6 +89,10 @@
         system = "x86_64-linux";
       };
 
+      #
+      # MacBookAir8,2 (Retina, 13-inch, 2019)
+      #
+      # NixOS + home-manager
       nixosConfigurations."pomelo" = mkSystem {
         host = "pomelo";
         system = "x86_64-linux";
@@ -82,10 +104,35 @@
         system = "x86_64-linux";
       };
 
-      homeConfigurations."erning@dinosaur" = mkHome {
+      #
+      # Same physical machine as pomelo. Dual boot
+      # deprecated
+      #
+      # macOS + nix-darwin + home-manager
+      darwinConfigurations."pineapple" = mkSystem {
+        host = "pineapple";
+        system = "x86_64-darwin";
+      };
+
+      homeConfigurations."erning@pineapple" = mkHome {
         user = "erning";
-        host = "dinosaur";
-        system = "x86_64-linux";
+        host = "pineapple";
+        system = "x86_64-darwin";
+      };
+
+      #
+      # MacBook8,1 (Retina, 12-inch, Early 2015)
+      #
+      # macOS + nix-darwin + home-manager
+      darwinConfigurations."mango" = mkSystem {
+        host = "mango";
+        system = "x86_64-darwin";
+      };
+
+      homeConfigurations."erning@mango" = mkHome {
+        user = "erning";
+        host = "mango";
+        system = "x86_64-darwin";
       };
 
       #
@@ -112,32 +159,6 @@
         user = "erning";
         host = "vmfusion";
         system = "aarch64-linux";
-      };
-
-      #
-      #
-      #
-
-      darwinConfigurations."pineapple" = mkSystem {
-        host = "pineapple";
-        system = "x86_64-darwin";
-      };
-
-      homeConfigurations."erning@pineapple" = mkHome {
-        user = "erning";
-        host = "pineapple";
-        system = "x86_64-darwin";
-      };
-
-      darwinConfigurations."mango" = mkSystem {
-        host = "mango";
-        system = "x86_64-darwin";
-      };
-
-      homeConfigurations."erning@mango" = mkHome {
-        user = "erning";
-        host = "mango";
-        system = "x86_64-darwin";
       };
     };
 }
