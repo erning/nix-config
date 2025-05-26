@@ -9,6 +9,7 @@
 
 let
   features = import "${inputs.self}/lib/features.nix" { inherit lib; };
+  # ssh-key = (import "${inputs.self}/lib/ssh-key.nix" { inherit config inputs; }) settings.host;
   ssh-key =
     let
       host = settings.host;
@@ -39,6 +40,7 @@ in
   ];
 
   home.packages = with pkgs; [
+    ghostty
     ffmpeg
     yt-dlp
   ];

@@ -6,12 +6,14 @@
     inputs.nixos-hardware.nixosModules.apple-t2
   ];
 
+  # Cache for apple-t2
   nix.settings = {
     substituters = [ "https://cache.soopy.moe" ];
     trusted-substituters = [ "https://cache.soopy.moe" ];
     trusted-public-keys = [ "cache.soopy.moe-1:0RZVsQeR+GOh0VQI9rvnHz55nVXkFardDqfm4+afjPo=" ];
   };
 
+  # WiFi/Bluetooth firmware from macOS
   hardware.firmware = [
     (pkgs.stdenvNoCC.mkDerivation (final: {
       name = "brcm-firmware";
@@ -23,6 +25,7 @@
     }))
   ];
 
+  # Auto blank screen without X
   boot.kernelParams = [ "consoleblank=30" ];
 
   # Bootloader.
@@ -30,11 +33,13 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot";
 
-  # virtualisation.podman = {
-  #   enable = true;
-  #   dockerCompat = true;
-  # };
+  # Try to disable sleep/suspend
+  systemd.targets.sleep.enable = false;
+  systemd.targets.suspend.enable = false;
+  systemd.targets.hibernate.enable = false;
+  systemd.targets.hybrid-sleep.enable = false;
 
+  # User
   programs.fish.enable = true;
   users.users.erning = {
     isNormalUser = true;
@@ -50,33 +55,19 @@
     shell = pkgs.fish;
   };
 
-  # services.tailscale.enable = true;
+  # Docker
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+  };
 
-  # Enable the X11 windowing system.
+  # GNOME Desktop Environment
   services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
-
-  # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
-
-  # Enable CUPS to print documents.
   # services.printing.enable = true;
-
-  # Enable sound.
-  # services.pulseaudio.enable = true;
-  # OR
-  # services.pipewire = {
-  #   enable = true;
-  #   pulse.enable = true;
-  # };
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.libinput.enable = true;
-
   i18n.inputMethod = {
     enable = true;
     type = "ibus";
@@ -87,19 +78,17 @@
     };
   };
 
+  # Prefer flatpak for most GUI applications
   services.flatpak.enable = true;
 
-  # sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
-  systemd.targets.sleep.enable = false;
-  systemd.targets.suspend.enable = false;
-  systemd.targets.hibernate.enable = false;
-  systemd.targets.hybrid-sleep.enable = false;
-
+  # Remote access via RDP
   services.xrdp.enable = true;
   services.xrdp.defaultWindowManager = "gnome-session";
 
+  #
   environment.systemPackages = with pkgs; [
     gnome-tweaks
   ];
 
+  # services.tailscale.enable = true;
 }
