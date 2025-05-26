@@ -94,4 +94,12 @@
   systemd.targets.suspend.enable = false;
   systemd.targets.hibernate.enable = false;
   systemd.targets.hybrid-sleep.enable = false;
+
+  services.xrdp.enable = true;
+  services.xrdp.defaultWindowManager = "gnome-session";
+
+  environment.systemPackages = with pkgs; [
+    gnome-tweaks
+  ];
+
 }
