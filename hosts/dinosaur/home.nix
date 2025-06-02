@@ -40,7 +40,6 @@ in
   ];
 
   home.packages = with pkgs; [
-    ghostty
     ffmpeg
     yt-dlp
   ];
