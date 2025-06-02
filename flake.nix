@@ -92,12 +92,7 @@
       #
       # MacBookAir8,2 (Retina, 13-inch, 2019)
       #
-      # NixOS + home-manager
-      nixosConfigurations."pomelo" = mkSystem {
-        host = "pomelo";
-        system = "x86_64-linux";
-      };
-
+      # Fedora + nix + home-manager
       homeConfigurations."erning@pomelo" = mkHome {
         user = "erning";
         host = "pomelo";
