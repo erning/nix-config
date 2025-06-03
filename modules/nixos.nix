@@ -1,7 +1,7 @@
 { lib, ... }:
 
 {
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
 
   programs.fish.enable = true;
   programs.zsh.enable = true;

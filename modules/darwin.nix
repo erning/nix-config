@@ -1,7 +1,7 @@
 { lib, settings, ... }:
 
 {
-  system.stateVersion = 5;
+  system.stateVersion = 6;
 
   programs.fish.enable = true;
   programs.bash.enable = true;
@@ -25,9 +25,11 @@
     remapCapsLockToControl = lib.mkDefault true;
   };
 
-  system.activationScripts.postUserActivation.text = ''
-    # activateSettings -u will reload the settings from the database and apply them to the current session,
-    # so we do not need to logout and login again to make the changes take effect.
-    /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-  '';
+  # The `system.activationScripts.postUserActivation` option has
+  #       been removed
+  # system.activationScripts.postUserActivation.text = ''
+  #   # activateSettings -u will reload the settings from the database and apply them to the current session,
+  #   # so we do not need to logout and login again to make the changes take effect.
+  #   /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+  # '';
 }

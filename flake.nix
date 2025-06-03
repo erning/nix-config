@@ -116,6 +116,21 @@
       };
 
       #
+      # MacBookPro13,3 (15-inch, 2016)
+      #
+      # macOS + nix-darwin + home-manager
+      darwinConfigurations."pterosaur" = mkSystem {
+        host = "pterosaur";
+        system = "x86_64-darwin";
+      };
+
+      homeConfigurations."erning@pterosaur" = mkHome {
+        user = "erning";
+        host = "pterosaur";
+        system = "x86_64-darwin";
+      };
+
+      #
       # MacBook8,1 (Retina, 12-inch, Early 2015)
       #
       # macOS + nix-darwin + home-manager
