@@ -1,1 +1,3 @@
-{ }
+{
+  system.primaryUser = "erning";
+}
