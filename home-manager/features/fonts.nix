@@ -16,6 +16,7 @@ in
 
     # pkgs = inputs.nixpkgs-unstable.legacyPackages.${settings.system};
     home.packages = with pkgs.unstable; [
+      libertine
       lxgw-wenkai
       lxgw-neoxihei
       nerd-fonts.jetbrains-mono
