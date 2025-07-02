@@ -26,6 +26,7 @@ let
     zig.enable = lib.mkDefault true;
     python.enable = lib.mkDefault true;
     go.enable = lib.mkDefault true;
+    nodejs.enable = lib.mkDefault true;
 
     jdk.enable = lib.mkDefault true;
     kotlin.enable = lib.mkDefault true;
