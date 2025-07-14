@@ -52,7 +52,7 @@
       #
       # MacBookPro18,2 (16-inch, 2021)
       #
-      # macOS + nix-darwin + home-manager
+      # macOS (Sequoia - 15.5) + nix-darwin + home-manager
       darwinConfigurations."dragon" = mkSystem {
         host = "dragon";
         system = "aarch64-darwin";
@@ -67,11 +67,16 @@
       #
       # MacBookPro16,1 (16-inch, 2019)
       #
-      # Fedora + nix + home-manager
+      # macOS (Sequoia - 15.5) + nix-darwin + home-manager
+      darwinConfigurations."dinosaur" = mkSystem {
+        host = "dinosaur";
+        system = "x86_64-darwin";
+      };
+
       homeConfigurations."erning@dinosaur" = mkHome {
         user = "erning";
         host = "dinosaur";
-        system = "x86_64-linux";
+        system = "x86_64-darwin";
       };
 
       #
@@ -104,21 +109,21 @@
       # deprecated
       #
       # macOS + nix-darwin + home-manager
-      darwinConfigurations."pineapple" = mkSystem {
-        host = "pineapple";
-        system = "x86_64-darwin";
-      };
+      # darwinConfigurations."pineapple" = mkSystem {
+      #   host = "pineapple";
+      #   system = "x86_64-darwin";
+      # };
 
-      homeConfigurations."erning@pineapple" = mkHome {
-        user = "erning";
-        host = "pineapple";
-        system = "x86_64-darwin";
-      };
+      # homeConfigurations."erning@pineapple" = mkHome {
+      #   user = "erning";
+      #   host = "pineapple";
+      #   system = "x86_64-darwin";
+      # };
 
       #
       # MacBookPro13,3 (15-inch, 2016)
       #
-      # macOS + nix-darwin + home-manager
+      # macOS (Monterey - 12.7.6) + nix-darwin + home-manager
       darwinConfigurations."pterosaur" = mkSystem {
         host = "pterosaur";
         system = "x86_64-darwin";
@@ -133,7 +138,7 @@
       #
       # MacBook8,1 (Retina, 12-inch, Early 2015)
       #
-      # macOS + nix-darwin + home-manager
+      # macOS (Big Sur - 11.7.10) + nix-darwin + home-manager
       darwinConfigurations."mango" = mkSystem {
         host = "mango";
         system = "x86_64-darwin";
