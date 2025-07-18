@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   inputs,
   settings,
   ...
@@ -19,5 +20,10 @@ in
     features.console
     features.develop
     { fonts.enable = true; }
+  ];
+
+  home.packages = with pkgs; [
+    postgresql
+    mariadb-client
   ];
 }
