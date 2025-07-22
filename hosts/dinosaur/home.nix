@@ -42,5 +42,7 @@ in
   home.packages = with pkgs; [
     ffmpeg
     yt-dlp
+    postgresql
+    mariadb-client
   ];
 }
