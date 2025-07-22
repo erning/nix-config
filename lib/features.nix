@@ -14,6 +14,7 @@ let
     git.enable = lib.mkDefault true;
 
     ssh.enable = lib.mkDefault true;
+    nixpkgs-config.enable = lib.mkDefault true;
   };
 
   develop = {
