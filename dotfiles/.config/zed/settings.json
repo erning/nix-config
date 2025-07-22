@@ -42,10 +42,24 @@
     }
   },
 
+  "language_models": {
+    "anthropic": {
+      "api_url": "https://api.moonshot.cn/anthropic",
+      "available_models": [
+        {
+          "name": "kimi-k2-0711-preview",
+          "display_name": "kimi-k2-0711-preview",
+          "max_tokens": 0,
+          "default_temperature": 0.6
+        }
+      ]
+    }
+  },
+
   "agent": {
     "default_model": {
-      "provider": "copilot_chat",
-      "model": "gpt-4o"
+      "provider": "anthropic",
+      "model": "kimi-k2-0711-preview"
     }
   },
 
