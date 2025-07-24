@@ -43,23 +43,53 @@
   },
 
   "language_models": {
-    "anthropic": {
-      "api_url": "https://api.moonshot.cn/anthropic",
+    "openai": {
+      "api_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
       "available_models": [
         {
-          "name": "kimi-k2-0711-preview",
-          "display_name": "kimi-k2-0711-preview",
-          "max_tokens": 0,
-          "default_temperature": 0.6
+          "name": "qwen3-coder-plus",
+          "display_name": "qwen3-coder-plus",
+          "max_tokens": 0
+        },
+        {
+          "name": "qwen3-coder-plus-2025-07-22",
+          "display_name": "qwen3-coder-plus-2025-07-22",
+          "max_tokens": 0
+        },
+        {
+          "name": "qwen3-coder-480b-a35b-instruct",
+          "display_name": "qwen3-coder-480b-a35b-instructs",
+          "max_tokens": 0
         }
       ]
     }
+    // "openai": {
+    //   "api_url": "https://api.moonshot.cn/v1",
+    //   "available_models": [
+    //     {
+    //       "name": "kimi-k2-0711-preview",
+    //       "display_name": "kimi-k2-0711-preview",
+    //       "max_tokens": 0
+    //     }
+    //   ]
+    // },
+    // "anthropic": {
+    //   "api_url": "https://api.moonshot.cn/anthropic",
+    //   "available_models": [
+    //     {
+    //       "name": "kimi-k2-0711-preview",
+    //       "display_name": "kimi-k2-0711-preview",
+    //       "max_tokens": 0,
+    //       "default_temperature": 0.6
+    //     }
+    //   ]
+    // }
   },
 
   "agent": {
     "default_model": {
-      "provider": "anthropic",
-      "model": "kimi-k2-0711-preview"
+      "provider": "openai",
+      "model": "qwen3-coder-plus-2025-07-22"
     }
   },
 
