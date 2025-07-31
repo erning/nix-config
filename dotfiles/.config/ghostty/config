@@ -1,4 +1,4 @@
-font-size = 18
+font-size = 16
 font-codepoint-map = U+4E00-U+9FFF,U+3400-U+4DBF="LXGW WenKai Mono"
 theme = "catppuccin-mocha"
 
