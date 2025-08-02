@@ -105,22 +105,6 @@
       };
 
       #
-      # Same physical machine as pomelo. Dual boot
-      # deprecated
-      #
-      # macOS + nix-darwin + home-manager
-      # darwinConfigurations."pineapple" = mkSystem {
-      #   host = "pineapple";
-      #   system = "x86_64-darwin";
-      # };
-
-      # homeConfigurations."erning@pineapple" = mkHome {
-      #   user = "erning";
-      #   host = "pineapple";
-      #   system = "x86_64-darwin";
-      # };
-
-      #
       # MacBookPro13,3 (15-inch, 2016)
       #
       # macOS (Monterey - 12.7.6) + nix-darwin + home-manager
