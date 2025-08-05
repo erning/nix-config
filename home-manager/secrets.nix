@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ config, inputs, ... }:
 
 {
   imports = [
@@ -6,6 +6,7 @@
   ];
 
   age.identityPaths = [
+    "${config.home.homeDirectory}/.config/age/keys.txt"
     "/etc/age/keys.txt"
     "/etc/age/ssh_host_ed25519.txt"
   ];
