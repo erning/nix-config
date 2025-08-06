@@ -9,6 +9,7 @@
         "baseURL": "http://127.0.0.1:1234/v1"
       },
       "models": {
+        "qwen/qwen3-coder-30b": {},
         "qwen3-coder-30b-a3b-instruct-mlx@8bit": {}
       }
     },
@@ -30,9 +31,7 @@
         "baseURL": "https://api.moonshot.cn/v1"
       },
       "models": {
-        "kimi-k2-0711-preview": {
-          "name": "kimi-k2"
-        }
+        "kimi-k2-0711-preview": {}
       }
     }
   }
