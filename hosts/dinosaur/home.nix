@@ -44,5 +44,6 @@ in
     yt-dlp
     postgresql
     mariadb-client
+    ansible
   ];
 }
