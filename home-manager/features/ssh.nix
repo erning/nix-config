@@ -17,9 +17,14 @@ in
   config = lib.mkIf cfg.enable {
     programs.ssh = {
       enable = true;
+      enableDefaultConfig = false;
+      matchBlocks."*" = { };
+
       includes = [
         "conf.d/*.conf"
-      ] ++ (if isDarwin then [ "~/.orbstack/ssh/config" ] else [ ]);
+      ]
+      ++ (if isDarwin then [ "~/.orbstack/ssh/config" ] else [ ]);
+
       # userKnownHostsFile = "/dev/null";
       extraConfig = ''
         NoHostAuthenticationForLocalhost yes
