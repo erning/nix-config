@@ -20,7 +20,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.tmux = {
       enable = true;
-      prefix = "C-a";
+      # prefix = "C-a";
       terminal = "xterm-256color";
       baseIndex = 1;
       clock24 = true;
@@ -29,6 +29,11 @@ in
       keyMode = "vi";
 
       extraConfig = ''
+        # prefix = "C-a"
+        unbind-key C-b
+        set-option -g prefix C-a
+        bind-key C-a send-prefix
+
         bind s split-window -v
         bind v split-window -h
 
