@@ -2,7 +2,7 @@
 
 {
   home.packages = with pkgs; [
-    neofetch
+    fastfetch
     vim
     git
     tmux
