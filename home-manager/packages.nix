@@ -11,7 +11,7 @@
     ripgrep
     fzf
     bat
-    btop
+    htop
 
     gnupg
     age
