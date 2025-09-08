@@ -17,17 +17,26 @@
 
     # stable
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
-    nix-darwin-stable.url = "github:lnl7/nix-darwin/nix-darwin-25.05";
-    nix-darwin-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
-    home-manager-stable.url = "github:nix-community/home-manager/release-25.05";
-    home-manager-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
+    nix-darwin-stable = {
+      url = "github:lnl7/nix-darwin/nix-darwin-25.05";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
+    };
+    home-manager-stable = {
+      url = "github:nix-community/home-manager/release-25.05";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
+    };
 
     # unstable
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    nix-darwin-unstable.url = "github:lnl7/nix-darwin/master";
-    nix-darwin-unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
-    home-manager-unstable.url = "github:nix-community/home-manager/master";
-    home-manager-unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    # nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/master";
+    nix-darwin-unstable = {
+      url = "github:lnl7/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    home-manager-unstable = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     #
     agenix.url = "github:ryantm/agenix";
