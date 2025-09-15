@@ -16,6 +16,6 @@ in
       go
     ];
     programs.go.enable = true;
-    programs.go.goPath = ".go";
+    programs.go.env.GOPATH = ".go";
   };
 }
