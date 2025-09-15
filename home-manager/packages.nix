@@ -23,5 +23,6 @@
     mtr
     rsync
     ifstat-legacy
+    pstree
   ];
 }
