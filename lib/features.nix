@@ -14,7 +14,6 @@ let
     git.enable = lib.mkDefault true;
 
     ssh.enable = lib.mkDefault true;
-    nixpkgs-config.enable = lib.mkDefault true;
   };
 
   develop = {
@@ -39,7 +38,8 @@ let
     typst.enable = lib.mkDefault true;
 
     docker.enable = lib.mkDefault true;
-  } // base;
+  }
+  // base;
 
   console = {
     tmux.enable = lib.mkDefault true;
@@ -48,7 +48,8 @@ let
     zellij.enable = lib.mkDefault true;
     zoxide.enable = lib.mkDefault true;
     yazi.enable = lib.mkDefault true;
-  } // base;
+  }
+  // base;
 
   desktop = {
     fonts.enable = lib.mkDefault true;
@@ -58,7 +59,8 @@ let
     ghostty.enable = lib.mkDefault true;
     kitty.enable = lib.mkDefault true;
     alacritty.enable = lib.mkDefault true;
-  } // base;
+  }
+  // base;
 in
 {
   inherit base;
