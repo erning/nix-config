@@ -10,7 +10,7 @@
       },
       "models": {
         "qwen/qwen3-coder-30b": {},
-        "qwen3-coder-30b-a3b-instruct-mlx@8bit": {}
+        "openai/gpt-oss-20b": {}
       }
     }
     //   "bigmodel": {
