@@ -24,7 +24,7 @@ in
 
   home.packages = with pkgs; [
     postgresql
-    mariadb-client
+    mariadb.client
     ansible
   ];
 }

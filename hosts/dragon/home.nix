@@ -44,7 +44,7 @@ in
     ffmpeg
     yt-dlp
     postgresql
-    mariadb-client
+    mariadb.client
     ansible
   ];
 }
