@@ -16,5 +16,5 @@ Setup configuration link
 ```sh
 mkdir -p ~/.claude-code-router
 cd ~/.claude-code-router
-ln -sf ~/.dotfiles/.claude-code-router/config.glm-4.5.json config.json
+ln -sf ~/.dotfiles/.claude-code-router/config.lmstudio.json config.json
 ```
