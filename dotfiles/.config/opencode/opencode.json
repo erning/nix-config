@@ -12,6 +12,17 @@
         "qwen/qwen3-coder-30b": {},
         "openai/gpt-oss-20b": {}
       }
+    },
+    "minimax": {
+      "npm": "@ai-sdk/anthropic",
+      "options": {
+        "baseURL": "https://api.minimaxi.com/anthropic/v1"
+      },
+      "models": {
+        "MiniMax-M2": {
+          "name": "MiniMax-M2"
+        }
+      }
     }
     //   "bigmodel": {
     //     "npm": "@ai-sdk/openai-compatible",
