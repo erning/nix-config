@@ -24,5 +24,6 @@
     rsync
     ifstat-legacy
     pstree
+    tree
   ];
 }
