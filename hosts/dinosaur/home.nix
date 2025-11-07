@@ -46,5 +46,6 @@ in
     postgresql
     mariadb.client
     ansible
+    tree
   ];
 }
