@@ -45,8 +45,8 @@
 
   "agent": {
     "default_model": {
-      "provider": "deepseek",
-      "model": "deepseek-chat"
+      "provider": "copilot_chat",
+      "model": "gpt-5-mini"
     }
   },
 
