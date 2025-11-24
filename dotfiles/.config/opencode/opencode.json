@@ -20,7 +20,7 @@
         "baseURL": "https://api.minimaxi.com/anthropic/v1"
       },
       "models": {
-        "MiniMax-M2": {}
+        "minimax-m2": {}
       }
     }
   }
