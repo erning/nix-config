@@ -22,6 +22,18 @@
       "models": {
         "minimax-m2": {}
       }
+    },
+    "cc-gmcong": {
+      "npm": "@ai-sdk/anthropic",
+      "name": "cc-gmcong",
+      "options": {
+        "baseURL": "https://cc.gmcong.com/api/v1"
+      },
+      "models": {
+        "claude-opus-4-5-20251101": { "name": "Opus 4.5" },
+        "claude-sonnet-4-5-20250929": { "name": "Sonnet 4.5" },
+        "claude-haiku-4-5-20251001": { "name": "Haiku 4.5" }
+      }
     }
   }
 }
