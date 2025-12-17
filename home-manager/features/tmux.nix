@@ -46,6 +46,10 @@ in
         bind -r C-j resize-pane -D 5
         bind -r C-k resize-pane -U 5
 
+        # This enables tmux to handle extended key sequences,
+        # which helps with modified keys.
+        set -s extended-keys on
+
         #
         # catppuccin with cpu battery
         #
