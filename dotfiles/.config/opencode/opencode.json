@@ -13,16 +13,6 @@
         "openai/gpt-oss-20b": {}
       }
     },
-    "minimax": {
-      "npm": "@ai-sdk/anthropic",
-      "name": "MiniMax CN",
-      "options": {
-        "baseURL": "https://api.minimaxi.com/anthropic/v1"
-      },
-      "models": {
-        "minimax-m2": {}
-      }
-    },
     "cc-gmcong": {
       "npm": "@ai-sdk/anthropic",
       "name": "cc-gmcong",
