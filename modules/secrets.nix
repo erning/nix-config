@@ -18,7 +18,7 @@ in
   environment.systemPackages = with pkgs; [
     age
     ssh-to-age
-    inputs.agenix.packages."${pkgs.system}".default
+    inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
   ];
 
   age.identityPaths = [
