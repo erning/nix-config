@@ -1,0 +1,7 @@
+{
+  "anthropic": {
+    "CLAUDE_CODE_OAUTH_TOKEN": true,
+    "type": "oauth",
+    "access": "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"
+  }
+}
