@@ -13,6 +13,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.zsh = lib.mkIf cfg.enable {
       enable = true;
+      dotDir = "${config.xdg.configHome}/zsh";
     };
   };
 }
