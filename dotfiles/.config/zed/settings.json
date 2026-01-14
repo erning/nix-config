@@ -10,7 +10,7 @@
   "theme": {
     "mode": "dark",
     "light": "Catppuccin Latte",
-    "dark": "Catppuccin Mocha"
+    "dark": "Catppuccin Mocha",
   },
 
   "vim_mode": true,
@@ -21,41 +21,41 @@
   "soft_wrap": "preferred_line_length",
 
   //
-  "restore_on_startup": "none",
+  "restore_on_startup": "empty_tab",
 
   "languages": {
     "Markdown": {
-      "remove_trailing_whitespace_on_save": false
+      "remove_trailing_whitespace_on_save": false,
     },
     "Nix": {
       "formatter": {
         "external": {
           "command": "nixfmt",
-          "arguments": ["--quiet", "--"]
-        }
-      }
-    }
+          "arguments": ["--quiet", "--"],
+        },
+      },
+    },
   },
 
   "git": {
     "inline_blame": {
-      "enabled": false
-    }
+      "enabled": false,
+    },
   },
 
   "agent": {
     "default_model": {
       "provider": "copilot_chat",
-      "model": "gpt-5-mini"
-    }
+      "model": "gpt-5-mini",
+    },
   },
 
   "features": {
-    "edit_prediction_provider": "zed"
+    "edit_prediction_provider": "zed",
   },
 
   "telemetry": {
     "metrics": false,
-    "diagnostics": false
-  }
+    "diagnostics": false,
+  },
 }
