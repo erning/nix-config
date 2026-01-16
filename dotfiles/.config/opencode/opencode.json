@@ -4,6 +4,7 @@
   "plugin": [
     "oh-my-opencode",
     "opencode-openai-codex-auth",
+    "opencode-gemini-auth"
   ],
   "provider": {
     "openai": {
