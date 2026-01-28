@@ -7,6 +7,7 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "icon_theme": "Catppuccin Mocha",
   "theme": {
     "mode": "dark",
     "light": "Catppuccin Latte",
@@ -18,7 +19,6 @@
   "buffer_font_family": "JetBrainsMono Nerd Font",
   "buffer_font_size": 16,
   "buffer_line_height": "standard",
-  "soft_wrap": "preferred_line_length",
 
   //
   "restore_on_startup": "empty_tab",
@@ -47,6 +47,15 @@
     "default_model": {
       "provider": "copilot_chat",
       "model": "gpt-5-mini",
+    },
+  },
+
+  "agent_servers": {
+    "Kimi Code CLI": {
+      "type": "custom",
+      "command": "kimi",
+      "args": ["acp"],
+      "env": {},
     },
   },
 
