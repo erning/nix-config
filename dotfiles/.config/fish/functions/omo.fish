@@ -1,6 +1,6 @@
 function omo
     set base_name (basename (pwd))
-    set path_hash (echo (pwd) | md5 | cut -c1-4)
+    set path_hash (echo (pwd) | md5sum | cut -c1-4)
     set session_name "$base_name-$path_hash"
 
     # Find available port starting from 4096
