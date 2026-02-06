@@ -39,13 +39,4 @@ in
     features.develop
     { zig.enable = false; }
   ];
-
-  home.packages = with pkgs; [
-    ffmpeg
-    yt-dlp
-    postgresql
-    mariadb.client
-    ansible
-    tree
-  ];
 }
