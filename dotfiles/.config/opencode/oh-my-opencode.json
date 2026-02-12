@@ -19,7 +19,7 @@
       "model": "kimi-for-coding/k2p5"
     },
     "multimodal-looker": {
-      "model": "zhipuai-coding-plan/glm-4.6v"
+      "model": "kimi-for-coding/k2p5"
     },
     "prometheus": {
       "model": "kimi-for-coding/k2p5"
