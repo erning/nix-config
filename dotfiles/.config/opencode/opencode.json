@@ -143,8 +143,8 @@
     "google": {
       "name": "Google",
       "models": {
-        "antigravity-gemini-3-pro": {
-          "name": "Gemini 3 Pro (Antigravity)",
+        "antigravity-gemini-3.1-pro": {
+          "name": "Gemini 3.1 Pro (Antigravity)",
           "limit": {
             "context": 1048576,
             "output": 65535
@@ -168,8 +168,8 @@
             }
           }
         },
-        "antigravity-gemini-3-flash": {
-          "name": "Gemini 3 Flash (Antigravity)",
+        "antigravity-gemini-3.1-flash": {
+          "name": "Gemini 3.1 Flash (Antigravity)",
           "limit": {
             "context": 1048576,
             "output": 65536
@@ -199,8 +199,8 @@
             }
           }
         },
-        "antigravity-claude-sonnet-4-5": {
-          "name": "Claude Sonnet 4.5 (Antigravity)",
+        "antigravity-claude-sonnet-4-6": {
+          "name": "Claude Sonnet 4.6 (Antigravity)",
           "limit": {
             "context": 200000,
             "output": 64000
@@ -216,8 +216,8 @@
             ]
           }
         },
-        "antigravity-claude-sonnet-4-5-thinking": {
-          "name": "Claude Sonnet 4.5 Thinking (Antigravity)",
+        "antigravity-claude-sonnet-4-6-thinking": {
+          "name": "Claude Sonnet 4.6 Thinking (Antigravity)",
           "limit": {
             "context": 200000,
             "output": 64000
