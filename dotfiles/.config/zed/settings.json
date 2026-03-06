@@ -60,8 +60,8 @@
     },
   },
 
-  "features": {
-    "edit_prediction_provider": "zed",
+  "edit_predictions": {
+    "provider": "zed"
   },
 
   "telemetry": {

@@ -19,6 +19,8 @@ in
   features = lib.mkMerge [
     features.console
     features.develop
+
+    { build-essential.enable = true; }
     { fonts.enable = true; }
   ];
 
