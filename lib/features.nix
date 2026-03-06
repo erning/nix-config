@@ -20,7 +20,10 @@ let
     tmux.enable = lib.mkDefault true;
     neovim.enable = lib.mkDefault true;
 
-    build-essential.enable = lib.mkDefault true;
+    # macOS system tools or available via Xcode CLI tools
+    # or by system package manager
+    build-essential.enable = lib.mkDefault false;
+
     nix-support.enable = lib.mkDefault true;
     rustup.enable = lib.mkDefault true;
     zig.enable = lib.mkDefault true;
