@@ -15,6 +15,7 @@ in
 
   config = lib.mkIf cfg.enable {
     programs.yazi = lib.mkIf cfg.enable {
+      shellWrapperName = "y";
       enable = true;
       enableZshIntegration = true;
       enableFishIntegration = true;
