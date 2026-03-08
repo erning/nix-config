@@ -1,150 +1,76 @@
-# Repository Guidelines for AI Agents
+# PROJECT KNOWLEDGE BASE
 
-Personal NixOS/nix-darwin configuration repository using flakes for managing system and home configurations across multiple machines (macOS and Linux).
+**Generated:** 2026-03-09
+**Commit:** `0da9e16`
+**Branch:** `master`
 
-## Structure
+## OVERVIEW
+Personal NixOS and nix-darwin flake for one user across macOS, Linux, VMs, and home-manager-only hosts.
+Core architecture is builder-driven: `flake.nix` wires hosts through `lib/mkSystem.nix` and `lib/mkHome.nix`, then shared modules and host overrides do the rest.
 
-```
+## STRUCTURE
+```text
 nix-config/
-├── flake.nix       # Main flake - defines all system/home configurations
-├── lib/            # Utility functions (mkSystem, mkHome, features, scan-files)
-├── modules/        # Shared system modules
-├── home-manager/   # Home-manager configs (35+ feature modules)
-├── hosts/          # Host-specific configurations
-├── dev-shells/     # Reusable development environments
-├── dotfiles/       # Shared dotfiles (symlinked to ~/.dotfiles)
-└── overlays/       # Custom package overlays
+|- flake.nix              # all host and home entrypoints
+|- lib/                   # mkSystem, mkHome, feature presets, scan-files
+|- modules/               # shared system modules and overlays/secrets wiring
+|- home-manager/          # base HM config plus auto-imported features
+|- hosts/                 # per-host configuration.nix + home.nix pairs
+|- dev-shells/            # standalone dev shell flakes
+|- dotfiles/              # app configs referenced by feature modules
+`- overlays/              # custom overlays auto-loaded when present
 ```
 
-## Key Architecture Concepts
+## WHERE TO LOOK
+| Task | Location | Notes |
+|------|----------|-------|
+| Add or rename a host | `flake.nix`, `hosts/` | add both flake outputs and host files |
+| Change shared system behavior | `modules/` | imported by every `mkSystem` host |
+| Change shared user environment | `home-manager/home.nix`, `home-manager/features/` | features are auto-imported |
+| Adjust default feature bundles | `lib/features.nix` | presets are merged in host `home.nix` |
+| Change builder flow | `lib/mkSystem.nix`, `lib/mkHome.nix` | keep import order intact |
+| Update symlinked app config | `dotfiles/` plus owning feature module | paths in features must stay aligned |
 
-### Flake Inputs
-- **nixpkgs-stable/unstable**: Dual-track package sources
-- **nix-darwin-stable/unstable**: macOS system management
-- **home-manager-stable/unstable**: User environment management
-- **agenix**: Secrets management with age encryption
-- **secrets**: Private repository with encrypted secrets
+## CODE MAP
+| File | Role |
+|------|------|
+| `flake.nix` | root inventory of darwin, nixos, and home-manager configs |
+| `lib/mkSystem.nix` | imports `modules/system.nix` + `hosts/<host>/configuration.nix` |
+| `lib/mkHome.nix` | imports nixpkgs config, overlays, `home-manager/home.nix`, host home |
+| `lib/features.nix` | preset bundles like `base`, `develop`, `console`, `desktop` |
+| `lib/scan-files.nix` | dynamic loader for feature and overlay directories |
+| `modules/system.nix` | shared system module import order |
+| `home-manager/features/default.nix` | auto-import boundary for feature modules |
 
-### Configuration Flow
-1. `flake.nix` defines configs using `mkSystem` and `mkHome`
-2. `mkSystem` imports `modules/system.nix` + host `configuration.nix`
-3. `mkHome` imports `home-manager/home.nix` + host `home.nix`
-4. Features enabled via `features.<name>.enable = true`
+## CONVENTIONS
+- Nix formatting: 2-space indent, LF, UTF-8, final newline, trimmed trailing whitespace.
+- Naming: hosts and features are lowercase-hyphenated; local variables are camelCase.
+- Platform checks use `builtins.match ".*-darwin" ... != null`.
+- New feature files under `home-manager/features/` become available automatically through `lib/scan-files.nix`.
+- Host homes usually compose presets with `lib.mkMerge [ features.<preset> ... ]`.
 
-### Feature System
-Features in `home-manager/features/` are auto-imported via `scan-files.nix`. Each is a NixOS module with `enable` option.
+## ANTI-PATTERNS
+- Do not bypass `mkSystem` or `mkHome` when adding hosts; `flake.nix` should stay on the builder path.
+- Do not hand-maintain feature import lists inside `home-manager/features/`; the directory is scanned automatically.
+- Do not edit `hosts/*/hardware-configuration.nix` unless the task is explicitly hardware-generation work.
+- Do not move or rename files under `dotfiles/` without updating the feature modules that reference them.
+- Do not touch secret material, encrypted files, or private-key-like files unless the task explicitly requires it.
 
-**Feature Presets** (defined in `lib/features.nix`):
-- **base**: fish, bash, zsh, starship, eza, fzf, bat, vim, git, ssh
-- **develop**: base + tmux, neovim, rustup, python, go, nodejs, docker
-- **console**: base + tmux, neovim, nushell, zellij, zoxide, yazi
-- **desktop**: base + fonts, zed, ghostty, kitty, alacritty
+## UNIQUE STYLES
+- Shared abstractions are intentionally thin; most behavior lives in small Nix modules rather than large helper layers.
+- Presets in `lib/features.nix` use right-biased updates and `lib.mkDefault`, then hosts opt in with `lib.mkMerge`.
+- This repo mixes declarative Nix modules with out-of-store dotfile symlinks for tools like git and lazygit.
 
-```nix
-{ lib, inputs, ... }:
-let
-  features = import "${inputs.self}/lib/features.nix" { inherit lib; };
-in
-{
-  features = lib.mkMerge [
-    features.develop
-    features.desktop
-  ];
-}
-```
-
-Uses [agenix](https://github.com/ryantm/agenix) with age encryption. Secrets in private `nix-secrets` repo.
-
-## Coding Style
-
-### Nix Formatting
-- **Indentation**: 2 spaces
-- **Line endings**: LF with final newline
-- **Charset**: UTF-8
-- **Trailing whitespace**: Trimmed
-
-### Naming Conventions
-- **Hosts**: lowercase, hyphenated (dragon, vm-aarch64)
-- **Features**: lowercase, hyphenated (build-essential, nix-support)
-- **Variables**: camelCase (isDarwin, rootDir, settings)
-- **Packages**: lowercase with hyphens
-
-### Common Patterns
-
-**Platform detection**:
-```nix
-isDarwin = builtins.match ".*-darwin" settings.system != null;
-```
-
-**Feature module template**:
-```nix
-{ config, lib, pkgs, ... }:
-{
-  options.features.<name>.enable = lib.mkEnableOption "<description>";
-
-  config = lib.mkIf config.features.<name>.enable {
-    home.packages = with pkgs; [ ... ];
-    programs.<name> = { ... };
-  };
-}
-```
-
-## Build Commands
-
-```bash
-# macOS (nix-darwin)
-darwin-rebuild switch --flake .#dragon
-
-# NixOS
-nixos-rebuild switch --flake .#phoenix
-
-# Home Manager (standalone)
-nix run home-manager -- switch --flake .#erning@dragon
-
-# Development
-nix develop              # Enter dev shell
-nix flake update         # Update inputs
-nix flake check          # Validate flake
-
-# Dry run
-darwin-rebuild dry-build --flake .#dragon
-nixos-rebuild dry-build --flake .#phoenix
-```
-
-## Testing & Validation
-
+## COMMANDS
 ```bash
 nix flake check
-darwin-rebuild dry-build --flake .#<host>
-nixos-rebuild dry-build --flake .#<host>
+darwin-rebuild dry-build --flake .#dragon
+nixos-rebuild dry-build --flake .#phoenix
+nix run home-manager -- switch --flake .#erning@dragon
 ```
 
-**Before committing**: Run `nix flake check`, test build on at least one target platform, verify home-manager activation if features changed.
-
-## Commit Message Style
-
-Present tense imperative ("add", "update", "fix", "remove"). Format: `<action> <scope>: <description>`
-
-Examples: `add feature: kotlin development support`, `update flake inputs`, `fix ssh config for phoenix host`
-
-## Common Tasks
-
-### Adding a New Feature
-Create `home-manager/features/<name>.nix` following feature module template, optionally add to preset in `lib/features.nix`, enable in host's `home.nix`.
-
-### Adding a New Host
-Create `hosts/<hostname>/configuration.nix` and `hosts/<hostname>/home.nix`, add entries to `flake.nix` using `mkSystem` and `mkHome`.
-
-### Updating Packages
-```bash
-nix flake update                    # Update all inputs
-nix flake lock --update-input nixpkgs-unstable  # Update specific input
-```
-
-## Notes
-
-- **No CI/CD**: Lacks automated testing or CI workflows
-- **Manual validation**: Always run `nix flake check` and dry-build before switching
-- **Custom builders**: Use `mkSystem` and `mkHome` in `flake.nix` for new hosts
-- **Feature auto-import**: New features in `home-manager/features/` automatically available
-- **Deviation**: `hosts/orbstack/configuration.nix` imports external system config
+## NOTES
+- `hosts/orbstack/configuration.nix` is a special case that imports `/etc/nixos/configuration.nix`.
+- `pomelo` is home-manager-only; it has no system `configuration.nix`.
+- `lib/README.md` and `modules/README.md` are already detailed; prefer those over creating more child guidance there.
+- Child `AGENTS.md` files should contain only subtree-specific rules, not copies of this root file.
