@@ -1,205 +1,49 @@
 # Dotfiles
 
-Shared configuration files managed via home-manager and symlinked to `~/.dotfiles`.
+Tracked application configs that are referenced by home-manager modules and usually exposed at `~/.dotfiles` for direct editing.
 
-## Purpose
+## What Lives Here
 
-This directory contains all user-level configuration files (dotfiles) that are:
+- `dotfiles/.config/` - XDG-style app configs such as git, lazygit, terminals, editors, and opencode.
+- `dotfiles/.local/` - local scripts or data exposed through home-manager.
+- top-level files like `.npmrc` when an app expects them outside `.config/`.
 
-1. **Managed by Nix**: Files are referenced in home-manager configurations
-2. **Symlinked for editing**: Accessible at `~/.dotfiles` for direct editing
-3. **Applied on activation**: Home-manager creates symlinks on each switch
+## How This Repo Uses Them
 
-## Directory Structure
+- Many feature modules use `config.lib.file.mkOutOfStoreSymlink` so edits in `~/.dotfiles` take effect on the next home-manager activation.
+- Some files are sourced directly from the repo with `xdg.configFile` or `home.file`.
+- The owning feature module is the source of truth for where a dotfile is mounted.
 
-```
-dotfiles/
-├── .config/                      # XDG configuration directory
-│   ├── alacritty/                # Alacritty terminal config
-│   ├── git/                      # Git configuration
-│   │   ├── config                # Main git config
-│   │   ├── darwin.gitconfig      # macOS-specific git settings
-│   │   └── catppuccin.gitconfig  # Color theme
-│   ├── lazygit/                  # Lazygit TUI config
-│   ├── nvim-lazyvim/             # LazyVim neovim configuration
-│   │   ├── init.lua              # Main entry point
-│   │   ├── lua/                  # Lua modules (options, keymaps, plugins)
-│   │   └── .editorconfig         # Editor settings
-│   ├── opencode/                 # Custom application configs
-│   ├── vim/                      # Vim configuration
-│   │   └── vimrc                 # Vim config file
-│   └── zed/                      # Zed editor settings
-├── .local/                       # Local data directory
-│   └── bin/                      # Custom shell scripts
-└── .npmrc                        # NPM configuration
-```
+Representative paths:
 
-## Symlink Mechanism
+- `dotfiles/.config/git/`
+- `dotfiles/.config/lazygit/`
+- `dotfiles/.config/nvim-lazyvim/`
+- `dotfiles/.config/opencode/`
+- `dotfiles/.config/zed/`
 
-The entire `dotfiles/` directory is symlinked to `~/.dotfiles`:
+## Common Workflow
 
-```bash
-ln -s "$(pwd)/dotfiles" ~/.dotfiles
-```
+1. Add or edit the file under `dotfiles/`.
+2. Wire or update the corresponding `xdg.configFile` / `home.file` entry in a feature module or host `home.nix`.
+3. Run the relevant home-manager or system activation command.
 
-This allows you to:
-
-- **Edit files directly**: `vim ~/.dotfiles/.config/git/config`
-- **Track changes easily**: All changes are in this directory
-- **Avoid rebuilding**: Edit files here, then `home-manager switch` to apply
-
-## How Files Are Managed
-
-### XDG Config Files (`xdg.configFile`)
-
-Configuration files in `~/.config/` are managed via `xdg.configFile`:
+Example:
 
 ```nix
-# In home-manager configuration
-xdg.configFile = {
-  "git/config".source = symlink ".config/git/config";
-  "lazygit/config.yml".source = symlink ".config/lazygit/config.yml";
-};
+xdg.configFile."git/config".source =
+  config.lib.file.mkOutOfStoreSymlink
+    "${config.home.homeDirectory}/.dotfiles/.config/git/config";
 ```
 
-This creates:
-- Symlink from `~/.config/git/config` → `~/.dotfiles/.config/git/config`
-- Symlink from `~/.config/lazygit/config.yml` → `~/.dotfiles/.config/lazygit/config.yml`
+## Keep in Mind
 
-### Home Files (`home.file`)
+- Do not rename or move dotfiles without updating the feature module that references them.
+- Treat secret-like material carefully; some files in this tree are not ordinary public config.
+- Platform-specific variants belong next to the app config when that pattern already exists, such as `dotfiles/.config/git/darwin.gitconfig`.
 
-Files in home directory (`~/.xxx`) are managed via `home.file`:
+## Related Docs
 
-```nix
-home.file.".local/bin/script" = {
-  source = "${inputs.self}/dotfiles/.local/bin/script";
-  executable = true;
-};
-```
-
-This creates:
-- Symlink from `~/.local/bin/script` → `/nix/store/...-script`
-
-## Managing Dotfiles
-
-### Adding New Configuration
-
-1. Place file in `dotfiles/` following XDG structure:
-
-```bash
-# For a new app called "myapp"
-mkdir -p dotfiles/.config/myapp
-vim dotfiles/.config/myapp/config.yaml
-```
-
-2. Add to host configuration:
-
-```nix
-# In hosts/<host>/home.nix or a feature module
-{
-  xdg.configFile."myapp/config.yaml".source =
-    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/.config/myapp/config.yaml";
-}
-```
-
-3. Apply changes:
-
-```bash
-home-manager switch --flake .#<user>@<host>
-```
-
-### Editing Existing Configs
-
-Simply edit the file in `~/.dotfiles/`:
-
-```bash
-# Edit git config
-vim ~/.dotfiles/.config/git/config
-
-# Edit neovim config
-vim ~/.dotfiles/.config/nvim-lazyvim/lua/config/options.lua
-```
-
-Then apply changes:
-
-```bash
-home-manager switch --flake .#<user>@<host>
-```
-
-### Removing a Dotfile
-
-1. Remove file from `dotfiles/`:
-```bash
-rm ~/.dotfiles/.config/old-app/config
-```
-
-2. Remove from home-manager configuration:
-```nix
-# Remove the xdg.configFile or home.file entry
-```
-
-3. Apply changes:
-```bash
-home-manager switch --flake .#<user>@<host>
-```
-
-## Managed Configurations
-
-### Editor Configurations
-
-#### Neovim (LazyVim)
-- **Location**: `.config/nvim-lazyvim/`
-- **Structure**: Modular Lua configuration
-  - `init.lua`: Entry point
-  - `lua/config/`: Options, keymaps, autocmds
-  - `lua/plugins/`: Plugin configurations
-- **Features**: Lazy plugin management, custom keybindings, LSP setup
-
-#### Vim
-- **Location**: `.config/vim/vimrc`
-- **Purpose**: Fallback editor for systems without neovim
-
-#### Zed
-- **Location**: `.config/zed/settings.json`
-- **Purpose**: Modern editor configuration
-
-### Terminal Configurations
-
-#### Alacritty
-- **Location**: `.config/alacritty/alacritty.toml`
-- **Purpose**: GPU-accelerated terminal emulator settings
-
-### Version Control
-
-#### Git
-- **Location**: `.config/git/`
-- **Files**:
-  - `config`: Main git configuration
-  - `darwin.gitconfig`: macOS-specific settings (credential helper)
-  - `catppuccin.gitconfig`: Color theme
-- **Tools**:
-  - [git-lfs](https://git-lfs.github.com/): Large file storage
-  - [git-crypt](https://github.com/AGWA/git-crypt): Encrypted files
-  - [delta](https://github.com/dandavison/delta): Better diffs
-  - [lazygit](https://github.com/jesseduffield/lazygit): Terminal UI
-
-#### Lazygit
-- **Location**: `.config/lazygit/config.yml`
-- **Purpose**: Terminal UI for git operations
-
-### Development Tools
-
-#### NPM
-- **Location**: `.npmrc`
-- **Purpose**: Node.js package manager configuration
-
-## Notes
-
-- **Out of Store Symlinks**: Many configs use `mkOutOfStoreSymlink` to allow direct editing
-- **Host-Specific**: Some configs have platform-specific variants (e.g., `darwin.gitconfig`)
-- **EditorConfig**: `.editorconfig` files enforce consistent settings across editors
-
-## Related Documentation
-
-- [Home Manager XDG Base Directories](https://nix-community.github.io/home-manager/options.html#opt-xdg.configfile)
-- [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
+- `README.md` - repo entry point
+- `AGENTS.md` - repo-wide rules
+- `home-manager/features/AGENTS.md` - feature-module guidance

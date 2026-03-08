@@ -1,140 +1,42 @@
 # Host Configurations
 
-Host-specific system and home-manager configurations.
+Human-facing reference for the machines under `hosts/`.
+For subtree-specific editing rules and exceptions, see `hosts/AGENTS.md`.
 
-## Purpose
+## Host Inventory
 
-Each host has its own configuration directory containing:
-- **configuration.nix**: System-level configuration (NixOS or nix-darwin)
-- **home.nix**: User-level configuration (home-manager)
+| Host | System | Hardware | Role |
+|------|--------|----------|------|
+| `dragon` | `aarch64-darwin` | MacBook Pro 16" 2021 | primary macOS workstation |
+| `dinosaur` | `x86_64-darwin` | MacBook Pro 16" 2019 | Intel macOS workstation |
+| `phoenix` | `x86_64-linux` | MacBook Pro 17" 2010 | NixOS laptop |
+| `pomelo` | `x86_64-linux` | MacBook Air 13" 2019 | Fedora + home-manager only |
+| `pterosaur` | `x86_64-darwin` | MacBook Pro 15" 2016 | Intel macOS workstation |
+| `mango` | `x86_64-darwin` | MacBook 12" 2015 | lightweight macOS host |
+| `orbstack` | `aarch64-linux` | OrbStack VM | NixOS VM using external `/etc/nixos/configuration.nix` |
+| `vmfusion` | `aarch64-linux` | VMware Fusion VM | NixOS VM |
 
-## Host Overview
+## Common Files
 
-| Host | System | Hardware | OS |
-|-------|--------|----------|-----|
-| **dragon** | aarch64-darwin | MacBook Pro 16" 2021 | macOS (nix-darwin) |
-| **dinosaur** | x86_64-darwin | MacBook Pro 16" 2019 | macOS (nix-darwin) |
-| **phoenix** | x86_64-linux | MacBook Pro 17" 2010 | NixOS |
-| **pomelo** | x86_64-linux | MacBook Air 13" 2019 | Fedora + home-manager |
-| **pterosaur** | x86_64-darwin | MacBook Pro 15" 2016 | macOS (nix-darwin) |
-| **mango** | x86_64-darwin | MacBook 12" 2015 | macOS (nix-darwin) |
-| **orbstack** | aarch64-linux | OrbStack VM | NixOS |
-| **vmfusion** | aarch64-linux | VMware Fusion VM | NixOS |
-
-## Configuration Files
-
-### configuration.nix
-
-System-level configuration for NixOS or nix-darwin hosts.
-
-#### Common Content
-
-```nix
-{
-  system.primaryUser = "erning";  # Set primary user
-
-  # Additional system settings can go here
-  # These are merged with modules/system.nix
-}
-```
-
-#### Special Cases
-
-**pomelo**: Does not have `configuration.nix` - uses home-manager only on Fedora
-
-**orbstack**: Imports external system config:
-```nix
-# hosts/orbstack/configuration.nix
-{
-  imports = [
-    /etc/nixos/configuration.nix  # Import host system config
-  ];
-}
-```
-This is a deviation from the standard pattern - used when transitioning existing NixOS installations.
-
-### home.nix
-
-User-level configuration managed by home-manager.
-
-#### Common Pattern
-
-```nix
-{ lib, inputs, ... }:
-
-let
-  features = import "${inputs.self}/lib/features.nix" { inherit lib; };
-
-  # SSH key helper (optional)
-  ssh-key = (import "${inputs.self}/lib/ssh-key.nix" { inherit config inputs; }) settings.host;
-
-in
-{
-  # Import SSH keys from secrets
-  imports = [
-    (ssh-key "id_ed25519")
-  ];
-
-  # Set age identity paths for secret decryption
-  age.identityPaths = [
-    "${config.home.homeDirectory}/.config/age/keys.txt"
-  ];
-
-  # Enable features using presets or individually
-  features = lib.mkMerge [
-    features.develop
-    features.desktop
-  ];
-}
-```
-
-#### Adding Host-Specific Settings
-
-Hosts can override or add settings:
-
-```nix
-{
-  # Enable a feature not in preset
-  features.custom-tool.enable = true;
-
-  # Add host-specific packages
-  home.packages = with pkgs; [
-    host-specific-tool
-  ];
-
-  # Override shell aliases for this host
-  programs.fish.shellAliases.la = "ls -lah";
-}
-```
+- `hosts/<name>/configuration.nix`: system-level overrides merged into the shared module stack.
+- `hosts/<name>/home.nix`: host-specific home-manager feature selection, packages, and user overrides.
+- `hosts/<name>/hardware-configuration.nix`: generated NixOS hardware file present only on some Linux hosts.
 
 ## Adding a New Host
 
-### 1. Create Host Directory
+1. Create `hosts/<hostname>/`.
+2. Add `configuration.nix` if the machine is managed by NixOS or nix-darwin.
+3. Add `home.nix` for the user environment.
+4. Register both outputs in `flake.nix` using `mkSystem` and `mkHome`.
+5. Dry-build before switching.
 
-```bash
-mkdir -p hosts/<hostname>
-```
-
-### 2. Create System Configuration
-
-Create `hosts/<hostname>/configuration.nix`:
-
-```nix
-{
-  system.primaryUser = "erning";
-}
-```
-
-### 3. Create Home Configuration
-
-Create `hosts/<hostname>/home.nix`:
+Minimal `home.nix`:
 
 ```nix
 { lib, inputs, ... }:
 
 let
   features = import "${inputs.self}/lib/features.nix" { inherit lib; };
-
 in
 {
   features = lib.mkMerge [
@@ -143,120 +45,66 @@ in
 }
 ```
 
-### 4. Add to Flake
-
-Add entries to `flake.nix`:
+Typical `flake.nix` wiring:
 
 ```nix
-{
-  outputs = { self, nixpkgs, nix-darwin, home-manager, ... } @ inputs: {
-    darwinConfigurations.<hostname> = mkSystem {
-      host = "<hostname>";
-      system = "aarch64-darwin";  # or x86_64-darwin
-    };
+darwinConfigurations.<hostname> = mkSystem {
+  host = "<hostname>";
+  system = "aarch64-darwin";
+};
 
-    homeConfigurations."erning@<hostname>" = mkHome {
-      user = "erning";
-      host = "<hostname>";
-      system = "aarch64-darwin";
-    };
-  };
-}
+homeConfigurations."erning@<hostname>" = mkHome {
+  user = "erning";
+  host = "<hostname>";
+  system = "aarch64-darwin";
+};
 ```
 
-### 5. Test and Apply
+## Validation
 
 ```bash
-# Dry run to check for errors
-darwin-rebuild dry-build --flake .#<hostname>
-# or
-nixos-rebuild dry-build --flake .#<hostname>
-
-# Apply configuration
-darwin-rebuild switch --flake .#<hostname>
-# or
-nixos-rebuild switch --flake .#<hostname>
-```
-
-## Host Configuration Patterns
-
-### Desktop Hosts (dragon, dinosaur, pterosaur, mango)
-- Use `features.develop` + `features.desktop`
-- Include GUI applications (zed, ghostty, kitty, alacritty)
-- Full desktop environment setup
-
-### Server/VM Hosts (phoenix, orbstack, vmfusion)
-- May use `features.console` for terminal-focused environment
-- Lighter configuration without GUI apps
-- May include SSH-accessible settings
-
-### Home-Manager Only (pomelo)
-- Fedora distribution with home-manager managing user environment only
-- System packages managed by Fedora package manager
-- User environment managed by home-manager
-
-## Host-Specific Considerations
-
-### macOS Hosts
-- Trackpad gestures configured in `modules/darwin.nix`
-- Dock auto-hide enabled
-- Caps Lock remapped to Control
-- Homebrew paths in `home-manager/darwin.nix`
-
-### NixOS Hosts
-- Firewall can be enabled in `modules/nixos.nix`
-- NetworkManager for network configuration
-- SSH security settings (PasswordAuthentication, PermitRootLogin)
-
-### VM Hosts
-- orbstack and vmfusion are identical configurations
-- Can be reused for different virtualization platforms
-
-## Testing Host Changes
-
-Always test changes before applying:
-
-```bash
-# For macOS
+# macOS hosts
 darwin-rebuild dry-build --flake .#<hostname>
 
-# For NixOS
+# NixOS hosts
 nixos-rebuild dry-build --flake .#<hostname>
 
-# For home-manager only
+# home-manager-only hosts
 home-manager switch --flake .#erning@<hostname> --dry-run
 ```
 
+## Practical Notes
+
+- Desktop Darwin hosts usually combine `features.develop` and `features.desktop`.
+- Linux and VM hosts usually combine `features.console` with targeted additions.
+- `pomelo` is the home-manager-only host; validate it with the home-manager dry run rather than a system rebuild.
+- `orbstack` is intentionally unusual: it imports `/etc/nixos/configuration.nix`, so evaluation depends on that external file existing on the machine running the command.
+- Flake output names do not always match directory names: `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion`.
+
 ## Troubleshooting
 
-### Host Not Found in Flake
+### Host not found in flake
 
-**Error**: `error: flake 'git+file://...#<hostname>' does not provide attribute`
+If `.#<hostname>` or `.#erning@<hostname>` is missing, confirm the matching outputs were added in `flake.nix`.
 
-**Solution**: Ensure host is added to `flake.nix` outputs.
+### Configuration not taking effect
 
-### Configuration Not Applied
+1. Run `nix flake check` if the target host supports pure evaluation.
+2. Run the host-appropriate dry build.
+3. Re-run the switch command after the dry build succeeds.
 
-**Error**: Changes to `home.nix` not taking effect
+### Platform mismatch
 
-**Solution**:
-1. Verify syntax: `nix flake check`
-2. Rebuild: `darwin-rebuild switch --flake .#<hostname>`
-3. Check home-manager activation: `home-manager switch --flake .#erning@<hostname>`
+Double-check the `system` string in `flake.nix`:
 
-### Platform Mismatch
-
-**Error**: System platform doesn't match configuration
-
-**Solution**: Ensure `system` parameter in `flake.nix` matches actual platform:
-- macOS ARM: `aarch64-darwin`
+- macOS Apple Silicon: `aarch64-darwin`
 - macOS Intel: `x86_64-darwin`
-- Linux ARM: `aarch64-linux`
+- Linux Apple Silicon VM: `aarch64-linux`
 - Linux Intel: `x86_64-linux`
 
 ## Related Documentation
 
-- [lib/mkSystem.md](../lib/README.md#mksystemnix) - System builder
-- [lib/mkHome.md](../lib/README.md#mkhomenix) - Home builder
-- [modules/README.md](../modules/README.md) - System modules
+- `hosts/AGENTS.md` - subtree-specific editing rules
+- `lib/README.md` - `mkSystem` and `mkHome` details
+- `modules/README.md` - shared system module behavior
 - [Home Manager Manual](https://nix-community.github.io/home-manager/)

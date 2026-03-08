@@ -13,7 +13,7 @@ in
     "$HOME/.local/bin"
   ];
 
-  home.stateVersion = "25.05"; # Please read the comment before changing.
+  home.stateVersion = "26.05"; # Please read the comment before changing.
   programs.home-manager.enable = true;
 
   #
