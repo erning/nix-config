@@ -26,6 +26,17 @@
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
+    # pinned for legacy macOS (Monterey, Big Sur 11.3+)
+    nixpkgs-2505.url = "github:nixos/nixpkgs/nixos-25.05";
+    nix-darwin-2505 = {
+      url = "github:lnl7/nix-darwin/nix-darwin-25.05";
+      inputs.nixpkgs.follows = "nixpkgs-2505";
+    };
+    home-manager-2505 = {
+      url = "github:nix-community/home-manager/release-25.05";
+      inputs.nixpkgs.follows = "nixpkgs-2505";
+    };
+
     # unstable
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     # nixpkgs-unstable.url = "github:nixos/nixpkgs/master";
@@ -56,6 +67,17 @@
 
       mkSystem = import ./lib/mkSystem.nix { inherit nixpkgs nix-darwin inputs; };
       mkHome = import ./lib/mkHome.nix { inherit nixpkgs home-manager inputs; };
+
+      mkSystem-2505 = import ./lib/mkSystem.nix {
+        nixpkgs = inputs.nixpkgs-2505;
+        nix-darwin = inputs.nix-darwin-2505;
+        inherit inputs;
+      };
+      mkHome-2505 = import ./lib/mkHome.nix {
+        nixpkgs = inputs.nixpkgs-2505;
+        home-manager = inputs.home-manager-2505;
+        inherit inputs;
+      };
     in
     {
       #
@@ -117,12 +139,12 @@
       # MacBookPro13,3 (15-inch, 2016)
       #
       # macOS (Monterey - 12.7.6) + nix-darwin + home-manager
-      darwinConfigurations."pterosaur" = mkSystem {
+      darwinConfigurations."pterosaur" = mkSystem-2505 {
         host = "pterosaur";
         system = "x86_64-darwin";
       };
 
-      homeConfigurations."erning@pterosaur" = mkHome {
+      homeConfigurations."erning@pterosaur" = mkHome-2505 {
         user = "erning";
         host = "pterosaur";
         system = "x86_64-darwin";
@@ -132,12 +154,12 @@
       # MacBook8,1 (Retina, 12-inch, Early 2015)
       #
       # macOS (Big Sur - 11.7.10) + nix-darwin + home-manager
-      darwinConfigurations."mango" = mkSystem {
+      darwinConfigurations."mango" = mkSystem-2505 {
         host = "mango";
         system = "x86_64-darwin";
       };
 
-      homeConfigurations."erning@mango" = mkHome {
+      homeConfigurations."erning@mango" = mkHome-2505 {
         user = "erning";
         host = "mango";
         system = "x86_64-darwin";

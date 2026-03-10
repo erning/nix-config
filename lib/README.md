@@ -52,6 +52,22 @@ nixosConfigurations.phoenix = mkSystem {
 };
 ```
 
+### Pinned Builder Variant
+Legacy macOS hosts that cannot run nixpkgs-unstable use a pinned variant:
+```nix
+mkSystem-2505 = import ./lib/mkSystem.nix {
+  nixpkgs = inputs.nixpkgs-2505;
+  nix-darwin = inputs.nix-darwin-2505;
+  inherit inputs;
+};
+
+darwinConfigurations."pterosaur" = mkSystem-2505 {
+  host = "pterosaur";
+  system = "x86_64-darwin";
+};
+```
+The same `mkSystem.nix` is reused — only the nixpkgs and nix-darwin inputs differ.
+
 ---
 
 ## mkHome.nix
@@ -109,6 +125,37 @@ homeConfigurations."erning@phoenix" = mkHome {
   system = "x86_64-linux";
 };
 ```
+
+### Pinned Builder Variant
+Same pattern as mkSystem — legacy macOS hosts use a pinned variant:
+```nix
+mkHome-2505 = import ./lib/mkHome.nix {
+  nixpkgs = inputs.nixpkgs-2505;
+  home-manager = inputs.home-manager-2505;
+  inherit inputs;
+};
+
+homeConfigurations."erning@pterosaur" = mkHome-2505 {
+  user = "erning";
+  host = "pterosaur";
+  system = "x86_64-darwin";
+};
+```
+
+### Compatibility Guards in Feature Modules
+Because pinned home-manager versions may lack newer options, feature modules should guard version-specific options:
+```nix
+# Check if an option exists before setting it
+programs.go.env = lib.mkIf (options.programs.go ? env) {
+  GOPATH = ".go";
+};
+
+# Or use optionalAttrs for attribute-set merging
+programs.ssh = { ... } // lib.optionalAttrs (options.programs.ssh ? enableDefaultConfig) {
+  enableDefaultConfig = false;
+};
+```
+This pattern uses `options ? attr` to test whether the option is defined in the current home-manager version.
 
 ---
 
