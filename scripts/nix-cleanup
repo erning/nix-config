@@ -1,0 +1,151 @@
+#!/bin/sh
+set -eu
+
+# nix-cleanup — comprehensive Nix garbage collection
+# Usage: nix-cleanup [--days N] [--dry-run] [--optimize] [--store-size] [--help]
+
+DAYS=30
+DRY_RUN=0
+OPTIMIZE=0
+SHOW_STORE_SIZE=0
+HAS_SYSTEM_PROFILE=0
+
+usage() {
+  cat <<'EOF'
+Usage: nix-cleanup [OPTIONS]
+
+Remove old Nix generations, collect garbage, and optimise the store.
+
+Options:
+  -d, --days N       Retention period in days (default: 30)
+  -n, --dry-run      Show what would be done without executing
+      --optimize     Run "nix store optimise" (slow, off by default)
+      --store-size   Show /nix/store size before and after (slow on large stores)
+  -h, --help         Show this help message
+EOF
+}
+
+warn() {
+  printf 'warning: %s\n' "$*" >&2
+}
+
+info() {
+  printf ':: %s\n' "$*"
+}
+
+# Print and execute a command; in dry-run mode just print it.
+run() {
+  if [ "$DRY_RUN" -eq 1 ]; then
+    printf '[dry-run] %s\n' "$*"
+  else
+    printf '> %s\n' "$*"
+    "$@" || warn "command failed: $*"
+  fi
+}
+
+store_size() {
+  if [ -d /nix/store ]; then
+    du -sh /nix/store 2>/dev/null | cut -f1
+  else
+    echo "unknown"
+  fi
+}
+
+# ── Parse arguments ──────────────────────────────────────────────────
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -d|--days)
+      [ $# -ge 2 ] || { warn "--days requires an argument"; exit 1; }
+      DAYS="$2"; shift 2 ;;
+    -n|--dry-run)
+      DRY_RUN=1; shift ;;
+    --optimize)
+      OPTIMIZE=1; shift ;;
+    --store-size)
+      SHOW_STORE_SIZE=1; shift ;;
+    -h|--help)
+      usage; exit 0 ;;
+    *)
+      warn "unknown option: $1"; usage >&2; exit 1 ;;
+  esac
+done
+
+# ── Platform detection ───────────────────────────────────────────────
+[ -e /nix/var/nix/profiles/system ] && HAS_SYSTEM_PROFILE=1
+
+if [ "$HAS_SYSTEM_PROFILE" -eq 1 ]; then
+  info "System profile detected — sudo will be used for system operations"
+fi
+
+# ── Pre-flight ───────────────────────────────────────────────────────
+if [ "$SHOW_STORE_SIZE" -eq 1 ]; then
+  SIZE_BEFORE=$(store_size)
+  info "Store size before: $SIZE_BEFORE"
+fi
+info "Retention: ${DAYS} days"
+[ "$DRY_RUN" -eq 1 ] && info "Dry-run mode enabled"
+echo
+
+# ── 1. Home-manager generations ──────────────────────────────────────
+if command -v home-manager >/dev/null 2>&1; then
+  info "Expiring home-manager generations older than ${DAYS} days"
+  run home-manager expire-generations "-${DAYS} days"
+else
+  info "home-manager not found, skipping"
+fi
+echo
+
+# ── 2. User profile generations ─────────────────────────────────────
+info "Deleting user profile generations older than ${DAYS} days"
+run nix-env --delete-generations "+${DAYS}d"
+echo
+
+# ── 3. System profile generations (conditional) ─────────────────────
+if [ "$HAS_SYSTEM_PROFILE" -eq 1 ]; then
+  info "Deleting system profile generations older than ${DAYS} days"
+  run sudo nix-env --delete-generations "+${DAYS}d" -p /nix/var/nix/profiles/system
+  echo
+fi
+
+# ── 4. Garbage collection ───────────────────────────────────────────
+info "Running garbage collection (user)"
+run nix-collect-garbage
+echo
+
+if [ "$HAS_SYSTEM_PROFILE" -eq 1 ]; then
+  info "Running garbage collection (system)"
+  run sudo nix-collect-garbage
+  echo
+fi
+
+# ── 5. Evaluation cache cleanup ─────────────────────────────────────
+CACHE_DIR="${HOME}/.cache/nix"
+if [ -d "$CACHE_DIR" ]; then
+  info "Removing evaluation/fetcher caches older than 90 days"
+  if [ "$DRY_RUN" -eq 1 ]; then
+    find "$CACHE_DIR" -maxdepth 1 \( -name 'eval-cache-*' -o -name 'fetcher-cache-*' \) -mtime +90 -print \
+      | while read -r f; do printf '[dry-run] rm -rf %s\n' "$f"; done
+  else
+    find "$CACHE_DIR" -maxdepth 1 \( -name 'eval-cache-*' -o -name 'fetcher-cache-*' \) -mtime +90 -print -exec rm -rf {} +
+  fi
+else
+  info "No nix cache directory found, skipping"
+fi
+echo
+
+# ── 6. Store optimization ───────────────────────────────────────────
+if [ "$OPTIMIZE" -eq 1 ]; then
+  info "Optimising the Nix store (this may take a while)"
+  run nix store optimise
+else
+  info "Store optimisation skipped (use --optimize to enable)"
+fi
+echo
+
+# ── Post-flight ──────────────────────────────────────────────────────
+if [ "$SHOW_STORE_SIZE" -eq 1 ]; then
+  SIZE_AFTER=$(store_size)
+  info "Store size before: $SIZE_BEFORE"
+  info "Store size after:  $SIZE_AFTER"
+fi
+info "Done."
