@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  options,
   ...
 }:
 
@@ -16,6 +17,8 @@ in
       go
     ];
     programs.go.enable = true;
-    programs.go.env.GOPATH = ".go";
+    programs.go.env = lib.mkIf (options.programs.go ? env) {
+      GOPATH = ".go";
+    };
   };
 }
