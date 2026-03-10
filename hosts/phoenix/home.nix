@@ -22,6 +22,7 @@ in
 
     { build-essential.enable = true; }
     { fonts.enable = true; }
+    { nushell.enable = false; }
   ];
 
   home.packages = with pkgs; [
