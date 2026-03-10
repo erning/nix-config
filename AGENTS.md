@@ -34,9 +34,9 @@ nix-config/
 ## CODE MAP
 | File | Role |
 |------|------|
-| `flake.nix` | root inventory of darwin, nixos, and home-manager configs |
-| `lib/mkSystem.nix` | imports `modules/system.nix` + `hosts/<host>/configuration.nix` |
-| `lib/mkHome.nix` | imports nixpkgs config, overlays, `home-manager/home.nix`, host home |
+| `flake.nix` | root inventory of darwin, nixos, and home-manager configs; pins legacy macOS hosts to nixpkgs-2505 |
+| `lib/mkSystem.nix` | imports `modules/system.nix` + `hosts/<host>/configuration.nix`; reused by pinned builders |
+| `lib/mkHome.nix` | imports nixpkgs config, overlays, `home-manager/home.nix`, host home; reused by pinned builders |
 | `lib/features.nix` | preset bundles like `base`, `develop`, `console`, `desktop` |
 | `lib/scan-files.nix` | dynamic loader for feature and overlay directories |
 | `modules/system.nix` | shared system module import order |
@@ -48,6 +48,8 @@ nix-config/
 - Platform checks use `builtins.match ".*-darwin" ... != null`.
 - New feature files under `home-manager/features/` become available automatically through `lib/scan-files.nix`.
 - Host homes usually compose presets with `lib.mkMerge [ features.<preset> ... ]`.
+- Legacy macOS hosts (`pterosaur`, `mango`) use pinned `mkSystem-2505`/`mkHome-2505` builders backed by nixpkgs-25.05 inputs.
+- Feature modules that use options not present in all home-manager versions must guard them with `lib.optionalAttrs (options.path ? attr) { ... }` so the attribute path is absent entirely when the option does not exist; `lib.mkIf` only wraps the value and still exposes the path to the module system (see `go.nix`).
 
 ## ANTI-PATTERNS
 - Do not bypass `mkSystem` or `mkHome` when adding hosts; `flake.nix` should stay on the builder path.
@@ -72,5 +74,6 @@ nix run home-manager -- switch --flake .#erning@dragon
 ## NOTES
 - `hosts/orbstack/configuration.nix` is a special case that imports `/etc/nixos/configuration.nix`.
 - `pomelo` is home-manager-only; it has no system `configuration.nix`.
+- `pterosaur` (macOS Monterey 12.7.6) and `mango` (macOS Big Sur 11.7.10) are pinned to nixpkgs-25.05 / nix-darwin-25.05 / home-manager-25.05 because nixpkgs-unstable requires macOS Sonoma 14.0+.
 - `lib/README.md` and `modules/README.md` are already detailed; prefer those over creating more child guidance there.
 - Child `AGENTS.md` files should contain only subtree-specific rules, not copies of this root file.

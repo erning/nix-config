@@ -15,6 +15,8 @@ in
     (ssh-key "id_ed25519")
   ];
 
+  home.stateVersion = "25.05";
+
   features = lib.mkMerge [
     features.console
     features.desktop

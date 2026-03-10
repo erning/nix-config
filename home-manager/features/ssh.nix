@@ -2,6 +2,7 @@
   config,
   lib,
   settings,
+  options,
   ...
 }:
 
@@ -17,7 +18,6 @@ in
   config = lib.mkIf cfg.enable {
     programs.ssh = {
       enable = true;
-      enableDefaultConfig = false;
       matchBlocks."*" = { };
 
       includes = [
@@ -30,6 +30,8 @@ in
         NoHostAuthenticationForLocalhost yes
         StrictHostKeyChecking no
       '';
+    } // lib.optionalAttrs (options.programs.ssh ? enableDefaultConfig) {
+      enableDefaultConfig = false;
     };
 
     home.file.".ssh/authorized_keys".source = symlink ".ssh/authorized_keys";
