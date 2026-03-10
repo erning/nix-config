@@ -21,6 +21,6 @@ in
     features.console
     features.desktop
     features.develop
-    { zig.enable = false; }
+    { nushell.enable = false; }
   ];
 }
