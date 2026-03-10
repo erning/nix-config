@@ -12,13 +12,14 @@ in
 {
   options.features.go.enable = lib.mkEnableOption "go";
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf cfg.enable ({
     home.packages = with pkgs; [
       go
     ];
     programs.go.enable = true;
-    programs.go.env = lib.mkIf (options.programs.go ? env) {
+  } // lib.optionalAttrs (options.programs.go ? env) {
+    programs.go.env = {
       GOPATH = ".go";
     };
-  };
+  });
 }

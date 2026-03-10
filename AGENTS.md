@@ -49,7 +49,7 @@ nix-config/
 - New feature files under `home-manager/features/` become available automatically through `lib/scan-files.nix`.
 - Host homes usually compose presets with `lib.mkMerge [ features.<preset> ... ]`.
 - Legacy macOS hosts (`pterosaur`, `mango`) use pinned `mkSystem-2505`/`mkHome-2505` builders backed by nixpkgs-25.05 inputs.
-- Feature modules that use options not present in all home-manager versions must guard them with `options ? attr` (e.g., `options.programs.go ? env`).
+- Feature modules that use options not present in all home-manager versions must guard them with `lib.optionalAttrs (options.path ? attr) { ... }` so the attribute path is absent entirely when the option does not exist; `lib.mkIf` only wraps the value and still exposes the path to the module system (see `go.nix`).
 
 ## ANTI-PATTERNS
 - Do not bypass `mkSystem` or `mkHome` when adding hosts; `flake.nix` should stay on the builder path.
