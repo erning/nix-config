@@ -36,11 +36,11 @@ Minimal `home.nix`:
 { lib, inputs, ... }:
 
 let
-  features = import "${inputs.self}/lib/features.nix" { inherit lib; };
+  presets = import "${inputs.self}/home-manager/presets.nix" { inherit lib; };
 in
 {
   features = lib.mkMerge [
-    features.base
+    presets.core
   ];
 }
 ```
@@ -75,8 +75,8 @@ home-manager switch --flake .#erning@<hostname> --dry-run
 
 ## Practical Notes
 
-- Desktop Darwin hosts usually combine `features.develop` and `features.desktop`.
-- Linux and VM hosts usually combine `features.console` with targeted additions.
+- Desktop Darwin hosts usually use `presets.workstation` (or combine `presets.development` with `presets.graphical`).
+- Linux and VM hosts usually use `presets.development` or combine `presets.core` and `presets.terminal` with targeted additions.
 - `pomelo` is the home-manager-only host; validate it with the home-manager dry run rather than a system rebuild.
 - `orbstack` is intentionally unusual: it imports `/etc/nixos/configuration.nix`, so evaluation depends on that external file existing on the machine running the command.
 - Flake output names do not always match directory names: `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion`.

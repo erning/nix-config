@@ -159,16 +159,18 @@ This pattern uses `options ? attr` to test whether the option is defined in the 
 
 ---
 
-## features.nix
+## presets.nix
+
+> **Note:** This file lives at `home-manager/presets.nix`, not under `lib/`. It is documented here alongside the other builder utilities for convenience.
 
 Defines feature presets that enable groups of related tools and configurations.
 
 ### Purpose
 Simplify host configuration by providing pre-defined feature sets instead of individually enabling dozens of features.
 
-### Presets
+### Building Blocks (non-overlapping)
 
-#### base
+#### core
 Essential tools for any system:
 - **Shells**: fish, bash, zsh
 - **Prompt**: starship
@@ -176,46 +178,44 @@ Essential tools for any system:
 - **Editors**: vim
 - **Dev tools**: git, ssh
 
-#### develop
-Development environment with build tools, runtimes, and IDE:
-- **Extends**: base
-- **Editors**: neovim, tmux
-- **Build tools**: build-essential, nix-support, just, gradle
-- **Languages**: rustup, zig, python, go, nodejs, jdk, kotlin
-- **Dev tools**: direnv
-- **Other**: typst, docker
-
-#### console
+#### terminal
 Terminal-focused environment with modern CLI tools:
-- **Extends**: base
 - **Editors**: neovim, tmux
-- **Shells**: nushell (modern replacement for bash/zsh)
+- **Shells**: nushell
 - **Tools**: zellij (terminal multiplexer), zoxide (cd replacement), yazi (file manager)
 
-#### desktop
+#### languages
+Language runtimes:
+- rustup, zig, python, go, nodejs, jdk, kotlin
+
+#### devtools
+Build tools and dev utilities:
+- nix-support, just, direnv, gradle, typst, docker, claude-code, opencode
+
+#### graphical
 GUI applications and desktop environment tools:
-- **Extends**: base
 - **Fonts**: fonts, source-han (CJK fonts)
 - **Editors**: zed
 - **Terminals**: ghostty, kitty, alacritty
 
-### Combination Strategy
-Uses `//` (right-biased attribute update) to merge presets:
-```nix
-develop = { ... } // base;
-```
-This means `develop` preset overrides `base` defaults while inheriting all base features.
+### Composites (self-contained)
+
+| Composite | Composition |
+|-----------|-------------|
+| `development` | `core` + `terminal` + `languages` + `devtools` |
+| `workstation` | `development` + `graphical` |
+
+Composites are built with `//` (attribute merge) of their constituent building blocks, so they are self-contained and do not need to be combined with `core` separately.
 
 ### Using Presets
 ```nix
 { lib, inputs, ... }:
 let
-  features = import "${inputs.self}/lib/features.nix" { inherit lib; };
+  presets = import "${inputs.self}/home-manager/presets.nix" { inherit lib; };
 in
 {
   features = lib.mkMerge [
-    features.develop   # Enables base + develop features
-    features.desktop  # Also enables desktop features
+    presets.workstation   # Enables all building blocks including graphical
   ];
 }
 ```
@@ -226,7 +226,7 @@ Create your own by defining attribute sets with `lib.mkDefault`:
 my-preset = {
   neovim.enable = lib.mkDefault true;
   python.enable = lib.mkDefault true;
-} // base;
+} // core;
 ```
 
 ---

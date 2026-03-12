@@ -6,7 +6,7 @@
 ## WHERE TO LOOK
 - Auto-import boundary: `home-manager/features/default.nix`.
 - Auto-wrapper and recursive scanner: `lib/mkFeatureImports.nix`.
-- Preset bundles that consume features: `lib/features.nix`.
+- Preset bundles that consume features: `home-manager/presets.nix`.
 - Dotfile helper surface: `home-manager/home.nix` (`config.lib.dotfiles`).
 - Representative complex modules: `home-manager/features/tmux.nix`, `home-manager/features/git.nix`, `home-manager/features/neovim.nix`.
 
@@ -17,7 +17,7 @@
 - New `.nix` files anywhere under this directory are picked up automatically; do not add them to a manual import list.
 - Subdirectories create nested namespaces directly; `default.nix` files are skipped rather than required. Current example: `fonts/source-han.nix` -> `features.fonts.source-han.enable`.
 - Put reusable package/program setup here; host-only tweaks belong in `hosts/<name>/home.nix`.
-- Update `lib/features.nix` only when the new feature should join a preset like `base`, `develop`, `console`, or `desktop`.
+- Update `home-manager/presets.nix` only when the new feature should join a preset like `core`, `terminal`, `languages`, `devtools`, or `graphical`.
 - Follow existing patterns for platform guards, usually `builtins.match ".*-darwin" settings.system != null`.
 - Dotfile-backed features should usually use `config.lib.dotfiles.configFiles` / `homeFiles`; use `configDir` when the whole directory should stay recursively editable.
 

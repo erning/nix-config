@@ -6,7 +6,7 @@ Personal NixOS and nix-darwin flake for one user across macOS, Linux, VMs, and h
 
 - One builder flow for Darwin, NixOS, and standalone home-manager hosts.
 - Shared system modules in `modules/` plus reusable home-manager features in `home-manager/features/`.
-- Preset-based feature composition through `lib/features.nix`.
+- Preset-based feature composition through `home-manager/presets.nix`.
 - Dotfiles tracked in-repo and wired into home-manager.
 - Secrets managed with agenix and a separate secrets repository.
 
@@ -80,14 +80,24 @@ For host-specific setup and validation flow, see `hosts/README.md`.
 
 ## Feature Presets
 
-Feature presets live in `lib/features.nix` and are typically merged in `hosts/<host>/home.nix`.
+Feature presets live in `home-manager/presets.nix` and are typically merged in `hosts/<host>/home.nix`.
+
+**Building blocks** (non-overlapping):
 
 | Preset | Purpose |
 |--------|---------|
-| `base` | essential shells, prompt, editors, git, ssh |
-| `develop` | language runtimes, build tools, dev utilities |
-| `console` | terminal-focused workflow |
-| `desktop` | GUI terminals, fonts, desktop apps |
+| `core` | essential shells, prompt, editors, git, ssh |
+| `terminal` | terminal-focused workflow (neovim, tmux, nushell, zellij, yazi) |
+| `languages` | language runtimes (rust, zig, python, go, nodejs, jdk, kotlin) |
+| `devtools` | build tools and dev utilities (nix-support, direnv, just, docker) |
+| `graphical` | GUI terminals, fonts, desktop apps |
+
+**Composites** (self-contained):
+
+| Preset | Composition |
+|--------|-------------|
+| `development` | `core` + `terminal` + `languages` + `devtools` |
+| `workstation` | `development` + `graphical` |
 
 Typical usage:
 
@@ -95,12 +105,11 @@ Typical usage:
 { lib, inputs, ... }:
 
 let
-  features = import "${inputs.self}/lib/features.nix" { inherit lib; };
+  presets = import "${inputs.self}/home-manager/presets.nix" { inherit lib; };
 in
 {
   features = lib.mkMerge [
-    features.develop
-    features.desktop
+    presets.workstation
   ];
 }
 ```
