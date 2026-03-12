@@ -352,3 +352,59 @@ nix-secrets/
 - Decrypted keys are placed in `~/.ssh/` with mode 600
 - Public keys are symlinked directly (no encryption needed)
 - Requires `age.identityPaths` to be configured with your decryption key
+
+---
+
+## symlink-dir.nix
+
+Recursively creates out-of-store symlinks for an entire directory tree.
+
+### Purpose
+When you need to symlink a whole directory (e.g., neovim config) as editable out-of-store links, `mkOutOfStoreSymlink` only handles single files and `inputs.self` with `recursive = true` copies into the read-only Nix store. This function bridges the gap: it walks a directory at eval time with `builtins.readDir` and emits one `mkOutOfStoreSymlink` entry per file, so the entire tree is editable without rebuild.
+
+### Parameters
+- **src** (path): Store path used at eval time to walk the directory tree via `builtins.readDir` (e.g., `"${inputs.self}/dotfiles/.config/nvim-lazyvim"`)
+- **dst** (string): Runtime absolute path that symlinks will point to (e.g., `"${dotfiles}/.config/nvim-lazyvim"`)
+- **prefix** (string): Key prefix in the resulting attribute set, corresponding to the path under `xdg.configFile` or `home.file` (e.g., `"nvim-lazyvim"`)
+- **mkSymlink** (function): Typically `config.lib.file.mkOutOfStoreSymlink`
+
+### Return Value
+An attribute set suitable for merging into `xdg.configFile` or `home.file`:
+```nix
+{
+  "nvim-lazyvim/init.lua".source = mkSymlink "~/.dotfiles/.config/nvim-lazyvim/init.lua";
+  "nvim-lazyvim/lua/config/keymaps.lua".source = mkSymlink "...";
+  # ... one entry per file
+}
+```
+
+### Usage Example
+
+Typically accessed via the `config.lib.dotfiles` convenience wrappers defined in `home-manager/home.nix`:
+```nix
+{
+  # Recursively symlink an entire .config/<dir>/ directory
+  xdg.configFile = config.lib.dotfiles.configDir "nvim-lazyvim";
+
+  # Can also be merged with other configFile entries
+  xdg.configFile = config.lib.dotfiles.configFiles [
+    "bat/config"
+  ] // config.lib.dotfiles.configDir "bat/themes";
+}
+```
+
+Direct usage without the wrapper:
+```nix
+let
+  symlinkDir = import "${inputs.self}/lib/symlink-dir.nix";
+  dotfiles = "${config.home.homeDirectory}/.dotfiles";
+in
+{
+  xdg.configFile = symlinkDir {
+    mkSymlink = config.lib.file.mkOutOfStoreSymlink;
+    src = "${inputs.self}/dotfiles/.config/nvim-lazyvim";
+    dst = "${dotfiles}/.config/nvim-lazyvim";
+    prefix = "nvim-lazyvim";
+  };
+}
+```
