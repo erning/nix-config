@@ -12,7 +12,7 @@ let
   # ssh-key = (import "${inputs.self}/lib/ssh-key.nix" { inherit config inputs; }) settings.host;
   ssh-key =
     let
-      host = settings.host;
+      inherit (settings) host;
     in
     name: {
       age.secrets."ssh/${host}/${name}" = {

@@ -1,31 +1,20 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, pkgs, ... }:
 
 let
-  cfg = config.features.vim;
-
   start = ".vim/pack/vendor/start";
   plugins = pkgs.vimPlugins;
 in
 {
-  options.features.vim.enable = lib.mkEnableOption "vim";
+  home.packages = with pkgs; [
+    vim
+  ];
 
-  config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      vim
-    ];
+  home.file.".vim/vimrc".source = config.lib.dotfiles.symlink ".config/vim/vimrc";
 
-    home.file.".vim/vimrc".source = config.lib.dotfiles.symlink ".config/vim/vimrc";
-
-    home.file = {
-      "${start}/catppuccin-vim".source = "${plugins.catppuccin-vim}";
-      "${start}/vim-polyglot".source = "${plugins.vim-polyglot}";
-      "${start}/editorconfig-vim".source = "${plugins.editorconfig-vim}";
-      "${start}/lightline-vim".source = "${plugins.lightline-vim}";
-    };
+  home.file = {
+    "${start}/catppuccin-vim".source = "${plugins.catppuccin-vim}";
+    "${start}/vim-polyglot".source = "${plugins.vim-polyglot}";
+    "${start}/editorconfig-vim".source = "${plugins.editorconfig-vim}";
+    "${start}/lightline-vim".source = "${plugins.lightline-vim}";
   };
 }

@@ -1,12 +1,6 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, pkgs, ... }:
 
 let
-  cfg = config.features.typst;
   cfg-fonts = config.features.fonts;
   fonts = with pkgs.unstable; [
     libertinus
@@ -16,9 +10,5 @@ let
   ];
 in
 {
-  options.features.typst.enable = lib.mkEnableOption "typst";
-
-  config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.typst ] ++ (if cfg-fonts.enable then fonts else [ ]);
-  };
+  home.packages = [ pkgs.typst ] ++ (if cfg-fonts.enable then fonts else [ ]);
 }

@@ -1,21 +1,10 @@
+{ pkgs, ... }:
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+  _description = "nix support";
 
-let
-  cfg = config.features.nix-support;
-in
-{
-  options.features.nix-support.enable = lib.mkEnableOption "nix support";
-
-  config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      nil
-      nixd
-      nixfmt
-    ];
-  };
+  home.packages = with pkgs; [
+    nil
+    nixd
+    nixfmt
+  ];
 }

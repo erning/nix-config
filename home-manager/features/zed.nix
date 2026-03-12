@@ -1,13 +1,6 @@
-{ config, lib, ... }:
-
-let
-  cfg = config.features.zed;
-in
+{ config, ... }:
 {
-  options.features.zed.enable = lib.mkEnableOption "zed";
-  config = lib.mkIf cfg.enable {
-    xdg.configFile = config.lib.dotfiles.configFiles [
-      "zed/settings.json"
-    ];
-  };
+  xdg.configFile = config.lib.dotfiles.configFiles [
+    "zed/settings.json"
+  ];
 }

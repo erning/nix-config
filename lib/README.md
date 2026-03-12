@@ -231,58 +231,104 @@ my-preset = {
 
 ---
 
-## scan-files.nix
+## mkFeatureImports.nix
 
-Auto-import utility for discovering and importing Nix modules from a directory.
+Auto-wrap utility that recursively scans a directory for feature modules, derives each feature's name from its filename, and wraps it with the standard `options.features.<name>.enable` + `lib.mkIf` boilerplate.
 
 ### Purpose
-Enables automatic module discovery without manually maintaining import lists. Used by `home-manager/features/default.nix` to load all 36+ feature modules.
+Eliminates repeated boilerplate in feature modules. Each feature file becomes a **pure config function** — no mention of `options`, `mkEnableOption`, or `mkIf` needed.
 
 ### Parameters
-- **path** (string): Directory path to scan (e.g., `./home-manager/features`)
+- **dir** (path): Directory to scan recursively (e.g., `./home-manager/features`)
+
+### Return Value
+A list of NixOS-style modules, each defining `options.features.<name>.enable` and `config = lib.mkIf ...`.
+
+### Name Derivation
+- `direnv.nix` → feature name `"direnv"`
+- `fonts/source-han.nix` → feature name `"fonts.source-han"`
+- `default.nix` files are skipped (they serve as importers, not features)
+
+### Feature Module Format
+Feature files return a plain config attrset. The wrapper handles everything else:
+
+```nix
+# direnv.nix — simplest form
+{ pkgs, ... }:
+{
+  home.packages = with pkgs; [ direnv ];
+}
+
+# fonts/source-han.nix — custom description via _description
+{ pkgs, ... }:
+{
+  _description = "fonts - Source Han";
+  home.packages = with pkgs.unstable; [ source-han-sans source-han-serif source-han-mono ];
+}
+
+# go.nix — version guard still works (options passed through)
+{ pkgs, lib, options, ... }:
+({
+  home.packages = with pkgs; [ go ];
+  programs.go.enable = true;
+} // lib.optionalAttrs (options.programs.go ? env) {
+  programs.go.env = { GOPATH = ".go"; };
+})
+```
+
+### The `_description` Attribute
+If the returned attrset contains `_description`, it overrides the default `mkEnableOption` description (which defaults to the filename-derived name). The `_description` key is stripped from the config before merging.
+
+### How It Works
+1. Recursively walks the directory with `builtins.readDir`
+2. For each `.nix` file (except `default.nix`), derives a feature name from the path
+3. Wraps the imported module in a NixOS module that:
+   - Declares `options.features.<name>.enable = lib.mkEnableOption description;`
+   - Guards the config body with `config = lib.mkIf cfg.enable result;`
+4. Passes all module arguments (`config`, `lib`, `pkgs`, `options`, `settings`, `inputs`, etc.) through to the inner module via `@args`
+
+### Usage
+```nix
+# home-manager/features/default.nix
+{ inputs, ... }:
+let
+  mkFeatureImports = import "${inputs.self}/lib/mkFeatureImports.nix";
+in
+{
+  imports = mkFeatureImports ./.;
+}
+```
+
+---
+
+## scan-files.nix
+
+Auto-import utility for discovering Nix modules from a single directory level.
+
+### Purpose
+Enables automatic module discovery without manually maintaining import lists. Used by `modules/nixpkgs-overlays.nix` to load custom overlays.
+
+### Parameters
+- **path** (string): Directory path to scan (e.g., `./overlays`)
 
 ### Return Value
 Returns a list of file paths:
 ```nix
-[ ./fish.nix ./bash.nix ./zsh.nix ... ]
+[ ./my-overlay.nix ./another.nix ... ]
 ```
 
 ### Filtering Logic
-
-1. **Excludes `default.nix`**:
-   ```nix
-   filter (n: n != "default.nix") (...)
-   ```
-
-2. **Includes .nix files**:
-   ```nix
-   filter (n: match ".*\\.nix" n != null) (...)
-   ```
-
-3. **Includes directories with default.nix**:
-   ```nix
-   filter (n: pathExists (path + ("/" + n + "/default.nix"))) (...)
-   ```
-   This allows subdirectories with their own `default.nix` to be included.
-
-### Why Dynamic Imports?
-- **Scalability**: Adding a new feature module automatically makes it available
-- **Maintainability**: No need to update import lists when adding/removing modules
-- **Flexibility**: Can easily support new feature types without code changes
-
-### Trade-offs
-- **Static analysis**: Dynamic imports reduce ability of some tools (e.g., LSP) to analyze dependencies
-- **Debugging**: Harder to trace where a module comes from if it fails to load
+1. Excludes `default.nix`
+2. Includes `.nix` files
+3. Includes directories containing `default.nix`
 
 ### Usage Example
 ```nix
-{ inputs, ... }:
-
 let
   scanFiles = import "${inputs.self}/lib/scan-files.nix";
 in
 {
-  imports = (scanFiles ./.);  # Auto-import all .nix files in current directory
+  imports = scanFiles ./.;
 }
 ```
 
