@@ -1,25 +1,12 @@
+{ config, pkgs, ... }:
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+  home.packages = with pkgs; [
+    nodejs_24
+    pnpm
+    bun
+  ];
 
-let
-  cfg = config.features.nodejs;
-in
-{
-  options.features.nodejs.enable = lib.mkEnableOption "nodejs";
-
-  config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      nodejs_24
-      pnpm
-      bun
-    ];
-
-    home.file = config.lib.dotfiles.homeFiles [
-      ".npmrc"
-    ];
-  };
+  home.file = config.lib.dotfiles.homeFiles [
+    ".npmrc"
+  ];
 }

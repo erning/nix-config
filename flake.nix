@@ -59,7 +59,7 @@
   };
 
   outputs =
-    { self, ... }@inputs:
+    { ... }@inputs:
     let
       nixpkgs = inputs.nixpkgs-unstable;
       nix-darwin = inputs.nix-darwin-unstable;
