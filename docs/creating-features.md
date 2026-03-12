@@ -29,13 +29,13 @@
 features.ripgrep.enable = true;
 ```
 
-或添加到 `lib/features.nix` 的某个 preset 中：
+或添加到 `home-manager/presets.nix` 的某个 preset 中：
 
 ```nix
-develop = {
+devtools = {
   ripgrep.enable = lib.mkDefault true;
   # ...
-} // base;
+};
 ```
 
 ---
@@ -198,7 +198,7 @@ home-manager/features/
 在 preset 中启用嵌套 feature：
 
 ```nix
-desktop = {
+graphical = {
   fonts.enable = lib.mkDefault true;
   fonts.source-han.enable = lib.mkDefault true;
 };
@@ -259,5 +259,5 @@ feature 模块函数可以使用以下参数（框架会透传所有模块参数
 2. 编写纯配置函数，**不要**写 `options`、`mkEnableOption`、`mkIf` 等 boilerplate
 3. 如需引用 dotfiles，先在 `dotfiles/` 对应路径下创建文件
 4. 如描述需自定义，添加 `_description = "...";`
-5. 在 host `home.nix` 或 `lib/features.nix` preset 中启用
+5. 在 host `home.nix` 或 `home-manager/presets.nix` preset 中启用
 6. 验证：`nix run home-manager -- build --flake .#erning@<host>`

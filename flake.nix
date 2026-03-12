@@ -1,5 +1,5 @@
 {
-  description = "";
+  description = "Personal NixOS and nix-darwin flake for macOS, Linux, VMs, and home-manager-only hosts";
 
   # # the nixConfig here only affects the flake itself, not the system configuration!
   # nixConfig = {

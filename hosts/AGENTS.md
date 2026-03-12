@@ -13,7 +13,7 @@
 - Standard host layout is a pair: `configuration.nix` for system settings, `home.nix` for home-manager settings.
 - `pomelo` is the exception: home-manager only, no `configuration.nix`.
 - `orbstack` is the exception on the system side: it imports `/etc/nixos/configuration.nix` and forces hostname.
-- Host homes usually import `lib/features.nix` and compose presets with `lib.mkMerge`.
+- Host homes usually import `home-manager/presets.nix` and compose presets with `lib.mkMerge`.
 - Keep host-specific changes local here; shared behavior belongs in `modules/` or `home-manager/features/`.
 
 ## ANTI-PATTERNS
@@ -23,7 +23,7 @@
 - Do not duplicate shared module logic here when the change should apply to multiple hosts.
 
 ## NOTES
-- Desktop Darwin hosts usually combine `features.develop` and `features.desktop`.
-- Linux and VM hosts tend to use `features.console` plus targeted additions.
-- Validate host edits with the host-appropriate dry build: `darwin-rebuild dry-build --flake .#<host>` or `nixos-rebuild dry-build --flake .#<host>`.
+- Desktop Darwin hosts usually use `presets.workstation` (or combine `presets.development` with `presets.graphical`).
+- Linux and VM hosts tend to use `presets.development` or combine `presets.core` and `presets.terminal` with targeted additions.
+- Validate host edits with the host-appropriate dry build: `darwin-rebuild build --flake .#<host>` or `nixos-rebuild dry-build --flake .#<host>`.
 - See `hosts/README.md` for the longer human-oriented setup guide.

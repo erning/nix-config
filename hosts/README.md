@@ -36,11 +36,11 @@ Minimal `home.nix`:
 { lib, inputs, ... }:
 
 let
-  features = import "${inputs.self}/lib/features.nix" { inherit lib; };
+  presets = import "${inputs.self}/home-manager/presets.nix" { inherit lib; };
 in
 {
   features = lib.mkMerge [
-    features.base
+    presets.core
   ];
 }
 ```
@@ -64,20 +64,20 @@ homeConfigurations."erning@<hostname>" = mkHome {
 
 ```bash
 # macOS hosts
-darwin-rebuild dry-build --flake .#<hostname>
+darwin-rebuild build --flake .#<hostname>
 
 # NixOS hosts
 nixos-rebuild dry-build --flake .#<hostname>
 
 # home-manager-only hosts
-home-manager switch --flake .#erning@<hostname> --dry-run
+home-manager build --flake .#erning@<hostname>
 ```
 
 ## Practical Notes
 
-- Desktop Darwin hosts usually combine `features.develop` and `features.desktop`.
-- Linux and VM hosts usually combine `features.console` with targeted additions.
-- `pomelo` is the home-manager-only host; validate it with the home-manager dry run rather than a system rebuild.
+- Desktop Darwin hosts usually use `presets.workstation` (or combine `presets.development` with `presets.graphical`).
+- Linux and VM hosts usually use `presets.development` or combine `presets.core` and `presets.terminal` with targeted additions.
+- `pomelo` is the home-manager-only host; validate it with `home-manager build` rather than a system rebuild.
 - `orbstack` is intentionally unusual: it imports `/etc/nixos/configuration.nix`, so evaluation depends on that external file existing on the machine running the command.
 - Flake output names do not always match directory names: `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion`.
 - Mirror defaults (nix substituters, Homebrew mirror) are set with `lib.mkDefault` in shared modules. Override per-host in `configuration.nix` or `home.nix`; see `modules/README.md` for details.
