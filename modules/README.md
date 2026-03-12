@@ -134,6 +134,23 @@ Uses Chinese mirrors for faster downloads:
 ### Why These Caches?
 Chinese mirrors provide faster download speeds in China region. Remove or adjust if located elsewhere.
 
+### Overriding Mirrors
+
+Substituters use `lib.mkDefault`, so any host can override them in its own `configuration.nix`:
+
+```nix
+# hosts/<hostname>/configuration.nix
+{
+  nix.settings.substituters = [ "https://cache.nixos.org" ];
+}
+```
+
+For one-off CLI override without rebuilding:
+
+```bash
+nix build --substituters "https://cache.nixos.org" .#package
+```
+
 ---
 
 ## modules/nixpkgs-config.nix
