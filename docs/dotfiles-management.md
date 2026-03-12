@@ -259,13 +259,13 @@ in
 features.myapp.enable = true;
 ```
 
-或者将其加入 `lib/features.nix` 的某个 preset bundle 中。
+或者将其加入 `home-manager/presets.nix` 的某个 preset bundle 中。
 
 ### 步骤 4：验证
 
 ```bash
 nix flake check
-darwin-rebuild dry-build --flake .#<host>   # macOS
+darwin-rebuild build --flake .#<host>       # macOS
 nixos-rebuild dry-build --flake .#<host>    # NixOS
 ```
 
@@ -303,5 +303,5 @@ nixos-rebuild dry-build --flake .#<host>    # NixOS
 - `home-manager/features/default.nix` — 自动导入入口
 - `lib/scan-files.nix` — 目录扫描逻辑
 - `lib/symlink-dir.nix` — 递归 out-of-store symlink 生成
-- `lib/features.nix` — preset bundles
+- `home-manager/presets.nix` — preset bundles
 - `dotfiles/README.md` — dotfiles 目录说明

@@ -6,7 +6,7 @@ Personal NixOS and nix-darwin flake for one user across macOS, Linux, VMs, and h
 
 - One builder flow for Darwin, NixOS, and standalone home-manager hosts.
 - Shared system modules in `modules/` plus reusable home-manager features in `home-manager/features/`.
-- Preset-based feature composition through `lib/features.nix`.
+- Preset-based feature composition through `home-manager/presets.nix`.
 - Dotfiles tracked in-repo and wired into home-manager.
 - Secrets managed with agenix and a separate secrets repository.
 
@@ -35,9 +35,9 @@ nix run home-manager -- switch --flake .#erning@dragon
 
 ```bash
 nix flake check
-darwin-rebuild dry-build --flake .#dragon
+darwin-rebuild build --flake .#dragon
 nixos-rebuild dry-build --flake .#phoenix
-home-manager switch --flake .#erning@dragon --dry-run
+home-manager build --flake .#erning@dragon
 ```
 
 Note: `nix flake check` is not pure-eval-safe on machines that lack `/etc/nixos/configuration.nix` for the `orbstack` host.
@@ -80,59 +80,35 @@ For host-specific setup and validation flow, see `hosts/README.md`.
 
 ## Feature Presets
 
-Feature presets live in `lib/features.nix` and are typically merged in `hosts/<host>/home.nix`.
+Feature presets live in `home-manager/presets.nix` and are typically merged in `hosts/<host>/home.nix`.
+
+**Building blocks** (non-overlapping):
 
 | Preset | Purpose |
 |--------|---------|
-| `base` | essential shells, prompt, editors, git, ssh |
-| `develop` | language runtimes, build tools, dev utilities |
-| `console` | terminal-focused workflow |
-| `desktop` | GUI terminals, fonts, desktop apps |
+| `core` | essential shells, prompt, editors, git, ssh |
+| `terminal` | terminal-focused workflow (neovim, tmux, nushell, zellij, yazi) |
+| `languages` | language runtimes (rust, zig, python, go, nodejs, jdk, kotlin) |
+| `devtools` | build tools and dev utilities (nix-support, direnv, just, docker) |
+| `graphical` | GUI terminals, fonts, desktop apps |
 
-Typical usage:
+**Composites** (self-contained):
 
-```nix
-{ lib, inputs, ... }:
-
-let
-  features = import "${inputs.self}/lib/features.nix" { inherit lib; };
-in
-{
-  features = lib.mkMerge [
-    features.develop
-    features.desktop
-  ];
-}
-```
+| Preset | Composition |
+|--------|-------------|
+| `development` | `core` + `terminal` + `languages` + `devtools` |
+| `workstation` | `development` + `graphical` |
 
 For feature-module conventions, see `home-manager/features/AGENTS.md`.
 
 ## Common Workflows
 
-- Add a host: update `hosts/` and `flake.nix`; see `hosts/README.md`.
-- Add a reusable user feature: create a new module in `home-manager/features/`; see `home-manager/features/AGENTS.md`.
-- Change builder flow or presets: use `lib/README.md`.
-- Change shared system behavior: use `modules/README.md`.
-- Add or update app configs: use `dotfiles/README.md`.
-- Add a custom overlay: use `overlays/README.md`.
-
-## Documentation Map
-
-- `AGENTS.md` - concise repo-wide guidance for agents
-- `hosts/README.md` - host inventory and human setup notes
-- `hosts/AGENTS.md` - host subtree editing rules
-- `lib/README.md` - builder and helper reference
-- `modules/README.md` - shared system module reference
-- `dotfiles/README.md` - dotfile layout and wiring notes
-- `overlays/README.md` - overlay usage in this repo
-- `docs/homebrew-migration.md` - current migration decision summary
-- `docs/features-analysis.md` - supporting feature classification snapshot
-
-## Notes
-
-- `pomelo` is home-manager-only.
-- `orbstack` is intentionally special and depends on an external `/etc/nixos/configuration.nix`.
-- `lib/README.md` and `modules/README.md` are the detailed references; this file is only the entry point.
+- Add a host: update `hosts/` and `flake.nix`; see [`hosts/README.md`](hosts/README.md).
+- Add a reusable user feature: create a module in `home-manager/features/`; see [`home-manager/features/AGENTS.md`](home-manager/features/AGENTS.md).
+- Change builder flow or presets: see [`lib/README.md`](lib/README.md).
+- Change shared system behavior: see [`modules/README.md`](modules/README.md).
+- Add or update app configs: see [`dotfiles/README.md`](dotfiles/README.md).
+- Add a custom overlay: see [`overlays/README.md`](overlays/README.md).
 
 ## License
 
