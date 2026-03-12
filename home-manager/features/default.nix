@@ -1,8 +1,8 @@
 { inputs, ... }:
 
 let
-  scanFiles = import "${inputs.self}/lib/scan-files.nix";
+  mkFeatureImports = import "${inputs.self}/lib/mkFeatureImports.nix";
 in
 {
-  imports = (scanFiles ./.);
+  imports = mkFeatureImports ./.;
 }

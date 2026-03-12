@@ -12,7 +12,7 @@ Core architecture is builder-driven: `flake.nix` wires hosts through `lib/mkSyst
 ```text
 nix-config/
 |- flake.nix              # all host and home entrypoints
-|- lib/                   # mkSystem, mkHome, feature presets, scan-files
+|- lib/                   # mkSystem, mkHome, feature presets, mkFeatureImports
 |- modules/               # shared system modules and overlays/secrets wiring
 |- home-manager/          # base HM config plus auto-imported features
 |- hosts/                 # per-host configuration.nix + home.nix pairs
@@ -38,15 +38,17 @@ nix-config/
 | `lib/mkSystem.nix` | imports `modules/system.nix` + `hosts/<host>/configuration.nix`; reused by pinned builders |
 | `lib/mkHome.nix` | imports nixpkgs config, overlays, `home-manager/home.nix`, host home; reused by pinned builders |
 | `lib/features.nix` | preset bundles like `base`, `develop`, `console`, `desktop` |
-| `lib/scan-files.nix` | dynamic loader for feature and overlay directories |
+| `lib/mkFeatureImports.nix` | recursive scanner + auto-wrapper for feature modules; derives name from filename, adds enable option + mkIf |
+| `lib/scan-files.nix` | dynamic loader for overlay directories |
 | `modules/system.nix` | shared system module import order |
-| `home-manager/features/default.nix` | auto-import boundary for feature modules |
+| `home-manager/features/default.nix` | auto-import boundary; delegates to `mkFeatureImports` |
 
 ## CONVENTIONS
 - Nix formatting: 2-space indent, LF, UTF-8, final newline, trimmed trailing whitespace.
 - Naming: hosts and features are lowercase-hyphenated; local variables are camelCase.
 - Platform checks use `builtins.match ".*-darwin" ... != null`.
-- New feature files under `home-manager/features/` become available automatically through `lib/scan-files.nix`.
+- New feature files under `home-manager/features/` become available automatically through `lib/mkFeatureImports.nix`. Subdirectories create nested features (e.g., `fonts/source-han.nix` → `features.fonts.source-han`).
+- Feature modules are pure config functions — no boilerplate needed. `mkFeatureImports` auto-wraps each file with `options.features.<name>.enable` and `lib.mkIf`. Use `_description = "...";` in the returned attrset to override the default mkEnableOption description (which is the filename-derived name).
 - Host homes usually compose presets with `lib.mkMerge [ features.<preset> ... ]`.
 - Legacy macOS hosts (`pterosaur`, `mango`) use pinned `mkSystem-2505`/`mkHome-2505` builders backed by nixpkgs-25.05 inputs.
 - Feature modules that use options not present in all home-manager versions must guard them with `lib.optionalAttrs (options.path ? attr) { ... }` so the attribute path is absent entirely when the option does not exist; `lib.mkIf` only wraps the value and still exposes the path to the module system (see `go.nix`).

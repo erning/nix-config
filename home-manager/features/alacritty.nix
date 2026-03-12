@@ -1,13 +1,6 @@
-{ config, lib, ... }:
-
-let
-  cfg = config.features.alacritty;
-in
+{ config, ... }:
 {
-  options.features.alacritty.enable = lib.mkEnableOption "alacritty";
-  config = lib.mkIf cfg.enable {
-    xdg.configFile = config.lib.dotfiles.configFiles [
-      "alacritty/alacritty.toml"
-    ];
-  };
+  xdg.configFile = config.lib.dotfiles.configFiles [
+    "alacritty/alacritty.toml"
+  ];
 }

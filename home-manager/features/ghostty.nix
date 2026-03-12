@@ -1,13 +1,6 @@
-{ config, lib, ... }:
-
-let
-  cfg = config.features.ghostty;
-in
+{ config, ... }:
 {
-  options.features.ghostty.enable = lib.mkEnableOption "ghostty";
-  config = lib.mkIf cfg.enable {
-    xdg.configFile = config.lib.dotfiles.configFiles [
-      "ghostty/config"
-    ];
-  };
+  xdg.configFile = config.lib.dotfiles.configFiles [
+    "ghostty/config"
+  ];
 }
