@@ -80,6 +80,7 @@ home-manager switch --flake .#erning@<hostname> --dry-run
 - `pomelo` is the home-manager-only host; validate it with the home-manager dry run rather than a system rebuild.
 - `orbstack` is intentionally unusual: it imports `/etc/nixos/configuration.nix`, so evaluation depends on that external file existing on the machine running the command.
 - Flake output names do not always match directory names: `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion`.
+- Mirror defaults (nix substituters, Homebrew mirror) are set with `lib.mkDefault` in shared modules. Override per-host in `configuration.nix` or `home.nix`; see `modules/README.md` for details.
 
 ## Troubleshooting
 
