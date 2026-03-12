@@ -7,8 +7,6 @@
 
 let
   cfg = config.features.bat;
-  dotfiles = "${config.home.homeDirectory}/.dotfiles";
-  symlink = file: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${file}";
 in
 {
   options.features.bat.enable = lib.mkEnableOption "bat";
@@ -18,10 +16,13 @@ in
       enable = true;
     };
 
-    xdg.configFile."bat/config".source = symlink ".config/bat/config";
-    xdg.configFile."bat/themes" = {
-      source = "${inputs.self}/dotfiles/.config/bat/themes";
-      recursive = true;
+    xdg.configFile = config.lib.dotfiles.configFiles [
+      "bat/config"
+    ] // {
+      "bat/themes" = {
+        source = "${inputs.self}/dotfiles/.config/bat/themes";
+        recursive = true;
+      };
     };
   };
 }

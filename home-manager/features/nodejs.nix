@@ -7,8 +7,6 @@
 
 let
   cfg = config.features.nodejs;
-  dotfiles = "${config.home.homeDirectory}/.dotfiles";
-  symlink = file: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${file}";
 in
 {
   options.features.nodejs.enable = lib.mkEnableOption "nodejs";
@@ -20,6 +18,8 @@ in
       bun
     ];
 
-    home.file.".npmrc".source = symlink ".npmrc";
+    home.file = config.lib.dotfiles.homeFiles [
+      ".npmrc"
+    ];
   };
 }
