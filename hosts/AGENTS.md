@@ -25,5 +25,5 @@
 ## NOTES
 - Desktop Darwin hosts usually use `presets.workstation` (or combine `presets.development` with `presets.graphical`).
 - Linux and VM hosts tend to use `presets.development` or combine `presets.core` and `presets.terminal` with targeted additions.
-- Validate host edits with the host-appropriate dry build: `darwin-rebuild dry-build --flake .#<host>` or `nixos-rebuild dry-build --flake .#<host>`.
+- Validate host edits with the host-appropriate dry build: `darwin-rebuild build --flake .#<host>` or `nixos-rebuild dry-build --flake .#<host>`.
 - See `hosts/README.md` for the longer human-oriented setup guide.

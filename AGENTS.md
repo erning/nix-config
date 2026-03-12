@@ -72,10 +72,9 @@ nix-config/
 ## COMMANDS
 ```bash
 nix flake check
-darwin-rebuild dry-build --flake .#dragon
+darwin-rebuild build --flake .#dragon
 nixos-rebuild dry-build --flake .#phoenix
-home-manager switch --flake .#erning@dragon --dry-run
-nix run home-manager -- build --flake .#erning@dragon
+home-manager build --flake .#erning@dragon
 ```
 
 ## NOTES

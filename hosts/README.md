@@ -64,13 +64,13 @@ homeConfigurations."erning@<hostname>" = mkHome {
 
 ```bash
 # macOS hosts
-darwin-rebuild dry-build --flake .#<hostname>
+darwin-rebuild build --flake .#<hostname>
 
 # NixOS hosts
 nixos-rebuild dry-build --flake .#<hostname>
 
 # home-manager-only hosts
-home-manager switch --flake .#erning@<hostname> --dry-run
+home-manager build --flake .#erning@<hostname>
 ```
 
 ## Practical Notes

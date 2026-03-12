@@ -265,7 +265,7 @@ features.myapp.enable = true;
 
 ```bash
 nix flake check
-darwin-rebuild dry-build --flake .#<host>   # macOS
+darwin-rebuild build --flake .#<host>       # macOS
 nixos-rebuild dry-build --flake .#<host>    # NixOS
 ```
 

@@ -35,9 +35,9 @@ nix run home-manager -- switch --flake .#erning@dragon
 
 ```bash
 nix flake check
-darwin-rebuild dry-build --flake .#dragon
+darwin-rebuild build --flake .#dragon
 nixos-rebuild dry-build --flake .#phoenix
-home-manager switch --flake .#erning@dragon --dry-run
+home-manager build --flake .#erning@dragon
 ```
 
 Note: `nix flake check` is not pure-eval-safe on machines that lack `/etc/nixos/configuration.nix` for the `orbstack` host.
