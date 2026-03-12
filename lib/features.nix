@@ -41,6 +41,10 @@ let
     typst.enable = lib.mkDefault true;
 
     docker.enable = lib.mkDefault true;
+
+    #
+    claude-code.enable = lib.mkDefault true;
+    opencode.enable = lib.mkDefault true;
   }
   // base;
 

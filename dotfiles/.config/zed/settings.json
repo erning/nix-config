@@ -7,6 +7,11 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "vim_mode": true,
+  "vim": {
+    "use_system_clipboard": "never"
+  },
+
   "icon_theme": "Catppuccin Mocha",
   "theme": {
     "mode": "dark",
@@ -14,7 +19,6 @@
     "dark": "Catppuccin Mocha",
   },
 
-  "vim_mode": true,
   "ui_font_size": 18,
   "buffer_font_family": "JetBrainsMono Nerd Font",
   "buffer_font_size": 16,
