@@ -1,11 +1,10 @@
 { inputs, lib, ... }:
 
 let
-  features = import "${inputs.self}/lib/features.nix" { inherit lib; };
+  presets = import "${inputs.self}/home-manager/presets.nix" { inherit lib; };
 in
 {
   features = lib.mkMerge [
-    features.console
-    features.develop
+    presets.development
   ];
 }

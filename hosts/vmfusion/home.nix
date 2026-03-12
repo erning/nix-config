@@ -6,7 +6,7 @@
 }:
 
 let
-  features = import "${inputs.self}/lib/features.nix" { inherit lib; };
+  presets = import "${inputs.self}/home-manager/presets.nix" { inherit lib; };
 in
 {
   age.secrets."ssh/vm/id_ed25519" = {
@@ -17,8 +17,6 @@ in
   home.file.".ssh/id_ed25519.pub".source = "${inputs.secrets}/ssh/vm/id_ed25519.pub";
 
   features = lib.mkMerge [
-    features.console
-    features.desktop
-    features.develop
+    presets.workstation
   ];
 }
