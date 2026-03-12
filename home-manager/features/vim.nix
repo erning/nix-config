@@ -10,9 +10,6 @@ let
 
   start = ".vim/pack/vendor/start";
   plugins = pkgs.vimPlugins;
-
-  dotfiles = "${config.home.homeDirectory}/.dotfiles";
-  symlink = file: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${file}";
 in
 {
   options.features.vim.enable = lib.mkEnableOption "vim";
@@ -22,7 +19,7 @@ in
       vim
     ];
 
-    home.file.".vim/vimrc".source = symlink ".config/vim/vimrc";
+    home.file.".vim/vimrc".source = config.lib.dotfiles.symlink ".config/vim/vimrc";
 
     home.file = {
       "${start}/catppuccin-vim".source = "${plugins.catppuccin-vim}";

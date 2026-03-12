@@ -8,8 +8,6 @@
 
 let
   cfg = config.features.ssh;
-  dotfiles = "${config.home.homeDirectory}/.dotfiles";
-  symlink = file: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${file}";
   isDarwin = builtins.match ".*-darwin" settings.system != null;
 in
 {
@@ -34,8 +32,10 @@ in
       enableDefaultConfig = false;
     };
 
-    home.file.".ssh/authorized_keys".source = symlink ".ssh/authorized_keys";
-    home.file.".ssh/conf.d/homelab.conf".source = symlink ".ssh/conf.d/homelab.conf";
-    home.file.".ssh/conf.d/vps.conf".source = symlink ".ssh/conf.d/vps.conf";
+    home.file = config.lib.dotfiles.homeFiles [
+      ".ssh/authorized_keys"
+      ".ssh/conf.d/homelab.conf"
+      ".ssh/conf.d/vps.conf"
+    ];
   };
 }

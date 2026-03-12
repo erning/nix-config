@@ -36,19 +36,23 @@
 
 ### 代码模式
 
-```nix
-# 在 feature 模块顶部定义 helper
-let
-  dotfiles = "${config.home.homeDirectory}/.dotfiles";
-  symlink = file: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${file}";
-in
-{
-  # XDG config 目录下的文件
-  xdg.configFile."app/config.toml".source = symlink ".config/app/config.toml";
+使用 `config.lib.dotfiles` 集中 helper（定义在 `home-manager/home.nix`）：
 
-  # 非 XDG 路径的文件
-  home.file.".ssh/conf.d/myhost.conf".source = symlink ".ssh/conf.d/myhost.conf";
-  home.file.".npmrc".source = symlink ".npmrc";
+```nix
+{
+  # XDG config 目录下的文件（批量）
+  xdg.configFile = config.lib.dotfiles.configFiles [
+    "app/config.toml"
+  ];
+
+  # 非 XDG 路径的文件（批量）
+  home.file = config.lib.dotfiles.homeFiles [
+    ".ssh/conf.d/myhost.conf"
+    ".npmrc"
+  ];
+
+  # 路径不匹配时使用低级 symlink
+  home.file.".vim/vimrc".source = config.lib.dotfiles.symlink ".config/vim/vimrc";
 }
 ```
 
@@ -129,25 +133,71 @@ in
 
 ---
 
-## 两种方法混合使用
+## 方法三：`symlinkDir` — 递归可编辑符号链接
 
-同一个 feature 模块可以同时使用两种方法。典型模式是：**人工编辑的主配置用 symlink，静态主题/资源用 inputs.self**。
+### 原理
+
+通过 `lib/symlink-dir.nix` 在 eval 时递归扫描目录树（`builtins.readDir`），为每个文件生成一条 `mkOutOfStoreSymlink`。效果等同于对目录下每个文件分别使用方法一，但无需手动列举。
+
+```
+~/.config/nvim-lazyvim/init.lua        → ~/.dotfiles/.config/nvim-lazyvim/init.lua
+~/.config/nvim-lazyvim/lua/config/*.lua → ~/.dotfiles/.config/nvim-lazyvim/lua/config/*.lua
+```
+
+### 优点
+
+- **即时编辑**：与方法一相同，修改后立即生效，无需 rebuild
+- **递归目录**：与方法二相同，一次性处理整个目录树
+- **git 可追踪**：改动直接反映在 git diff 中
+
+### 缺点
+
+- **依赖固定路径**：同方法一，假设仓库在 `~/.dotfiles/`
+- **不可重现**：同方法一，内容取决于本地文件
+- **新增文件需 rebuild**：目录结构在 eval 时确定；新增或删除文件后需要 `home-manager switch` 重新生成链接列表
+
+### 适用场景
+
+- 需要递归链接且同时需要可编辑的目录（如 neovim 配置、复杂的多文件应用配置）
+- 目录结构稳定但文件内容需要频繁调整的场景
+
+### 代码模式
+
+使用 `config.lib.dotfiles` 便捷 wrapper：
+
+```nix
+{
+  xdg.configFile = config.lib.dotfiles.configDir "nvim-lazyvim";
+}
+```
+
+### 与其他条目合并
+
+```nix
+xdg.configFile = config.lib.dotfiles.configFiles [
+  "bat/config"
+] // config.lib.dotfiles.configDir "bat/themes";
+```
+
+---
+
+## 混合使用
+
+同一个 feature 模块可以同时使用多种方法。典型模式是：**人工编辑的主配置用 symlink，静态主题/资源用 inputs.self，需要递归且可编辑的目录用 symlinkDir**。
 
 `bat.nix` 是最好的混合示例：
 
 ```nix
-let
-  dotfiles = "${config.home.homeDirectory}/.dotfiles";
-  symlink = file: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${file}";
-in
 {
-  # 主配置 → 可编辑 symlink
-  xdg.configFile."bat/config".source = symlink ".config/bat/config";
-
-  # 主题目录 → 只读 store 引用
-  xdg.configFile."bat/themes" = {
-    source = "${inputs.self}/dotfiles/.config/bat/themes";
-    recursive = true;
+  xdg.configFile = config.lib.dotfiles.configFiles [
+    # 主配置 → 可编辑 symlink
+    "bat/config"
+  ] // {
+    # 主题目录 → 只读 store 引用
+    "bat/themes" = {
+      source = "${inputs.self}/dotfiles/.config/bat/themes";
+      recursive = true;
+    };
   };
 }
 ```
@@ -178,8 +228,6 @@ dotfiles/.config/myapp/themes/        # 主题目录（静态资源）
 
 let
   cfg = config.features.myapp;
-  dotfiles = "${config.home.homeDirectory}/.dotfiles";
-  symlink = file: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${file}";
 in
 {
   # 必须：声明 enable option
@@ -191,10 +239,10 @@ in
       myapp
     ];
 
-    xdg.configFile = {
+    xdg.configFile = config.lib.dotfiles.configFiles [
       # 方法一：可编辑 symlink（频繁编辑的配置）
-      "myapp/config.toml".source = symlink ".config/myapp/config.toml";
-
+      "myapp/config.toml"
+    ] // {
       # 方法二：只读 store 引用（主题、静态资源）
       "myapp/themes" = {
         source = "${inputs.self}/dotfiles/.config/myapp/themes";
@@ -225,17 +273,17 @@ nixos-rebuild dry-build --flake .#<host>    # NixOS
 
 ## 决策指南：选哪种方法？
 
-| 判断条件 | 方法一 (symlink) | 方法二 (inputs.self) |
-|---|---|---|
-| 需要手动编辑？ | **是** | 否 |
-| 需要递归复制目录？ | 否 | **是** |
-| 是主题/色彩方案？ | 否 | **是** |
-| 需要跨机器完全一致？ | 否 | **是** |
-| 是否为文本配置文件？ | **是** | 都可以 |
-| 是否为二进制/图片？ | 不推荐 | **是** |
-| 需要频繁迭代调试？ | **是** | 否 |
+| 判断条件 | 方法一 (symlink) | 方法二 (inputs.self) | 方法三 (symlinkDir) |
+|---|---|---|---|
+| 需要手动编辑？ | **是** | 否 | **是** |
+| 需要递归复制目录？ | 否 | **是** | **是** |
+| 是主题/色彩方案？ | 否 | **是** | 否 |
+| 需要跨机器完全一致？ | 否 | **是** | 否 |
+| 是否为文本配置文件？ | **是** | 都可以 | **是** |
+| 是否为二进制/图片？ | 不推荐 | **是** | 不推荐 |
+| 需要频繁迭代调试？ | **是** | 否 | **是** |
 
-**经验法则：如果你会用编辑器打开它，用 symlink；如果你不会手动改它，用 inputs.self。**
+**经验法则：如果你会用编辑器打开它，用 symlink；如果你不会手动改它，用 inputs.self。需要递归且可编辑？用 symlinkDir。**
 
 ---
 
@@ -254,5 +302,6 @@ nixos-rebuild dry-build --flake .#<host>    # NixOS
 
 - `home-manager/features/default.nix` — 自动导入入口
 - `lib/scan-files.nix` — 目录扫描逻辑
+- `lib/symlink-dir.nix` — 递归 out-of-store symlink 生成
 - `lib/features.nix` — preset bundles
 - `dotfiles/README.md` — dotfiles 目录说明

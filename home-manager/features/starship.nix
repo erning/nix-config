@@ -7,8 +7,6 @@
 
 let
   cfg = config.features.starship;
-  dotfiles = "${config.home.homeDirectory}/.dotfiles";
-  symlink = file: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${file}";
 in
 {
   options.features.starship.enable = lib.mkEnableOption "starship";
@@ -22,6 +20,8 @@ in
       package = pkgs.unstable.starship;
     };
 
-    xdg.configFile."starship.toml".source = symlink ".config/starship.toml";
+    xdg.configFile = config.lib.dotfiles.configFiles [
+      "starship.toml"
+    ];
   };
 }

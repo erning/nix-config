@@ -7,8 +7,6 @@
 
 let
   cfg = config.features.yazi;
-  dotfiles = "${config.home.homeDirectory}/.dotfiles";
-  symlink = file: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${file}";
 in
 {
   options.features.yazi.enable = lib.mkEnableOption "yazi";
@@ -22,8 +20,11 @@ in
       enableNushellIntegration = true;
     };
 
-    xdg.configFile."yazi/theme.toml".source = symlink ".config/yazi/theme.toml";
-    xdg.configFile."yazi/Catppuccin-mocha.tmTheme".source =
-      "${inputs.self}/dotfiles/.config/yazi/Catppuccin-mocha.tmTheme";
+    xdg.configFile = config.lib.dotfiles.configFiles [
+      "yazi/theme.toml"
+    ] // {
+      "yazi/Catppuccin-mocha.tmTheme".source =
+        "${inputs.self}/dotfiles/.config/yazi/Catppuccin-mocha.tmTheme";
+    };
   };
 }

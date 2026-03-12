@@ -40,6 +40,12 @@ in
     features.develop
   ];
 
+  xdg.configFile = config.lib.dotfiles.configFiles [
+    "cce/kimi.env"
+    "cce/minimax.env"
+    "cce/zhipu.env"
+  ];
+
   home.packages = with pkgs; [
     postgresql
     mariadb.client
