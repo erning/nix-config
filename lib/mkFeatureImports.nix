@@ -24,7 +24,7 @@ let
           [ ];
     in
     builtins.concatLists (
-      builtins.map (name: process name entries.${name}) (builtins.attrNames entries)
+      map (name: process name entries.${name}) (builtins.attrNames entries)
     );
 
   mkModule =
@@ -36,7 +36,7 @@ let
       featureModule = import modulePath;
       raw = if builtins.isFunction featureModule then featureModule args else featureModule;
       description = raw._description or name;
-      result = builtins.removeAttrs raw [ "_description" ];
+      result = removeAttrs raw [ "_description" ];
     in
     {
       options = lib.setAttrByPath ([ "features" ] ++ featurePath) {
