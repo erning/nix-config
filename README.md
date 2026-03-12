@@ -99,49 +99,16 @@ Feature presets live in `home-manager/presets.nix` and are typically merged in `
 | `development` | `core` + `terminal` + `languages` + `devtools` |
 | `workstation` | `development` + `graphical` |
 
-Typical usage:
-
-```nix
-{ lib, inputs, ... }:
-
-let
-  presets = import "${inputs.self}/home-manager/presets.nix" { inherit lib; };
-in
-{
-  features = lib.mkMerge [
-    presets.workstation
-  ];
-}
-```
-
 For feature-module conventions, see `home-manager/features/AGENTS.md`.
 
 ## Common Workflows
 
-- Add a host: update `hosts/` and `flake.nix`; see `hosts/README.md`.
-- Add a reusable user feature: create a new module in `home-manager/features/`; see `home-manager/features/AGENTS.md`.
-- Change builder flow or presets: use `lib/README.md`.
-- Change shared system behavior: use `modules/README.md`.
-- Add or update app configs: use `dotfiles/README.md`.
-- Add a custom overlay: use `overlays/README.md`.
-
-## Documentation Map
-
-- `AGENTS.md` - concise repo-wide guidance for agents
-- `hosts/README.md` - host inventory and human setup notes
-- `hosts/AGENTS.md` - host subtree editing rules
-- `lib/README.md` - builder and helper reference
-- `modules/README.md` - shared system module reference
-- `dotfiles/README.md` - dotfile layout and wiring notes
-- `overlays/README.md` - overlay usage in this repo
-- `docs/homebrew-migration.md` - current migration decision summary
-- `docs/features-analysis.md` - supporting feature classification snapshot
-
-## Notes
-
-- `pomelo` is home-manager-only.
-- `orbstack` is intentionally special and depends on an external `/etc/nixos/configuration.nix`.
-- `lib/README.md` and `modules/README.md` are the detailed references; this file is only the entry point.
+- Add a host: update `hosts/` and `flake.nix`; see [`hosts/README.md`](hosts/README.md).
+- Add a reusable user feature: create a module in `home-manager/features/`; see [`home-manager/features/AGENTS.md`](home-manager/features/AGENTS.md).
+- Change builder flow or presets: see [`lib/README.md`](lib/README.md).
+- Change shared system behavior: see [`modules/README.md`](modules/README.md).
+- Add or update app configs: see [`dotfiles/README.md`](dotfiles/README.md).
+- Add a custom overlay: see [`overlays/README.md`](overlays/README.md).
 
 ## License
 

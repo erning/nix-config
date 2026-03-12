@@ -32,4 +32,4 @@
 - Most modules are small; large modules should justify themselves with reusable logic, not one-off host customization.
 - Dotfile-backed modules must keep their referenced `dotfiles/` paths accurate; the feature module is the source of truth for mount points.
 - If the payload is static and should come from the repo store path, `inputs.self` with `recursive = true` is acceptable; if you would edit it in place, prefer the dotfile symlink helpers.
-- Validate feature changes with `nix flake check` when pure evaluation is available, then run `nix run home-manager -- build --flake .#erning@<host>` or dry-build a host that enables the feature.
+- Validate feature changes with `nix flake check` when pure evaluation is available, then run `home-manager build --flake .#erning@<host>` or dry-build a host that enables the feature.

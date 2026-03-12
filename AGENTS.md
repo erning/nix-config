@@ -1,9 +1,5 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-03-12
-**Commit:** `671195d`
-**Branch:** `master`
-
 ## OVERVIEW
 Personal NixOS and nix-darwin flake for one user across macOS, Linux, VMs, and home-manager-only hosts.
 Core architecture is builder-driven: `flake.nix` wires hosts through `lib/mkSystem.nix` and `lib/mkHome.nix`, then shared modules and host overrides do the rest.
@@ -56,6 +52,9 @@ nix-config/
 - Dotfile helpers live in `config.lib.dotfiles`: use `configFiles` for XDG files, `homeFiles` for home-level files, `configDir` for recursive editable directories, and `symlink` for one-off paths.
 - Legacy macOS hosts (`pterosaur`, `mango`) use pinned `mkSystem-2505`/`mkHome-2505` builders backed by nixpkgs-25.05 inputs.
 - Feature modules that use options not present in all home-manager versions must guard them with `lib.optionalAttrs (options.path ? attr) { ... }` so the attribute path is absent entirely when the option does not exist; `lib.mkIf` only wraps the value and still exposes the path to the module system (see `go.nix`).
+- Shared abstractions are intentionally thin; most behavior lives in small Nix modules rather than large helper layers.
+- Presets in `home-manager/presets.nix` are non-overlapping building blocks composed into `development` and `workstation` composites; all values use `lib.mkDefault`, then hosts opt in with `lib.mkMerge`.
+- This repo mixes declarative Nix modules with out-of-store dotfile symlinks for tools like git and lazygit.
 
 ## ANTI-PATTERNS
 - Do not bypass `mkSystem` or `mkHome` when adding hosts; `flake.nix` should stay on the builder path.
@@ -63,11 +62,6 @@ nix-config/
 - Do not edit `hosts/*/hardware-configuration.nix` unless the task is explicitly hardware-generation work.
 - Do not move or rename files under `dotfiles/` without updating the feature modules that reference them.
 - Do not touch secret material, encrypted files, or private-key-like files unless the task explicitly requires it.
-
-## UNIQUE STYLES
-- Shared abstractions are intentionally thin; most behavior lives in small Nix modules rather than large helper layers.
-- Presets in `home-manager/presets.nix` are non-overlapping building blocks composed into `development` and `workstation` composites; all values use `lib.mkDefault`, then hosts opt in with `lib.mkMerge`.
-- This repo mixes declarative Nix modules with out-of-store dotfile symlinks for tools like git and lazygit.
 
 ## COMMANDS
 ```bash
@@ -83,6 +77,3 @@ home-manager build --flake .#erning@dragon
 - Flake output names do not always match host directories: `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion` are intentional.
 - `pterosaur` (macOS Monterey 12.7.6) and `mango` (macOS Big Sur 11.7.10) are pinned to nixpkgs-25.05 / nix-darwin-25.05 / home-manager-25.05 because nixpkgs-unstable requires macOS Sonoma 14.0+.
 - `nix flake check` is not pure-eval-safe on machines that do not have `/etc/nixos/configuration.nix` for `orbstack`.
-- `lib/README.md` and `modules/README.md` are already detailed; prefer those over creating more child guidance there.
-- `dotfiles/README.md` and `overlays/README.md` are enough for those payload-heavy directories; no extra child `AGENTS.md` is warranted there.
-- Child `AGENTS.md` files should contain only subtree-specific rules, not copies of this root file.
