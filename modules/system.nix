@@ -5,15 +5,12 @@
   ...
 }:
 
-let
-  isDarwin = builtins.match ".*-darwin" settings.system != null;
-in
 {
   imports = [
     ./nix-settings.nix
     ./nixpkgs-config.nix
     ./nixpkgs-overlays.nix
-    (if isDarwin then ./darwin.nix else ./nixos.nix)
+    (if settings.isDarwin then ./darwin.nix else ./nixos.nix)
     ./packages.nix
     ./secrets.nix
   ];

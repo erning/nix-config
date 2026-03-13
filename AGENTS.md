@@ -45,7 +45,7 @@ nix-config/
 ## CONVENTIONS
 - Nix formatting: 2-space indent, LF, UTF-8, final newline, trimmed trailing whitespace.
 - Naming: hosts and features are lowercase-hyphenated; local variables are camelCase.
-- Platform checks use `builtins.match ".*-darwin" ... != null`.
+- Platform checks use `settings.isDarwin` / `settings.isLinux` (computed once in `mkSystem`/`mkHome`).
 - New feature files under `home-manager/features/` become available automatically through `lib/mkFeatureImports.nix`. Subdirectories create nested features (e.g., `fonts/source-han.nix` → `features.fonts.source-han`).
 - Feature modules are pure config functions — no boilerplate needed. `mkFeatureImports` auto-wraps each file with `options.features.<name>.enable` and `lib.mkIf`. Use `_description = "...";` in the returned attrset to override the default mkEnableOption description (which is the filename-derived name).
 - Host homes usually compose presets with `lib.mkMerge [ presets.<name> ... ]`.
