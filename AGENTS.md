@@ -55,6 +55,7 @@ nix-config/
 - Shared abstractions are intentionally thin; most behavior lives in small Nix modules rather than large helper layers.
 - Presets in `home-manager/presets.nix` are non-overlapping building blocks composed into `development` and `workstation` composites; all values use `lib.mkDefault`, then hosts opt in with `lib.mkMerge`.
 - This repo mixes declarative Nix modules with out-of-store dotfile symlinks for tools like git and lazygit.
+- Host-specific dotfiles use yadm-style `##` alternates: `file##hostname` overrides the base `file` on that host. Also supports `##h.hostname` and `##hostname.hostname` prefixes. Resolution and deployment are handled automatically by `lib.dotfiles` helpers and `lib/symlink-dir.nix`.
 
 ## ANTI-PATTERNS
 - Do not bypass `mkSystem` or `mkHome` when adding hosts; `flake.nix` should stay on the builder path.
