@@ -6,7 +6,7 @@ Core utility functions for building NixOS/nix-darwin system and home-manager con
 
 Creates system configurations for both Darwin and NixOS using a unified interface. Detects platform via `builtins.match ".*-darwin"` and calls `darwinSystem` or `nixosSystem` accordingly.
 
-Imports `modules/system.nix` then `hosts/<host>/configuration.nix`. Passes a `settings` attrset (`{ host, system }`) to modules via `specialArgs`.
+Imports `modules/system.nix` then `hosts/<host>/configuration.nix`. Passes a `settings` attrset (`{ host, system, isDarwin, isLinux }`) to modules via `specialArgs`.
 
 ```nix
 darwinConfigurations.dragon = mkSystem {
@@ -21,7 +21,7 @@ Legacy macOS hosts use a pinned variant (`mkSystem-2505`) that substitutes `nixp
 
 ## mkHome.nix
 
-Creates home-manager configurations for user environments. Passes a `settings` attrset (`{ user, host, system }`) to modules via `extraSpecialArgs`.
+Creates home-manager configurations for user environments. Passes a `settings` attrset (`{ user, host, system, isDarwin, isLinux }`) to modules via `extraSpecialArgs`.
 
 Imports `modules/nixpkgs-config.nix`, `modules/nixpkgs-overlays.nix`, `home-manager/home.nix`, then `hosts/<host>/home.nix`.
 
