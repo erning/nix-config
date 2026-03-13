@@ -36,11 +36,29 @@ xdg.configFile."git/config".source =
     "${config.home.homeDirectory}/.dotfiles/.config/git/config";
 ```
 
+## Host-Specific Alternates
+
+To provide host-specific versions of a dotfile, append `##hostname` to the filename:
+
+```
+dotfiles/.config/git/
+├── config                  # shared across all hosts
+├── config.local##dragon    # only deployed on host "dragon"
+└── config.local##phoenix   # only deployed on host "phoenix"
+```
+
+Rules:
+- `file##hostname` takes priority over `file`; the original file serves as the default fallback.
+- The deployed filename strips the `##hostname` suffix (e.g., `config.local##dragon` becomes `config.local`).
+- If neither the alternate nor the base file exists, the entry is silently skipped.
+- Works with all dotfile helpers: `configFiles`, `homeFiles`, `configDir`, `homeDir`, and `symlink`.
+- Also accepts yadm-style prefixes: `file##h.hostname` and `file##hostname.hostname`.
+
 ## Keep in Mind
 
 - Do not rename or move dotfiles without updating the feature module that references them.
 - Treat secret-like material carefully; some files in this tree are not ordinary public config.
-- Platform-specific variants belong next to the app config when that pattern already exists, such as `dotfiles/.config/git/darwin.gitconfig`.
+- For host-specific variants, prefer the `##hostname` alternate naming convention over ad-hoc per-platform files.
 
 ## Related Docs
 
