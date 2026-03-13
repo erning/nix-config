@@ -12,10 +12,10 @@
 }:
 let
   pkgs = nixpkgs.legacyPackages.${system};
+  isDarwin = builtins.match ".*-darwin" system != null;
+  isLinux = builtins.match ".*-linux" system != null;
   settings = {
-    inherit user;
-    inherit host;
-    inherit system;
+    inherit user host system isDarwin isLinux;
   };
   rootDir = "${inputs.self}";
 in

@@ -7,7 +7,7 @@
 
 let
   agenixModules =
-    if builtins.match ".*-darwin" settings.system != null then
+    if settings.isDarwin then
       inputs.agenix.darwinModules.default
     else
       inputs.agenix.nixosModules.default;

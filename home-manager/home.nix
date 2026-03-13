@@ -1,11 +1,8 @@
 { config, settings, lib, inputs, ... }:
 
-let
-  isDarwin = builtins.match ".*-darwin" settings.system != null;
-in
 {
   home.username = "${settings.user}";
-  home.homeDirectory = (if isDarwin then "/Users" else "/home") + "/${settings.user}";
+  home.homeDirectory = (if settings.isDarwin then "/Users" else "/home") + "/${settings.user}";
 
   lib.dotfiles = rec {
     path = "${config.home.homeDirectory}/.dotfiles";
@@ -87,7 +84,7 @@ in
   #
   #
   imports = [
-    (if isDarwin then ./darwin.nix else ./nixos.nix)
+    (if settings.isDarwin then ./darwin.nix else ./nixos.nix)
     ./packages.nix
     ./secrets.nix
     ./features

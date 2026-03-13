@@ -1,8 +1,5 @@
 { config, lib, settings, options, ... }:
 
-let
-  isDarwin = builtins.match ".*-darwin" settings.system != null;
-in
 {
   programs.ssh = {
     enable = true;
@@ -11,7 +8,7 @@ in
     includes = [
       "conf.d/*.conf"
     ]
-    ++ (if isDarwin then [ "~/.orbstack/ssh/config" ] else [ ]);
+    ++ (if settings.isDarwin then [ "~/.orbstack/ssh/config" ] else [ ]);
 
     # userKnownHostsFile = "/dev/null";
     extraConfig = ''

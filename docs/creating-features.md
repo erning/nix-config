@@ -130,16 +130,13 @@ devtools = {
 ```nix
 # git.nix
 { config, pkgs, settings, inputs, ... }:
-let
-  isDarwin = builtins.match ".*-darwin" settings.system != null;
-in
 {
   home.packages = with pkgs; [ git delta lazygit ];
   xdg.configFile = config.lib.dotfiles.configFiles [
     "git/config"
   ] // {
     "git/darwin.gitconfig" = {
-      enable = isDarwin;
+      enable = settings.isDarwin;
       source = config.lib.dotfiles.symlink ".config/git/darwin.gitconfig";
     };
   };
@@ -240,7 +237,7 @@ feature 模块函数可以使用以下参数（框架会透传所有模块参数
 | `lib` | 模块系统 | nixpkgs 库函数 |
 | `pkgs` | `_module.args` | 当前 nixpkgs 包集（含 `pkgs.unstable`、`pkgs.stable` overlay） |
 | `options` | 模块系统 | 所有已声明的选项（用于版本守卫） |
-| `settings` | `extraSpecialArgs` | `{ user, host, system }` |
+| `settings` | `extraSpecialArgs` | `{ user, host, system, isDarwin, isLinux }` |
 | `inputs` | `extraSpecialArgs` | 所有 flake inputs |
 
 只需在函数参数中声明需要的即可，必须包含 `...`：

@@ -79,25 +79,9 @@ hosts = [
 
 ## 二、中等影响：一致性和优雅度
 
-### 5. 平台检测 `isDarwin` 模式重复 4 处
+### 5. ~~平台检测 `isDarwin` 模式重复 4 处~~ ✅ 已完成
 
-**现状**：`builtins.match ".*-darwin" settings.system != null` 出现在：
-- `lib/mkSystem.nix:13`
-- `modules/system.nix:9`
-- `home-manager/home.nix:4`
-- 部分 feature 模块（如 `git.nix`、`ssh.nix`）
-
-**建议**：在 `settings` 中直接加入 `isDarwin` 和 `isLinux`：
-```nix
-settings = {
-  inherit host system;
-  isDarwin = builtins.match ".*-darwin" system != null;
-  isLinux = builtins.match ".*-linux" system != null;
-};
-```
-所有模块直接用 `settings.isDarwin`，无需各自计算。
-
-**涉及文件**：`lib/mkSystem.nix`、`lib/mkHome.nix`、`modules/system.nix`、`home-manager/home.nix`、`home-manager/features/git.nix`、`home-manager/features/ssh.nix`
+`settings.isDarwin` / `settings.isLinux` 已在 `mkSystem.nix` 和 `mkHome.nix` 中计算，下游模块直接使用。
 
 ---
 

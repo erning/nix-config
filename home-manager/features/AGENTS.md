@@ -18,7 +18,7 @@
 - Subdirectories create nested namespaces directly; `default.nix` files are skipped rather than required. Current example: `fonts/source-han.nix` -> `features.fonts.source-han.enable`.
 - Put reusable package/program setup here; host-only tweaks belong in `hosts/<name>/home.nix`.
 - Update `home-manager/presets.nix` only when the new feature should join a preset like `core`, `terminal`, `languages`, `devtools`, or `graphical`.
-- Follow existing patterns for platform guards, usually `builtins.match ".*-darwin" settings.system != null`.
+- Follow existing patterns for platform guards: use `settings.isDarwin` / `settings.isLinux`.
 - Dotfile-backed features should usually use `config.lib.dotfiles.configFiles` / `homeFiles`; use `configDir` when the whole directory should stay recursively editable.
 
 ## ANTI-PATTERNS
