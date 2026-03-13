@@ -1,5 +1,6 @@
 { config, pkgs, ... }:
 {
+  _description = "Zellij terminal multiplexer";
   home.packages = with pkgs; [
     zellij
   ];

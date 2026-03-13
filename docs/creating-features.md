@@ -203,9 +203,9 @@ graphical = {
 
 ---
 
-## 自定义描述
+## 描述（`_description`）
 
-默认的 `mkEnableOption` 描述就是文件名派生的 feature 名。如需自定义，在返回的 attrset 中加 `_description`：
+每个 feature 都应包含 `_description`，用作 `mkEnableOption` 的描述文本。默认值是文件名派生的 feature 名，但通常不够清晰：
 
 ```nix
 # nix-support.nix — 名称 "nix-support"，但描述为 "nix support"
@@ -255,6 +255,6 @@ feature 模块函数可以使用以下参数（框架会透传所有模块参数
 1. 在 `home-manager/features/` 下创建 `.nix` 文件（或子目录中的 `.nix` 文件）
 2. 编写纯配置函数，**不要**写 `options`、`mkEnableOption`、`mkIf` 等 boilerplate
 3. 如需引用 dotfiles，先在 `dotfiles/` 对应路径下创建文件
-4. 如描述需自定义，添加 `_description = "...";`
+4. 添加 `_description = "...";` 作为返回 attrset 的第一个属性
 5. 在 host `home.nix` 或 `home-manager/presets.nix` preset 中启用
 6. 验证：`nix run home-manager -- build --flake .#erning@<host>`
