@@ -12,7 +12,7 @@
 ## CONVENTIONS
 - Standard host layout is a pair: `configuration.nix` for system settings, `home.nix` for home-manager settings.
 - `pomelo` is the exception: home-manager only, no `configuration.nix`.
-- `orbstack` is the exception on the system side: it imports `/etc/nixos/configuration.nix` and forces hostname.
+- `orbstack` is the exception on the system side: it conditionally imports `/etc/nixos/configuration.nix` with a container fallback, and forces hostname.
 - Host homes usually import `home-manager/presets.nix` and compose presets with `lib.mkMerge`.
 - Keep host-specific changes local here; shared behavior belongs in `modules/` or `home-manager/features/`.
 

@@ -73,9 +73,8 @@ home-manager build --flake .#erning@dragon
 ```
 
 ## NOTES
-- `hosts/orbstack/configuration.nix` is a special case that imports `/etc/nixos/configuration.nix`.
+- `hosts/orbstack/configuration.nix` conditionally imports `/etc/nixos/configuration.nix` when present, falling back to `boot.isContainer = true` on non-OrbStack machines so `nix flake check` passes everywhere.
 - `pomelo` is home-manager-only; it has no system `configuration.nix`.
 - Flake output names do not always match host directories: `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion` are intentional.
 - `pterosaur` (macOS Monterey 12.7.6) and `mango` (macOS Big Sur 11.7.10) are pinned to nixpkgs-25.05 / nix-darwin-25.05 / home-manager-25.05 because nixpkgs-unstable requires macOS Sonoma 14.0+.
-- `nix flake check` is not pure-eval-safe on machines that do not have `/etc/nixos/configuration.nix` for `orbstack`.
 - `CLAUDE.md` is a symlink to `AGENTS.md` — they are the same file; only edit `AGENTS.md`.
