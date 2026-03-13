@@ -1,5 +1,6 @@
-_:
+{ ... }:
 {
+  _description = "zoxide directory jumper";
   programs.zoxide = {
     enable = true;
     enableZshIntegration = true;

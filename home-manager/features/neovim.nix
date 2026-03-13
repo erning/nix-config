@@ -8,6 +8,7 @@ let
   lazyvim = "NVIM_APPNAME=nvim-lazyvim nvim";
 in
 {
+  _description = "Neovim editor (LazyVim)";
   # Install neovim package
   home.packages = with pkgs; [
     neovim

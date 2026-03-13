@@ -1,6 +1,7 @@
 { config, lib, settings, options, ... }:
 
 {
+  _description = "SSH client";
   programs.ssh = {
     enable = true;
     matchBlocks."*" = { };

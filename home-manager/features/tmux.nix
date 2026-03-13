@@ -11,6 +11,7 @@ let
   };
 in
 {
+  _description = "tmux terminal multiplexer";
   programs.tmux = {
     enable = true;
     # Use xterm-256color for better color support

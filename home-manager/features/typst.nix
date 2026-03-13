@@ -10,5 +10,6 @@ let
   ];
 in
 {
+  _description = "Typst document typesetter";
   home.packages = [ pkgs.typst ] ++ (if cfg-fonts.enable then fonts else [ ]);
 }

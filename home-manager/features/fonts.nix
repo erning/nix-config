@@ -1,5 +1,6 @@
 { pkgs, ... }:
 {
+  _description = "common fonts";
   fonts.fontconfig.enable = true;
 
   home.packages = with pkgs.unstable; [

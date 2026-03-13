@@ -5,6 +5,7 @@ let
   plugins = pkgs.vimPlugins;
 in
 {
+  _description = "Vim editor";
   home.packages = with pkgs; [
     vim
   ];
