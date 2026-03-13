@@ -78,117 +78,54 @@
         home-manager = inputs.home-manager-2505;
         inherit inputs;
       };
+
+      lib = nixpkgs.lib;
+
+      isDarwin = system: builtins.match ".*-darwin" system != null;
+
+      builders = {
+        default = { sys = mkSystem; hm = mkHome; };
+        "25.05" = { sys = mkSystem-2505; hm = mkHome-2505; };
+      };
+
+      hosts = [
+        # MacBookPro18,2 (16-inch, 2021) — macOS Tahoe 26.3.1
+        { name = "dragon"; system = "aarch64-darwin"; }
+
+        # MacBookPro16,1 (16-inch, 2019) — macOS Tohoe 26.3.1
+        { name = "dinosaur"; system = "x86_64-darwin"; }
+
+        # MacBookPro6,1 (17-inch, Mid 2010) — NixOS
+        { name = "phoenix"; system = "x86_64-linux"; }
+
+        # MacBookAir8,2 (13-inch, 2019) — Fedora + home-manager only
+        { name = "pomelo"; system = "x86_64-linux"; homeOnly = true; }
+
+        # MacBookPro13,3 (15-inch, 2016) — macOS Monterey 12.7.6
+        { name = "pterosaur"; system = "x86_64-darwin"; pinned = "25.05"; }
+
+        # MacBook8,1 (12-inch, Early 2015) — macOS Big Sur 11.7.10
+        { name = "mango"; system = "x86_64-darwin"; pinned = "25.05"; }
+
+        # OrbStack VM
+        { name = "orb-aarch64"; host = "orbstack"; system = "aarch64-linux"; }
+
+        # VMware Fusion VM
+        { name = "vm-aarch64"; host = "vmfusion"; system = "aarch64-linux"; }
+      ];
+
+      hostOutputs = map (h:
+        let
+          user = h.user or "erning";
+          host = h.host or h.name;
+          system = h.system;
+          homeOnly = h.homeOnly or false;
+          b = builders.${h.pinned or "default"};
+          sysKey = if isDarwin system then "darwinConfigurations" else "nixosConfigurations";
+        in
+        (if homeOnly then {} else { ${sysKey}.${h.name} = b.sys { inherit host system; }; })
+        // { homeConfigurations."${user}@${h.name}" = b.hm { inherit user host system; }; }
+      ) hosts;
     in
-    {
-      #
-      # MacBookPro18,2 (16-inch, 2021)
-      #
-      # macOS (Sequoia - 15.5) + nix-darwin + home-manager
-      darwinConfigurations."dragon" = mkSystem {
-        host = "dragon";
-        system = "aarch64-darwin";
-      };
-
-      homeConfigurations."erning@dragon" = mkHome {
-        user = "erning";
-        host = "dragon";
-        system = "aarch64-darwin";
-      };
-
-      #
-      # MacBookPro16,1 (16-inch, 2019)
-      #
-      # macOS (Sequoia - 15.5) + nix-darwin + home-manager
-      darwinConfigurations."dinosaur" = mkSystem {
-        host = "dinosaur";
-        system = "x86_64-darwin";
-      };
-
-      homeConfigurations."erning@dinosaur" = mkHome {
-        user = "erning";
-        host = "dinosaur";
-        system = "x86_64-darwin";
-      };
-
-      #
-      # MacBookPro6,1 (17-inch, Mid 2010)
-      #
-      # NixOS + home-manager
-      nixosConfigurations."phoenix" = mkSystem {
-        host = "phoenix";
-        system = "x86_64-linux";
-      };
-
-      homeConfigurations."erning@phoenix" = mkHome {
-        user = "erning";
-        host = "phoenix";
-        system = "x86_64-linux";
-      };
-
-      #
-      # MacBookAir8,2 (Retina, 13-inch, 2019)
-      #
-      # Fedora + nix + home-manager
-      homeConfigurations."erning@pomelo" = mkHome {
-        user = "erning";
-        host = "pomelo";
-        system = "x86_64-linux";
-      };
-
-      #
-      # MacBookPro13,3 (15-inch, 2016)
-      #
-      # macOS (Monterey - 12.7.6) + nix-darwin + home-manager
-      darwinConfigurations."pterosaur" = mkSystem-2505 {
-        host = "pterosaur";
-        system = "x86_64-darwin";
-      };
-
-      homeConfigurations."erning@pterosaur" = mkHome-2505 {
-        user = "erning";
-        host = "pterosaur";
-        system = "x86_64-darwin";
-      };
-
-      #
-      # MacBook8,1 (Retina, 12-inch, Early 2015)
-      #
-      # macOS (Big Sur - 11.7.10) + nix-darwin + home-manager
-      darwinConfigurations."mango" = mkSystem-2505 {
-        host = "mango";
-        system = "x86_64-darwin";
-      };
-
-      homeConfigurations."erning@mango" = mkHome-2505 {
-        user = "erning";
-        host = "mango";
-        system = "x86_64-darwin";
-      };
-
-      #
-      #
-      #
-
-      nixosConfigurations."orb-aarch64" = mkSystem {
-        host = "orbstack";
-        system = "aarch64-linux";
-      };
-
-      homeConfigurations."erning@orb-aarch64" = mkHome {
-        user = "erning";
-        host = "orbstack";
-        system = "aarch64-linux";
-      };
-
-      nixosConfigurations."vm-aarch64" = mkSystem {
-        host = "vmfusion";
-        system = "aarch64-linux";
-      };
-
-      homeConfigurations."erning@vm-aarch64" = mkHome {
-        user = "erning";
-        host = "vmfusion";
-        system = "aarch64-linux";
-      };
-    };
+    lib.foldl' lib.recursiveUpdate {} hostOutputs;
 }
