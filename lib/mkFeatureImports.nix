@@ -1,6 +1,11 @@
 # Recursively scans a directory for feature modules.
 # Derives feature name from filename, wraps each with enable option + mkIf.
 # Subdirectories create nested features (fonts/source-han.nix → "fonts.source-han").
+#
+# Every feature should include `_description = "...";` in its returned attrset.
+# The underscore prefix follows the module system's own convention for special
+# attributes (_file, _class, _prefix). The value is used as the mkEnableOption
+# description and stripped from the final config before merging.
 dir:
 
 let

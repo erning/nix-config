@@ -1,5 +1,6 @@
-_:
+{ ... }:
 {
+  _description = "fzf fuzzy finder";
   programs.fzf = {
     enable = true;
     enableZshIntegration = true;

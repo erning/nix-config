@@ -80,7 +80,7 @@ Recursively scans a directory for `.nix` files (skipping `default.nix`), derives
 
 Name derivation: `direnv.nix` -> `"direnv"`, `fonts/source-han.nix` -> `"fonts.source-han"`.
 
-Use `_description = "...";` in a feature's returned attrset to override the default `mkEnableOption` description.
+Every feature should include `_description = "...";` in its returned attrset — it provides the `mkEnableOption` description and is stripped before merging. The underscore prefix follows the module system's convention for special attributes (`_file`, `_class`, `_prefix`).
 
 ```nix
 # home-manager/features/default.nix

@@ -1,5 +1,6 @@
 { config, inputs, ... }:
 {
+  _description = "Yazi file manager";
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;

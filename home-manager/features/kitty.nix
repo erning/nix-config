@@ -1,5 +1,6 @@
 { config, ... }:
 {
+  _description = "Kitty terminal emulator";
   xdg.configFile = config.lib.dotfiles.configFiles [
     "kitty/kitty.conf"
     "kitty/kitty.app.png"

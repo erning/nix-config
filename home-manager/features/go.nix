@@ -1,5 +1,6 @@
 { pkgs, lib, options, ... }:
 ({
+  _description = "Go programming language";
   home.packages = with pkgs; [
     go
   ];

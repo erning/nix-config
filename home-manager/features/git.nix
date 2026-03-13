@@ -5,6 +5,7 @@
 }:
 
 {
+  _description = "Git and related tools";
   home.packages = with pkgs; [
     git
     git-lfs

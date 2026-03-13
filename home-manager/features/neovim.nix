@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, config, ... }:
 
 let
   # Define custom editor wrapper that sets NVIM_APPNAME environment variable
@@ -8,24 +8,17 @@ let
   lazyvim = "NVIM_APPNAME=nvim-lazyvim nvim";
 in
 {
+  _description = "Neovim editor (LazyVim)";
   # Install neovim package
   home.packages = with pkgs; [
     neovim
   ];
 
-  # Copy entire LazyVim configuration directory to XDG config
-  # recursive=true ensures all subdirectories and files are copied
-  # LazyVim config is stored in dotfiles/.config/nvim-lazyvim
-  xdg.configFile."nvim-lazyvim" = {
-    source = "${inputs.self}/dotfiles/.config/nvim-lazyvim";
-    recursive = true;
-  };
+  # Symlink LazyVim configuration directory to XDG config
+  xdg.configFile = config.lib.dotfiles.configDir "nvim-lazyvim";
 
-  # Copy lazyvim wrapper script to ~/.local/bin
-  # This script is what gets called when you run "lazyvim" or "vi"
-  home.file.".local/bin/lazyvim" = {
-    source = "${inputs.self}/dotfiles/.local/bin/lazyvim";
-  };
+  # Symlink lazyvim wrapper script to ~/.local/bin
+  home.file = config.lib.dotfiles.homeFiles [ ".local/bin/lazyvim" ];
 
   # Set default editor to use the lazyvim wrapper
   # This makes $EDITOR and $VISUAL use our custom config

@@ -1,4 +1,5 @@
-_:
+{ ... }:
 {
+  _description = "Nushell";
   programs.nushell.enable = true;
 }

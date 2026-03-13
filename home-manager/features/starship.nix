@@ -1,5 +1,6 @@
 { config, pkgs, ... }:
 {
+  _description = "Starship prompt";
   programs.starship = {
     enable = true;
     enableFishIntegration = true;

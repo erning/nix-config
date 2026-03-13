@@ -5,6 +5,7 @@
 
 { pkgs, ... }:
 {
+  _description = "Rust toolchain (rustup)";
   home.packages = with pkgs; [
     rustup
   ];

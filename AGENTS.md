@@ -47,7 +47,7 @@ nix-config/
 - Naming: hosts and features are lowercase-hyphenated; local variables are camelCase.
 - Platform checks use `settings.isDarwin` / `settings.isLinux` (computed once in `mkSystem`/`mkHome`).
 - New feature files under `home-manager/features/` become available automatically through `lib/mkFeatureImports.nix`. Subdirectories create nested features (e.g., `fonts/source-han.nix` → `features.fonts.source-han`).
-- Feature modules are pure config functions — no boilerplate needed. `mkFeatureImports` auto-wraps each file with `options.features.<name>.enable` and `lib.mkIf`. Use `_description = "...";` in the returned attrset to override the default mkEnableOption description (which is the filename-derived name).
+- Feature modules are pure config functions — no boilerplate needed. `mkFeatureImports` auto-wraps each file with `options.features.<name>.enable` and `lib.mkIf`. Every feature should include `_description = "...";` as the first attribute — it provides the `mkEnableOption` description and is stripped before merging. The underscore prefix follows the module system's own convention (`_file`, `_class`).
 - Host homes usually compose presets with `lib.mkMerge [ presets.<name> ... ]`.
 - Dotfile helpers live in `config.lib.dotfiles`: use `configFiles` for XDG files, `homeFiles` for home-level files, `configDir` for recursive editable directories, and `symlink` for one-off paths.
 - Legacy macOS hosts (`pterosaur`, `mango`) use pinned `mkSystem-2505`/`mkHome-2505` builders backed by nixpkgs-25.05 inputs.
@@ -78,3 +78,4 @@ home-manager build --flake .#erning@dragon
 - Flake output names do not always match host directories: `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion` are intentional.
 - `pterosaur` (macOS Monterey 12.7.6) and `mango` (macOS Big Sur 11.7.10) are pinned to nixpkgs-25.05 / nix-darwin-25.05 / home-manager-25.05 because nixpkgs-unstable requires macOS Sonoma 14.0+.
 - `nix flake check` is not pure-eval-safe on machines that do not have `/etc/nixos/configuration.nix` for `orbstack`.
+- `CLAUDE.md` is a symlink to `AGENTS.md` — they are the same file; only edit `AGENTS.md`.

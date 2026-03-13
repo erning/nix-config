@@ -1,5 +1,6 @@
 { config, inputs, ... }:
 {
+  _description = "bat syntax-highlighting pager";
   programs.bat.enable = true;
 
   xdg.configFile = config.lib.dotfiles.configFiles [

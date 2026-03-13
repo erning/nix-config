@@ -1,5 +1,6 @@
 { pkgs, ... }:
 {
+  _description = "essential build tools (gcc, make, autotools)";
   home.packages = with pkgs; [
     bison
     flex
