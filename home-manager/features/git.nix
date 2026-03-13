@@ -1,8 +1,9 @@
-{ config, pkgs, settings, inputs, ... }:
+{
+  config,
+  pkgs,
+  ...
+}:
 
-let
-  isDarwin = builtins.match ".*-darwin" settings.system != null;
-in
 {
   home.packages = with pkgs; [
     git
@@ -14,12 +15,12 @@ in
 
   xdg.configFile = config.lib.dotfiles.configFiles [
     "git/config"
+    "git/config.local"
+    "git/catppuccin.gitconfig" # delta theme
     "lazygit/config.yml"
-  ] // {
-    "git/darwin.gitconfig" = {
-      enable = isDarwin;
-      source = config.lib.dotfiles.symlink ".config/git/darwin.gitconfig";
-    };
-    "git/catppuccin.gitconfig".source = "${inputs.self}/dotfiles/.config/git/catppuccin.gitconfig";
-  };
+  ];
+
+  home.file = config.lib.dotfiles.homeFiles [
+    ".gitignore_global"
+  ];
 }
