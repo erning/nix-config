@@ -1,6 +1,6 @@
 # Dotfiles 管理方式详解
 
-本项目通过 home-manager feature 模块管理 dotfiles，使用两种链接策略将 `dotfiles/` 下的配置文件映射到用户 home 目录。
+本项目通过 home-manager feature 模块管理 dotfiles，使用三种链接策略将 `dotfiles/` 下的配置文件映射到用户 home 目录。
 
 ---
 
@@ -31,8 +31,8 @@
 ### 适用场景
 
 - 需要频繁手动编辑的配置文件（git config、lazygit、starship、terminal 配置等）
-- 平台特定的配置文件（如 `darwin.gitconfig`）
 - SSH 配置（authorized_keys、conf.d/*.conf）
+- 编辑器配置文件（zed、alacritty、ghostty 等）
 
 ### 代码模式
 
@@ -58,14 +58,23 @@
 
 ### 实际示例
 
-| Feature 模块 | 链接的文件 |
-|---|---|
-| `git.nix` | `git/config`, `darwin.gitconfig`, `lazygit/config.yml` |
-| `kitty.nix` | `kitty/kitty.conf`, `kitty.app.png`, `current-theme.conf` |
-| `starship.nix` | `starship.toml` |
-| `ssh.nix` | `authorized_keys`, `conf.d/homelab.conf`, `conf.d/vps.conf` |
-| `bat.nix` | `bat/config` |
-| `yazi.nix` | `yazi/theme.toml` |
+| Feature 模块 | 链接的文件 | Helper |
+|---|---|---|
+| `git.nix` | `git/config`, `git/config.local`, `git/catppuccin.gitconfig`, `lazygit/config.yml` | `configFiles` |
+| `git.nix` | `.gitignore_global` | `homeFiles` |
+| `kitty.nix` | `kitty/kitty.conf`, `kitty/kitty.app.png`, `kitty/current-theme.conf` | `configFiles` |
+| `starship.nix` | `starship.toml` | `configFiles` |
+| `ssh.nix` | `.ssh/authorized_keys`, `.ssh/conf.d/homelab.conf`, `.ssh/conf.d/vps.conf` | `homeFiles` |
+| `bat.nix` | `bat/config` | `configFiles` |
+| `yazi.nix` | `yazi/theme.toml` | `configFiles` |
+| `ghostty.nix` | `ghostty/config` | `configFiles` |
+| `alacritty.nix` | `alacritty/alacritty.toml` | `configFiles` |
+| `zed.nix` | `zed/settings.json` | `configFiles` |
+| `zellij.nix` | `zellij/config.kdl` | `configFiles` |
+| `nodejs.nix` | `.npmrc` | `homeFiles` |
+| `vim.nix` | `.config/vim/vimrc` | `symlink` |
+| `claude-code.nix` | `cce/kimi.env`, `cce/minimax.env`, `cce/zhipu.env` | `configFiles` |
+| `opencode.nix` | `opencode/opencode.json`, `opencode/oh-my-opencode.json`, `fish/functions/omo.fish` | `configFiles` |
 
 ---
 
@@ -96,7 +105,7 @@
 ### 适用场景
 
 - 主题文件、色彩方案等不需要手动编辑的静态资源
-- 需要递归复制的完整目录树（如 neovim 插件配置）
+- 需要跨机器完全一致的只读配置
 - 生成的或机器维护的配置（不需要人工干预）
 - 二进制文件、图片等非文本资源
 
@@ -125,11 +134,8 @@
 
 | Feature 模块 | 链接的文件 | 说明 |
 |---|---|---|
-| `neovim.nix` | `nvim-lazyvim/`（整个目录） | LazyVim 完整配置，recursive=true |
-| `neovim.nix` | `.local/bin/lazyvim` | wrapper 脚本 |
 | `bat.nix` | `bat/themes/`（整个目录） | 语法高亮主题，recursive=true |
 | `yazi.nix` | `Catppuccin-mocha.tmTheme` | 色彩主题文件 |
-| `git.nix` | `git/catppuccin.gitconfig` | 色彩主题配置 |
 
 ---
 
@@ -167,9 +173,19 @@
 
 ```nix
 {
+  # XDG config 目录
   xdg.configFile = config.lib.dotfiles.configDir "nvim-lazyvim";
+
+  # home 目录
+  home.file = config.lib.dotfiles.homeDir ".vim";
 }
 ```
+
+### 实际示例
+
+| Feature 模块 | 链接的目录 | Helper |
+|---|---|---|
+| `neovim.nix` | `nvim-lazyvim/`（LazyVim 完整配置） | `configDir` |
 
 ### 与其他条目合并
 
@@ -215,43 +231,32 @@ dotfiles/.config/myapp/themes/        # 主题目录（静态资源）
 
 ### 步骤 2：创建 feature 模块
 
-在 `home-manager/features/myapp.nix` 创建文件（会被 `scan-files.nix` 自动发现，无需手动注册）：
+在 `home-manager/features/myapp.nix` 创建文件（会被 `mkFeatureImports.nix` 自动发现并包裹，无需手动注册或编写 boilerplate）：
 
 ```nix
+{ config, pkgs, inputs, ... }:
 {
-  config,
-  lib,
-  pkgs,
-  inputs,
-  ...
-}:
+  _description = "myapp configuration";
 
-let
-  cfg = config.features.myapp;
-in
-{
-  # 必须：声明 enable option
-  options.features.myapp.enable = lib.mkEnableOption "myapp";
+  # 安装包
+  home.packages = with pkgs; [
+    myapp
+  ];
 
-  config = lib.mkIf cfg.enable {
-    # 安装包
-    home.packages = with pkgs; [
-      myapp
-    ];
-
-    xdg.configFile = config.lib.dotfiles.configFiles [
-      # 方法一：可编辑 symlink（频繁编辑的配置）
-      "myapp/config.toml"
-    ] // {
-      # 方法二：只读 store 引用（主题、静态资源）
-      "myapp/themes" = {
-        source = "${inputs.self}/dotfiles/.config/myapp/themes";
-        recursive = true;
-      };
+  xdg.configFile = config.lib.dotfiles.configFiles [
+    # 方法一：可编辑 symlink（频繁编辑的配置）
+    "myapp/config.toml"
+  ] // {
+    # 方法二：只读 store 引用（主题、静态资源）
+    "myapp/themes" = {
+      source = "${inputs.self}/dotfiles/.config/myapp/themes";
+      recursive = true;
     };
   };
 }
 ```
+
+**注意**：不要手写 `options.features.*.enable`、`lib.mkEnableOption`、`lib.mkIf` 等 boilerplate。框架（`mkFeatureImports.nix`）会自动生成这些。详见 `docs/creating-features.md`。
 
 ### 步骤 3：在 host 的 `home.nix` 中启用
 
@@ -300,8 +305,9 @@ nixos-rebuild dry-build --flake .#<host>    # NixOS
 
 ## 关键文件
 
+- `home-manager/home.nix` — `config.lib.dotfiles` helper 定义
 - `home-manager/features/default.nix` — 自动导入入口
-- `lib/scan-files.nix` — 目录扫描逻辑
-- `lib/symlink-dir.nix` — 递归 out-of-store symlink 生成
+- `lib/mkFeatureImports.nix` — feature 自动包裹引擎（enable option + mkIf）
+- `lib/symlink-dir.nix` — 递归 out-of-store symlink 生成（含 yadm 风格 alternate 支持）
 - `home-manager/presets.nix` — preset bundles
 - `dotfiles/README.md` — dotfiles 目录说明

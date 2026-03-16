@@ -11,6 +11,7 @@
 ```nix
 { pkgs, ... }:
 {
+  _description = "ripgrep search tool";
   home.packages = with pkgs; [
     ripgrep
   ];
@@ -19,7 +20,7 @@
 
 完成。无需其他操作：
 
-- 框架自动生成 `options.features.ripgrep.enable = lib.mkEnableOption "ripgrep";`
+- 框架自动生成 `options.features.ripgrep.enable = lib.mkEnableOption "ripgrep search tool";`（描述来自 `_description`）
 - 配置体自动包裹在 `lib.mkIf config.features.ripgrep.enable { ... }` 中
 - feature 名称从文件名派生（`ripgrep.nix` → `"ripgrep"`）
 
@@ -128,18 +129,22 @@ devtools = {
 ### 使用 settings（平台判断）
 
 ```nix
-# git.nix
-{ config, pkgs, settings, inputs, ... }:
+# ssh.nix
+{ config, settings, ... }:
 {
-  home.packages = with pkgs; [ git delta lazygit ];
-  xdg.configFile = config.lib.dotfiles.configFiles [
-    "git/config"
-  ] // {
-    "git/darwin.gitconfig" = {
-      enable = settings.isDarwin;
-      source = config.lib.dotfiles.symlink ".config/git/darwin.gitconfig";
-    };
+  _description = "SSH client";
+  programs.ssh = {
+    enable = true;
+    includes = [
+      "conf.d/*.conf"
+    ]
+    ++ (if settings.isDarwin then [ "~/.orbstack/ssh/config" ] else [ ]);
   };
+
+  home.file = config.lib.dotfiles.homeFiles [
+    ".ssh/authorized_keys"
+    ".ssh/conf.d/homelab.conf"
+  ];
 }
 ```
 
@@ -205,7 +210,7 @@ graphical = {
 
 ## 描述（`_description`）
 
-每个 feature 都应包含 `_description`，用作 `mkEnableOption` 的描述文本。默认值是文件名派生的 feature 名，但通常不够清晰：
+每个 feature 都应包含 `_description` 作为返回 attrset 的第一个属性，用作 `mkEnableOption` 的描述文本。若未提供，默认值为文件名派生的 feature 名。当前所有 feature 均已包含此属性：
 
 ```nix
 # nix-support.nix — 名称 "nix-support"，但描述为 "nix support"
