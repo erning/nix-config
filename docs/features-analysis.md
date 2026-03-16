@@ -1,6 +1,6 @@
 # Home-Manager Features Analysis
 
-Analysis of `home-manager/features/` modules for potential homebrew migration.
+Analysis of all `home-manager/features/` modules (38 total).
 
 Classification criteria:
 - **Packages-only**: Only uses `home.packages` to install packages, no configuration
@@ -16,8 +16,6 @@ Classification criteria:
 
 ## Packages-only (12)
 
-Most suitable for homebrew migration - just replace with `brew install`.
-
 | Feature | Packages |
 |---|---|
 | `zig.nix` | zig |
@@ -31,12 +29,11 @@ Most suitable for homebrew migration - just replace with `brew install`.
 | `gradle.nix` | gradle |
 | `nix-support.nix` | nil, nixd, nixfmt |
 | `build-essential.nix` | bison, flex, fontforge, makeWrapper, pkg-config, gnumake, gcc, libiconv, autoconf, automake, libtool |
-| `typst.nix` | typst (+ conditional fonts if fonts feature enabled) |
+| `typst.nix` | typst (+ conditional fonts: libertinus, jetbrains-mono, newcomputermodern if fonts feature enabled) |
 
-## Config-only (13)
+## Config-only (15)
 
-No explicit `home.packages`. If packages are installed via homebrew, these
-configurations can remain in nix.
+No explicit `home.packages`.
 
 ### Pure symlink/config (no implicit package install)
 
@@ -44,17 +41,17 @@ These truly install nothing - they only symlink dotfiles or configure settings.
 
 | Feature | Configuration |
 |---|---|
-| `ssh.nix` | programs.ssh (matchBlocks, includes), home.file (authorized_keys, conf.d) |
+| `ssh.nix` | programs.ssh (matchBlocks, includes, isDarwin conditional), home.file (authorized_keys, conf.d) |
 | `zed.nix` | xdg.configFile (settings.json symlink) |
 | `ghostty.nix` | xdg.configFile (config symlink) |
 | `kitty.nix` | xdg.configFile (kitty.conf, current-theme.conf, kitty.app.png) |
 | `alacritty.nix` | xdg.configFile (alacritty.toml symlink) |
+| `claude-code.nix` | xdg.configFile (cce/kimi.env, cce/minimax.env, cce/zhipu.env) |
+| `opencode.nix` | xdg.configFile (opencode/opencode.json, opencode/oh-my-opencode.json, fish/functions/omo.fish) |
 
 ### programs.X.enable (implicit package install)
 
 These use `programs.X.enable = true` which implicitly installs the package.
-If migrating the package to homebrew, change to config-only mode by removing
-`enable = true` and setting `package = null` or similar.
 
 | Feature | Implicit Package | Configuration |
 |---|---|---|
@@ -65,58 +62,47 @@ If migrating the package to homebrew, change to config-only mode by removing
 | `eza.nix` | eza | programs.eza (git, icons settings) |
 | `fzf.nix` | fzf | programs.fzf + shell integrations (zsh, fish, bash) |
 | `zoxide.nix` | zoxide | programs.zoxide + shell integrations (zsh, fish, bash, nushell) |
-| `bat.nix` | bat | programs.bat + xdg.configFile (config, themes) |
+| `bat.nix` | bat | programs.bat + xdg.configFile (config symlink, themes via inputs.self) |
 
-## Both (10)
+## Both (11)
 
-Install packages AND provide configuration. Migration requires splitting:
-keep config in nix, move package install to homebrew.
+Install packages AND provide configuration.
 
 | Feature | Explicit Packages | Implicit Packages | Configuration |
 |---|---|---|---|
-| `git.nix` | git, git-lfs, git-crypt, delta, lazygit | - | xdg.configFile (git config, darwin.gitconfig, catppuccin theme, lazygit config) |
-| `neovim.nix` | neovim | - | xdg.configFile (LazyVim), home.file (lazyvim script), sessionVariables (EDITOR, VISUAL), shell aliases (vi) |
-| `vim.nix` | vim | - | home.file (.vim/vimrc, plugins: catppuccin, polyglot, editorconfig, lightline) |
+| `git.nix` | git, git-lfs, git-crypt, delta, lazygit | - | xdg.configFile (git/config, git/config.local, git/catppuccin.gitconfig, lazygit/config.yml), home.file (.gitignore_global) |
+| `neovim.nix` | neovim | - | xdg.configFile (nvim-lazyvim/ via configDir), home.file (lazyvim wrapper), sessionVariables (EDITOR, VISUAL), shell aliases (vi) |
+| `vim.nix` | vim | - | home.file (.vim/vimrc via symlink, plugins: catppuccin, polyglot, editorconfig, lightline) |
 | `nodejs.nix` | nodejs_24, pnpm, bun | - | home.file (.npmrc symlink) |
-| `go.nix` | go | - | programs.go (GOPATH) |
+| `go.nix` | go | - | programs.go (GOPATH via optionalAttrs guard) |
 | `zellij.nix` | zellij | - | xdg.configFile (config.kdl symlink) |
-| `fonts.nix` | libertine, lxgw-wenkai, lxgw-neoxihei, nerd-fonts.jetbrains-mono, nerd-fonts._0xproto, font-awesome, nerd-fonts.symbols-only | - | fonts.fontconfig.enable |
-| `starship.nix` | - | starship (unstable) | programs.starship + shell integrations + xdg.configFile (config symlink) |
-| `tmux.nix` | - | tmux | programs.tmux (prefix, vi-mode, mouse, keybindings, Catppuccin theme, status line) |
-| `yazi.nix` | - | yazi | programs.yazi + shell integrations + xdg.configFile (theme, Catppuccin) |
+| `fonts.nix` | libertine, lxgw-wenkai, lxgw-neoxihei, nerd-fonts.jetbrains-mono, nerd-fonts._0xproto, font-awesome, nerd-fonts.symbols-only (unstable) | - | fonts.fontconfig.enable |
+| `fonts/source-han.nix` | source-han-sans, source-han-serif, source-han-mono (unstable) | - | - |
+| `starship.nix` | - | starship (unstable, explicit package override) | programs.starship + shell integrations + xdg.configFile (starship.toml symlink) |
+| `tmux.nix` | - | tmux | programs.tmux (prefix, vi-mode, mouse, keybindings, Catppuccin theme v2.1.2) |
+| `yazi.nix` | - | yazi | programs.yazi + shell integrations + xdg.configFile (theme.toml symlink, Catppuccin-mocha.tmTheme via inputs.self) |
 
 ---
 
-## Migration Guide
+## Preset Membership
 
-### Tier 1: Easiest (Packages-only)
+| Preset | Features |
+|---|---|
+| **core** | fish, bash, zsh, starship, eza, fzf, bat, vim, git, ssh |
+| **terminal** | tmux, neovim, nushell, zellij, zoxide, yazi |
+| **languages** | rustup, zig, python, go, nodejs, jdk, kotlin |
+| **devtools** | nix-support, just, direnv, gradle, typst, docker, claude-code, opencode |
+| **graphical** | fonts, fonts.source-han, zed, ghostty, kitty, alacritty |
+| **development** | core + terminal + languages + devtools |
+| **workstation** | development + graphical |
 
-Direct `brew install` replacement. Remove from nix entirely.
+## Special Patterns
 
-```
-brew install zig direnv python uv just lazydocker rustup jdk kotlin gradle typst
-```
-
-Exceptions:
-- **nix-support.nix** (nil, nixd, nixfmt) - Nix ecosystem tools, may not be in homebrew or have different versions. Consider keeping in nix.
-- **build-essential.nix** - Many of these are macOS system tools or available via Xcode CLI tools. Review individually.
-
-### Tier 2: Config-only with implicit packages
-
-For features using `programs.X.enable`, if package moves to homebrew:
-1. Keep the nix module for configuration
-2. Set `programs.X.package = pkgs.emptyDirectory` or equivalent to prevent nix from installing the package
-3. Ensure homebrew-installed binary is on PATH
-
-Candidates: eza, fzf, zoxide, bat, fish, bash, zsh, nushell
-
-### Tier 3: Both (requires splitting)
-
-1. Move package install to homebrew
-2. Keep configuration in nix (xdg.configFile, home.file, etc.)
-3. For `programs.X` based ones (starship, tmux, yazi), also need the package override trick from Tier 2
-
-### Keep in nix
-
-- **Pure symlink features** (zed, ghostty, kitty, alacritty, ssh) - these are config-only and work regardless of how the package is installed
-- **Complex config features** (tmux, neovim) - extensive nix-managed configuration that would be hard to replicate outside nix
+| Pattern | Features |
+|---|---|
+| `settings.isDarwin` | ssh.nix (conditional OrbStack SSH config include) |
+| `lib.optionalAttrs` (version guard) | go.nix (`programs.go.env`), ssh.nix (`programs.ssh.enableDefaultConfig`) |
+| `pkgs.unstable` | fonts.nix, fonts/source-han.nix, starship.nix |
+| `inputs.self` (store path) | bat.nix (themes dir), yazi.nix (Catppuccin tmTheme) |
+| `configDir` (recursive symlink) | neovim.nix (nvim-lazyvim/) |
+| Feature cross-reference | typst.nix (reads `config.features.fonts.enable` for conditional font packages) |
