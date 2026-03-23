@@ -21,8 +21,11 @@
 
   "ui_font_size": 18,
   "buffer_font_family": "JetBrainsMono Nerd Font",
-  "buffer_font_size": 16,
+  "buffer_font_size": 18,
   "buffer_line_height": "standard",
+
+  "agent_ui_font_size": 18,
+  "agent_buffer_font_size": 18,
 
   //
   "restore_on_startup": "empty_tab",
@@ -48,30 +51,51 @@
     },
   },
 
+  "language_models": {
+    "openai_compatible": {
+      "zhipu": {
+        "api_url": "https://open.bigmodel.cn/api/coding/paas/v4",
+        "available_models": [
+          {
+            "name": "glm-5",
+            "max_tokens": 200000,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": false,
+              "prompt_cache_key": false,
+              "chat_completions": true
+            }
+          }
+        ]
+      }
+    }
+  },
+
   "agent": {
     "default_model": {
-      "provider": "copilot_chat",
-      "model": "gpt-5-mini",
+      "provider": "zhipu",
+      "model": "glm-5",
     },
   },
 
   "agent_servers": {
-    "claude-acp": {
-      "type": "registry"
-    },
-    "codex-acp": {
-      "type": "registry"
-    },
-    "gemini": {
-      "type": "registry"
-    },
     "kimi": {
       "type": "registry"
     }
   },
 
   "edit_predictions": {
-    "provider": "zed"
+    // "provider": "zed",
+    "provider": "open_ai_compatible_api",
+    "open_ai_compatible_api": {
+      "api_url": "https://open.bigmodel.cn/api/coding/paas/v4",
+      "model": "glm-5",
+      "prompt_format": "glm",
+      "max_output_tokens": 256
+    }
   },
 
   "telemetry": {
