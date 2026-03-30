@@ -13,10 +13,10 @@
       "variant": "xhigh"
     },
     "librarian": {
-      "model": "zhipuai-coding-plan/glm-5"
+      "model": "zhipuai-coding-plan/glm-5.1"
     },
     "explore": {
-      "model": "zhipuai-coding-plan/glm-5"
+      "model": "zhipuai-coding-plan/glm-5.1"
     },
     "multimodal-looker": {
       "model": "kimi-for-coding/k2p5"
