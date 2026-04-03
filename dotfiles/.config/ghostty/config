@@ -1,3 +1,5 @@
+shell-integration-features = ssh-terminfo,ssh-env
+
 font-size = 16
 font-codepoint-map = U+4E00-U+9FFF,U+3400-U+4DBF="LXGW WenKai Mono"
 theme = "Catppuccin Mocha"
