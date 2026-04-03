@@ -1,5 +1,5 @@
 set nocompatible
-filetype off
+filetype plugin indent on
 
 set encoding=UTF-8
 set nomodeline
@@ -9,9 +9,9 @@ set viminfo=
 
 let mapleader = " "
 let maplocalleader = " "
-set timeoutlen=250
+set timeoutlen=500
 
-"""
+" ── GUI ───────────────────────────────────────
 if has('gui_running')
   set guifont=JetBrainsMono_Nerd_Font:h18
   set guioptions-=m  "remove menu bar
@@ -37,6 +37,7 @@ ino <Left> <Nop>
 ino <Right> <Nop>
 
 " number
+set number
 set relativenumber
 
 " scheme
@@ -82,3 +83,13 @@ set mouse=a
 " => Splits and Tabbed Files
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set splitbelow splitright
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set autoindent
+set wildmenu
+set scrolloff=8
+set signcolumn=yes
+set updatetime=300
+set cursorline
