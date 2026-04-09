@@ -5,6 +5,6 @@
   home.packages = with pkgs; [
     nil
     nixd
-    nixfmt
+    nixfmt-rfc-style
   ];
 }

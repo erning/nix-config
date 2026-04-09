@@ -28,13 +28,17 @@ let
         else
           [ ];
     in
-    builtins.concatLists (
-      map (name: process name entries.${name}) (builtins.attrNames entries)
-    );
+    builtins.concatLists (map (name: process name entries.${name}) (builtins.attrNames entries));
 
   mkModule =
     name: modulePath:
-    { config, lib, pkgs, options, ... }@args:
+    {
+      config,
+      lib,
+      pkgs,
+      options,
+      ...
+    }@args:
     let
       featurePath = lib.splitString "." name;
       cfg = lib.getAttrFromPath ([ "features" ] ++ featurePath) config;

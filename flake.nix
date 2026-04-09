@@ -84,37 +84,73 @@
       isDarwin = system: builtins.match ".*-darwin" system != null;
 
       builders = {
-        default = { sys = mkSystem; hm = mkHome; };
-        "25.05" = { sys = mkSystem-2505; hm = mkHome-2505; };
+        default = {
+          sys = mkSystem;
+          hm = mkHome;
+        };
+        "25.05" = {
+          sys = mkSystem-2505;
+          hm = mkHome-2505;
+        };
       };
 
       hosts = [
         # MacBookPro18,2 (16-inch, 2021) — macOS Tahoe 26.3.1
-        { name = "dragon"; system = "aarch64-darwin"; }
+        {
+          name = "dragon";
+          system = "aarch64-darwin";
+        }
 
         # MacBookPro16,1 (16-inch, 2019) — macOS Tohoe 26.3.1
-        { name = "dinosaur"; system = "x86_64-darwin"; }
+        {
+          name = "dinosaur";
+          system = "x86_64-darwin";
+        }
 
         # MacBookPro6,1 (17-inch, Mid 2010) — NixOS
-        { name = "phoenix"; system = "x86_64-linux"; }
+        {
+          name = "phoenix";
+          system = "x86_64-linux";
+        }
 
         # MacBookAir8,2 (13-inch, 2019) — Fedora + home-manager only
-        { name = "pomelo"; system = "x86_64-linux"; homeOnly = true; }
+        {
+          name = "pomelo";
+          system = "x86_64-linux";
+          homeOnly = true;
+        }
 
         # MacBookPro13,3 (15-inch, 2016) — macOS Monterey 12.7.6
-        { name = "pterosaur"; system = "x86_64-darwin"; pinned = "25.05"; }
+        {
+          name = "pterosaur";
+          system = "x86_64-darwin";
+          pinned = "25.05";
+        }
 
         # MacBook8,1 (12-inch, Early 2015) — macOS Big Sur 11.7.10
-        { name = "mango"; system = "x86_64-darwin"; pinned = "25.05"; }
+        {
+          name = "mango";
+          system = "x86_64-darwin";
+          pinned = "25.05";
+        }
 
         # OrbStack VM
-        { name = "orb-aarch64"; host = "orbstack"; system = "aarch64-linux"; }
+        {
+          name = "orb-aarch64";
+          host = "orbstack";
+          system = "aarch64-linux";
+        }
 
         # VMware Fusion VM
-        { name = "vm-aarch64"; host = "vmfusion"; system = "aarch64-linux"; }
+        {
+          name = "vm-aarch64";
+          host = "vmfusion";
+          system = "aarch64-linux";
+        }
       ];
 
-      hostOutputs = map (h:
+      hostOutputs = map (
+        h:
         let
           user = h.user or "erning";
           host = h.host or h.name;
@@ -123,9 +159,11 @@
           b = builders.${h.pinned or "default"};
           sysKey = if isDarwin system then "darwinConfigurations" else "nixosConfigurations";
         in
-        (if homeOnly then {} else { ${sysKey}.${h.name} = b.sys { inherit host system; }; })
-        // { homeConfigurations."${user}@${h.name}" = b.hm { inherit user host system; }; }
+        (if homeOnly then { } else { ${sysKey}.${h.name} = b.sys { inherit host system; }; })
+        // {
+          homeConfigurations."${user}@${h.name}" = b.hm { inherit user host system; };
+        }
       ) hosts;
     in
-    lib.foldl' lib.recursiveUpdate {} hostOutputs;
+    lib.foldl' lib.recursiveUpdate { } hostOutputs;
 }

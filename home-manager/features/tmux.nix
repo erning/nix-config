@@ -16,7 +16,8 @@ in
   xdg.configFile = {
     # Symlink catppuccin plugin to a fixed path so dotfile can reference it
     "tmux/plugins/catppuccin".source = catppuccin-tmux;
-  } // config.lib.dotfiles.configFiles [
+  }
+  // config.lib.dotfiles.configFiles [
     # Deploy tmux.conf as editable dotfile symlink
     "tmux/tmux.conf"
   ];

@@ -13,7 +13,12 @@ let
   isDarwin = builtins.match ".*-darwin" system != null;
   isLinux = builtins.match ".*-linux" system != null;
   settings = {
-    inherit host system isDarwin isLinux;
+    inherit
+      host
+      system
+      isDarwin
+      isLinux
+      ;
   };
 
   rootDir = "${inputs.self}";
