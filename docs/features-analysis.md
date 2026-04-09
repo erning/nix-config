@@ -47,7 +47,7 @@ These truly install nothing - they only symlink dotfiles or configure settings.
 | `kitty.nix` | xdg.configFile (kitty.conf, current-theme.conf, kitty.app.png) |
 | `alacritty.nix` | xdg.configFile (alacritty.toml symlink) |
 | `claude-code.nix` | xdg.configFile (cce/kimi.env, cce/minimax.env, cce/zhipu.env) |
-| `opencode.nix` | xdg.configFile (opencode/opencode.json, opencode/oh-my-opencode.json, fish/functions/omo.fish) |
+| `opencode.nix` | xdg.configFile (opencode/opencode.json) |
 
 ### programs.X.enable (implicit package install)
 
@@ -79,7 +79,7 @@ Install packages AND provide configuration.
 | `fonts.nix` | libertine, lxgw-wenkai, lxgw-neoxihei, nerd-fonts.jetbrains-mono, nerd-fonts._0xproto, font-awesome, nerd-fonts.symbols-only (unstable) | - | fonts.fontconfig.enable |
 | `fonts/source-han.nix` | source-han-sans, source-han-serif, source-han-mono (unstable) | - | - |
 | `starship.nix` | - | starship (unstable, explicit package override) | programs.starship + shell integrations + xdg.configFile (starship.toml symlink) |
-| `tmux.nix` | - | tmux | programs.tmux (prefix, vi-mode, mouse, keybindings, Catppuccin theme v2.1.2) |
+| `tmux.nix` | - | tmux | programs.tmux (prefix, vi-mode, mouse, keybindings, tmux-256color terminal, historyLimit 50000, focus-events, renumber-windows, copy-mode-vi bindings, Catppuccin theme v2.3.0) |
 | `yazi.nix` | - | yazi | programs.yazi + shell integrations + xdg.configFile (theme.toml symlink, Catppuccin-mocha.tmTheme via inputs.self) |
 
 ---

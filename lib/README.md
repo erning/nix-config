@@ -50,7 +50,7 @@ Defines feature presets that enable groups of related tools. All values use `lib
 | `core` | shells, prompt, editors, git, ssh |
 | `terminal` | neovim, tmux, nushell, zellij, yazi |
 | `languages` | rustup, zig, python, go, nodejs, jdk, kotlin |
-| `devtools` | nix-support, direnv, just, gradle, docker, claude-code |
+| `devtools` | nix-support, just, direnv, gradle, typst, docker, claude-code, opencode |
 | `graphical` | fonts, GUI terminals, desktop apps |
 
 **Composites** (self-contained):
