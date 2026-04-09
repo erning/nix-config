@@ -6,86 +6,99 @@ let
   catppuccin-tmux = pkgs.fetchFromGitHub {
     owner = "catppuccin";
     repo = "tmux";
-    tag = "v2.1.2";
-    sha256 = "sha256-vBYBvZrMGLpMU059a+Z4SEekWdQD0GrDqBQyqfkEHPg=";
+    tag = "v2.3.0";
+    sha256 = "sha256-3CJRQCgS8NAN7vOLBjNGiHbGXTIrIyY/FLmfZrXcEYc=";
   };
 in
 {
   _description = "tmux terminal multiplexer";
   programs.tmux = {
     enable = true;
-    # Use xterm-256color for better color support
-    terminal = "xterm-256color";
-    # Start window/pane indexing from 1 (0-based is default)
+    # Use tmux-256color for proper capability declaration (strikethrough, italic, RGB)
+    # Preferred over xterm-256color which may misrepresent tmux's capabilities
+    terminal = "tmux-256color";
+    # Start window/pane indexing from 1 (0 is far from other keys on keyboard)
     baseIndex = 1;
-    # Use 24-hour clock format
+    # Use 24-hour clock format in status bar clock (prefix + t)
     clock24 = true;
-    # Enable mouse support
+    # Enable mouse support for pane switching, window selection, and scrollback scrolling
     mouse = true;
-    # Escape time in milliseconds (0 = fastest, reduces delay in vim/nvim)
+    # Eliminate Esc key delay (default 500ms) for instant mode switching in vim/neovim
     escapeTime = 0;
-    # Use vi keybindings for copy/paste and pane navigation
+    # Use vi keybindings in copy mode and command prompt
     keyMode = "vi";
+    # Increase scrollback buffer from default 2000 lines; useful for long build logs
+    historyLimit = 50000;
 
     extraConfig = ''
-      # Use C-a as prefix key instead of default C-b
+      # Use C-a as prefix key instead of default C-b (closer reach, screen tradition)
       unbind-key C-b
       set-option -g prefix C-a
       bind-key C-a send-prefix
 
-      # Split windows vertically (top/bottom) with s key
+      # Enable true color (RGB) passthrough for the outer terminal
+      set -ag terminal-features ",xterm-256color:RGB"
+
+      # Let vim/neovim detect focus changes (enables autoread, auto-save plugins)
+      set -g focus-events on
+
+      # Automatically renumber windows when one is closed (avoids gaps like 1,3,4)
+      set -g renumber-windows on
+
+      # Split panes: s for vertical (top/bottom), v for horizontal (left/right)
+      # Mirrors vim's :split and :vsplit mnemonics
       bind s split-window -v
-      # Split windows horizontally (left/right) with v key
       bind v split-window -h
 
-      # Pane navigation using h,j,k,l (vi-style) keys
-      # -r means these bindings can be repeated without pressing prefix again
+      # Pane navigation using vi-style h,j,k,l keys
+      # -r allows repeating without pressing prefix again
       bind -r h select-pane -L
       bind -r j select-pane -D
       bind -r k select-pane -U
       bind -r l select-pane -R
 
-      # Pane resizing using Ctrl + hjkl keys
-      # -r means repeatable
+      # Pane resizing using Ctrl + hjkl, 5 cells per step
+      # -r allows repeating for incremental adjustment
       bind -r C-h resize-pane -L 5
       bind -r C-j resize-pane -D 5
       bind -r C-k resize-pane -U 5
+      bind -r C-l resize-pane -R 5
 
-      # Enables tmux to handle extended key sequences
-      # This helps with modified keys and better compatibility
+      # vi-style selection and yank in copy mode
+      bind -T copy-mode-vi v send -X begin-selection
+      bind -T copy-mode-vi y send -X copy-selection-and-cancel
+
+      # Reload config with prefix + r for quick iteration
+      bind r source-file ~/.config/tmux/tmux.conf \; display "Config reloaded"
+
+      # Enable extended key sequences for better modifier key handling
       set -s extended-keys on
 
       #
-      # Catppuccin theme configuration with CPU battery indicator
+      # Catppuccin theme configuration
       #
 
-      # Set color flavor (mocha, macchiato, frappe, latte)
+      # Color flavor: mocha (dark), macchiato, frappe, latte (light)
       set -g @catppuccin_flavor "mocha"
-      # Window status style (rounded, none, basic)
+      # Window tab style: rounded, none, basic
       set -g @catppuccin_window_status_style "rounded"
-      # Date/time format in status line
+      # Time format shown in status bar
       set -g @catppuccin_date_time_text ' %H:%M'
 
-      # Source Catppuccin plugin
+      # Load Catppuccin plugin
       run ${catppuccin-tmux}/catppuccin.tmux
 
-      # Make status line pretty and add some modules
-      # Using Catppuccin's extended status modules
+      # Status bar layout
       set -g status-right-length 100
       set -g status-left-length 100
       set -g status-left ""
-
-      # Uncomment ONE of these status-right options:
-      # - With application name
-      # set -ag status-right "#{E:@catppuccin_status_application}"
-      # - With session name
-      # set -ag status-right "#{E:@catppuccin_status_session}"
-      # - With date/time
+      # Show session name (useful when managing multiple sessions) and time
+      set -ag status-right "#{E:@catppuccin_status_session}"
       set -agF status-right "#{E:@catppuccin_status_date_time}"
 
       #
       # Local configuration override
-      # Load user-specific config if it exists
+      # Load machine-specific config if it exists (not tracked in repo)
       #
 
       if-shell "test -e ~/.config/tmux/tmux.local.conf" "source-file ~/.config/tmux/tmux.local.conf"
