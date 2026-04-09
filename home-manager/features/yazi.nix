@@ -9,10 +9,12 @@
     enableNushellIntegration = true;
   };
 
-  xdg.configFile = config.lib.dotfiles.configFiles [
-    "yazi/theme.toml"
-  ] // {
-    "yazi/Catppuccin-mocha.tmTheme".source =
-      "${inputs.self}/dotfiles/.config/yazi/Catppuccin-mocha.tmTheme";
-  };
+  xdg.configFile =
+    config.lib.dotfiles.configFiles [
+      "yazi/theme.toml"
+    ]
+    // {
+      "yazi/Catppuccin-mocha.tmTheme".source =
+        "${inputs.self}/dotfiles/.config/yazi/Catppuccin-mocha.tmTheme";
+    };
 }

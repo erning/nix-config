@@ -35,6 +35,5 @@
   #      - CVE-2019-9501: heap buffer overflow, potentially allowing remote code execution by sending specially-crafted WiFi packets
   #      - CVE-2019-9502: heap buffer overflow, potentially allowing remote code execution by sending specially-crafted WiFi packets
   #      - The Broadcom STA wireless driver is not maintained and is incompatible with Linux kernel security mitigations. It is heavily recommended to replace the hardware and remove the driver. Proceed at your own risk!
-  nixpkgs.config.allowInsecurePredicate = pkg:
-    lib.getName pkg == "broadcom-sta";
+  nixpkgs.config.allowInsecurePredicate = pkg: lib.getName pkg == "broadcom-sta";
 }

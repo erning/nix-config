@@ -62,6 +62,12 @@ let
 
 in
 {
-  inherit core terminal languages devtools graphical;
+  inherit
+    core
+    terminal
+    languages
+    devtools
+    graphical
+    ;
   inherit development workstation;
 }

@@ -1,4 +1,10 @@
-{ config, lib, settings, options, ... }:
+{
+  config,
+  lib,
+  settings,
+  options,
+  ...
+}:
 
 {
   _description = "SSH client";
@@ -16,7 +22,8 @@
       NoHostAuthenticationForLocalhost yes
       StrictHostKeyChecking no
     '';
-  } // lib.optionalAttrs (options.programs.ssh ? enableDefaultConfig) {
+  }
+  // lib.optionalAttrs (options.programs.ssh ? enableDefaultConfig) {
     enableDefaultConfig = false;
   };
 
