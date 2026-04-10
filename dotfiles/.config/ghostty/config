@@ -14,7 +14,7 @@ font-family = 0xProto Nerd Font Mono
 font-size = 18
 
 # Thicker font strokes on macOS Retina displays for better readability
-font-thicken = true
+# font-thicken = true
 
 # CJK font mapping: use LXGW WenKai Mono for Chinese characters and symbols
 # U+4E00-U+9FFF  CJK Unified Ideographs (basic)
@@ -22,7 +22,7 @@ font-thicken = true
 # U+FF00-U+FFEF  Fullwidth Forms (fullwidth punctuation, letters, etc.)
 # U+3000-U+303F  CJK Symbols and Punctuation (。、「」 etc.)
 # U+2E80-U+2EFF  CJK Radicals Supplement
-font-codepoint-map = U+4E00-U+9FFF,U+3400-U+4DBF,U+FF00-U+FFEF,U+3000-U+303F,U+2E80-U+2EFF="LXGW WenKai Mono"
+font-codepoint-map = U+4E00-U+9FFF,U+3400-U+4DBF,U+FF00-U+FFEF,U+3000-U+303F,U+2E80-U+2EFF=LXGW WenKai Mono Medium
 
 # Increase line height slightly for better readability
 adjust-cell-height = 1
@@ -43,8 +43,12 @@ macos-titlebar-style = tabs
 window-padding-x = 4
 window-padding-y = 2,0
 
+# Initial window size in terminal grid cells
+window-width = 80
+window-height = 25
+
 # Restore window position and size across restarts (macOS)
-window-save-state = never
+window-save-state = default
 
 # Slight background transparency with blur (macOS)
 background-opacity = 0.95
