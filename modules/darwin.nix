@@ -7,6 +7,12 @@
   programs.bash.enable = true;
   programs.zsh.enable = true;
 
+  # Preserve Ghostty terminfo env through sudo so TERM=xterm-ghostty
+  # keeps working in elevated shells.
+  security.sudo.extraConfig = ''
+    Defaults env_keep += "TERMINFO TERMINFO_DIRS"
+  '';
+
   networking.computerName = lib.mkDefault "${settings.host}";
   system.defaults.smb.NetBIOSName = lib.mkDefault "${settings.host}";
 

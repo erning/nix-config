@@ -1,6 +1,9 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 
 {
+  # Make xterm-ghostty terminfo available system-wide so sudo, tmux, etc.
+  # can resolve TERM=xterm-ghostty without relying on per-user TERMINFO.
+  environment.systemPackages = [ pkgs.ghostty.terminfo ];
   system.stateVersion = "25.05";
 
   programs.fish.enable = true;
