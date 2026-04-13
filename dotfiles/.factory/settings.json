@@ -1,0 +1,26 @@
+{
+  "customModels": [
+    {
+      "model": "glm-5.1",
+      "displayName": "GLM-5.1 [zhipu]",
+      "baseUrl": "https://open.bigmodel.cn/api/anthropic",
+      "apiKey": "${ZHIPU_API_KEY}",
+      "provider": "anthropic"
+    },
+    {
+      "model": "kimi-for-coding",
+      "displayName": "kimi-for-coding [kimi]",
+      "baseUrl": "https://api.kimi.com/coding",
+      "apiKey": "${KIMI_API_KEY}",
+      "provider": "anthropic"
+    },
+    {
+      "model": "MiniMax-M2.7",
+      "displayName": "MiniMax-2.7 [minimax]",
+      "baseUrl": "https://api.minimaxi.com/anthropic",
+      "apiKey": "${MINIMAX_API_KEY}",
+      "provider": "anthropic"
+    }
+  ],
+  "logoAnimation": "off"
+}
