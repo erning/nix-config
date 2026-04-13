@@ -39,11 +39,14 @@ let
     nix-support.enable = lib.mkDefault true;
     just.enable = lib.mkDefault true;
     direnv.enable = lib.mkDefault true;
+    gopass.enable = lib.mkDefault true;
     gradle.enable = lib.mkDefault true;
     typst.enable = lib.mkDefault true;
     docker.enable = lib.mkDefault true;
     claude-code.enable = lib.mkDefault true;
     opencode.enable = lib.mkDefault true;
+    pi-agent.enable = lib.mkDefault true;
+    factory-droid.enable = lib.mkDefault true;
   };
 
   graphical = {
