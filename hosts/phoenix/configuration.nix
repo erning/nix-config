@@ -29,7 +29,10 @@
     shell = pkgs.fish;
   };
 
-  services.tailscale.enable = true;
+  services.tailscale = {
+    enable = true;
+    extraSetFlags = [ "--accept-dns=false" ];
+  };
 
   # Known issues:
   #      - CVE-2019-9501: heap buffer overflow, potentially allowing remote code execution by sending specially-crafted WiFi packets
