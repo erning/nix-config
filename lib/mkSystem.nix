@@ -2,6 +2,7 @@
   nixpkgs,
   nix-darwin,
   inputs,
+  nixpkgsSeries,
   ...
 }:
 
@@ -18,6 +19,7 @@ let
       system
       isDarwin
       isLinux
+      nixpkgsSeries
       ;
   };
 

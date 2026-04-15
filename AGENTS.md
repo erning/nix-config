@@ -31,7 +31,7 @@ nix-config/
 ## CODE MAP
 | File | Role |
 |------|------|
-| `flake.nix` | root inventory of darwin, nixos, and home-manager configs; pins legacy macOS hosts to nixpkgs-2505 |
+| `flake.nix` | root inventory of darwin, nixos, and home-manager configs; the `series` attrset maps channel names (`default`, `"25.05"`) to input sets, and `mkBuilders` generates per-channel sys/hm builder pairs |
 | `lib/mkSystem.nix` | imports `modules/system.nix` + `hosts/<host>/configuration.nix`; reused by pinned builders |
 | `lib/mkHome.nix` | imports nixpkgs config, overlays, `home-manager/home.nix`, host home; reused by pinned builders |
 | `home-manager/presets.nix` | non-overlapping building blocks (`core`, `terminal`, `languages`, `devtools`, `graphical`) and composites (`development`, `workstation`) |
@@ -45,12 +45,12 @@ nix-config/
 ## CONVENTIONS
 - Nix formatting: 2-space indent, LF, UTF-8, final newline, trimmed trailing whitespace.
 - Naming: hosts and features are lowercase-hyphenated; local variables are camelCase.
-- Platform checks use `settings.isDarwin` / `settings.isLinux` (computed once in `mkSystem`/`mkHome`).
+- Platform checks use `settings.isDarwin` / `settings.isLinux` (computed once in `mkSystem`/`mkHome`). Channel checks use `settings.nixpkgsSeries` (e.g. `"default"` vs `"25.05"`) when a feature must branch on which pinned nixpkgs series the host is on.
 - New feature files under `home-manager/features/` become available automatically through `lib/mkFeatureImports.nix`. Subdirectories create nested features (e.g., `fonts/source-han.nix` → `features.fonts.source-han`).
 - Feature modules are pure config functions — no boilerplate needed. `mkFeatureImports` auto-wraps each file with `options.features.<name>.enable` and `lib.mkIf`. Every feature should include `_description = "...";` as the first attribute — it provides the `mkEnableOption` description and is stripped before merging. The underscore prefix follows the module system's own convention (`_file`, `_class`).
 - Host homes usually compose presets with `lib.mkMerge [ presets.<name> ... ]`.
 - Dotfile helpers live in `config.lib.dotfiles`: use `configFiles` for XDG files, `homeFiles` for home-level files, `configDir` for recursive editable directories, and `symlink` for one-off paths.
-- Legacy macOS hosts (`pterosaur`, `mango`) use pinned `mkSystem-2505`/`mkHome-2505` builders backed by nixpkgs-25.05 inputs.
+- Legacy macOS hosts (`pterosaur`, `mango`) use the `"25.05"` channel defined in `flake.nix`'s `series` attrset — pinned to nixpkgs-25.05, nix-darwin-25.05, and home-manager-25.05 inputs. The channel name surfaces to modules as `settings.nixpkgsSeries = "25.05"`.
 - Feature modules that use options not present in all home-manager versions must guard them with `lib.optionalAttrs (options.path ? attr) { ... }` so the attribute path is absent entirely when the option does not exist; `lib.mkIf` only wraps the value and still exposes the path to the module system (see `go.nix`).
 - Shared abstractions are intentionally thin; most behavior lives in small Nix modules rather than large helper layers.
 - Presets in `home-manager/presets.nix` are non-overlapping building blocks composed into `development` and `workstation` composites; all values use `lib.mkDefault`, then hosts opt in with `lib.mkMerge`.

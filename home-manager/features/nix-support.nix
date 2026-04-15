@@ -1,10 +1,10 @@
-{ pkgs, ... }:
+{ pkgs, settings, ... }:
 {
   _description = "nix support";
 
   home.packages = with pkgs; [
     nil
     nixd
-    nixfmt-rfc-style
+    (if settings.nixpkgsSeries == "25.05" then nixfmt-rfc-style else nixfmt)
   ];
 }

@@ -299,7 +299,7 @@ nixos-rebuild dry-build --flake .#<host>    # NixOS
 | `~/.config/xxx` | `xdg.configFile."xxx"` | `xdg.configFile."git/config"` |
 | `~/.xxx`（home 根目录） | `home.file.".xxx"` | `home.file.".npmrc"` |
 | `~/.ssh/xxx` | `home.file.".ssh/xxx"` | `home.file.".ssh/authorized_keys"` |
-| `~/.local/bin/xxx` | `home.file.".local/bin/xxx"` | `home.file.".local/bin/lazyvim"` |
+| `~/.local/bin/xxx` | `home.file.".local/bin/xxx"` | `home.file.".local/bin/myscript"` |
 
 ---
 

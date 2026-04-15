@@ -27,11 +27,11 @@ Classification criteria:
 | `jdk.nix` | jdk |
 | `kotlin.nix` | kotlin |
 | `gradle.nix` | gradle |
-| `nix-support.nix` | nil, nixd, nixfmt |
+| `nix-support.nix` | nil, nixd, nixfmt (nixfmt-rfc-style on the `"25.05"` channel) |
 | `build-essential.nix` | bison, flex, fontforge, makeWrapper, pkg-config, gnumake, gcc, libiconv, autoconf, automake, libtool |
 | `typst.nix` | typst (+ conditional fonts: libertinus, jetbrains-mono, newcomputermodern if fonts feature enabled) |
 
-## Config-only (15)
+## Config-only (14)
 
 No explicit `home.packages`.
 
@@ -46,7 +46,6 @@ These truly install nothing - they only symlink dotfiles or configure settings.
 | `ghostty.nix` | xdg.configFile (config symlink) |
 | `kitty.nix` | xdg.configFile (kitty.conf, current-theme.conf, kitty.app.png) |
 | `alacritty.nix` | xdg.configFile (alacritty.toml symlink) |
-| `claude-code.nix` | xdg.configFile (cce/kimi.env, cce/minimax.env, cce/zhipu.env) |
 | `opencode.nix` | xdg.configFile (opencode/opencode.json) |
 
 ### programs.X.enable (implicit package install)
@@ -64,14 +63,15 @@ These use `programs.X.enable = true` which implicitly installs the package.
 | `zoxide.nix` | zoxide | programs.zoxide + shell integrations (zsh, fish, bash, nushell) |
 | `bat.nix` | bat | programs.bat + xdg.configFile (config symlink, themes via inputs.self) |
 
-## Both (11)
+## Both (12)
 
 Install packages AND provide configuration.
 
 | Feature | Explicit Packages | Implicit Packages | Configuration |
 |---|---|---|---|
 | `git.nix` | git, git-lfs, git-crypt, delta, lazygit | - | xdg.configFile (git/config, git/config.local, git/catppuccin.gitconfig, lazygit/config.yml), home.file (.gitignore_global) |
-| `neovim.nix` | neovim | - | xdg.configFile (nvim-lazyvim/ via configDir), home.file (lazyvim wrapper), sessionVariables (EDITOR, VISUAL), shell aliases (vi) |
+| `claude-code.nix` | cce (fetched from github.com/erning/cce at v2.1.6 via fetchFromGitHub + runCommand) | - | xdg.configFile (cce/kimi.env, cce/minimax.env, cce/zhipu.env) |
+| `neovim.nix` | neovim, nvim-profiles (lazyvim dispatcher via writeShellScriptBin + runCommand) | - | xdg.configFile (nvim-lazyvim/ via configDir), sessionVariables (EDITOR, VISUAL), shell aliases (vi) |
 | `vim.nix` | vim | - | home.file (.vim/vimrc via symlink, plugins: catppuccin, polyglot, editorconfig, lightline) |
 | `nodejs.nix` | nodejs_24, pnpm, bun | - | home.file (.npmrc symlink) |
 | `go.nix` | go | - | programs.go (GOPATH via optionalAttrs guard) |

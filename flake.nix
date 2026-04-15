@@ -61,38 +61,45 @@
   outputs =
     { ... }@inputs:
     let
-      nixpkgs = inputs.nixpkgs-unstable;
-      nix-darwin = inputs.nix-darwin-unstable;
-      home-manager = inputs.home-manager-unstable;
-
-      mkSystem = import ./lib/mkSystem.nix { inherit nixpkgs nix-darwin inputs; };
-      mkHome = import ./lib/mkHome.nix { inherit nixpkgs home-manager inputs; };
-
-      mkSystem-2505 = import ./lib/mkSystem.nix {
-        nixpkgs = inputs.nixpkgs-2505;
-        nix-darwin = inputs.nix-darwin-2505;
-        inherit inputs;
-      };
-      mkHome-2505 = import ./lib/mkHome.nix {
-        nixpkgs = inputs.nixpkgs-2505;
-        home-manager = inputs.home-manager-2505;
-        inherit inputs;
-      };
-
-      lib = nixpkgs.lib;
-
-      isDarwin = system: builtins.match ".*-darwin" system != null;
-
-      builders = {
+      series = {
         default = {
-          sys = mkSystem;
-          hm = mkHome;
+          nixpkgs = inputs.nixpkgs-unstable;
+          nix-darwin = inputs.nix-darwin-unstable;
+          home-manager = inputs.home-manager-unstable;
         };
         "25.05" = {
-          sys = mkSystem-2505;
-          hm = mkHome-2505;
+          nixpkgs = inputs.nixpkgs-2505;
+          nix-darwin = inputs.nix-darwin-2505;
+          home-manager = inputs.home-manager-2505;
         };
       };
+
+      mkBuilders =
+        name:
+        let
+          s = series.${name};
+        in
+        {
+          sys = import ./lib/mkSystem.nix {
+            inherit (s) nixpkgs nix-darwin;
+            inherit inputs;
+            nixpkgsSeries = name;
+          };
+          hm = import ./lib/mkHome.nix {
+            inherit (s) nixpkgs home-manager;
+            inherit inputs;
+            nixpkgsSeries = name;
+          };
+        };
+
+      builders = {
+        default = mkBuilders "default";
+        "25.05" = mkBuilders "25.05";
+      };
+
+      lib = series.default.nixpkgs.lib;
+
+      isDarwin = system: builtins.match ".*-darwin" system != null;
 
       hosts = [
         # MacBookPro18,2 (16-inch, 2021) — macOS Tahoe 26.3.1
