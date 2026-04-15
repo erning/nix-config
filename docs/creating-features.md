@@ -242,7 +242,7 @@ feature 模块函数可以使用以下参数（框架会透传所有模块参数
 | `lib` | 模块系统 | nixpkgs 库函数 |
 | `pkgs` | `_module.args` | 当前 nixpkgs 包集（含 `pkgs.unstable`、`pkgs.stable` overlay） |
 | `options` | 模块系统 | 所有已声明的选项（用于版本守卫） |
-| `settings` | `extraSpecialArgs` | `{ user, host, system, isDarwin, isLinux }` |
+| `settings` | `extraSpecialArgs` | `{ user, host, system, isDarwin, isLinux, nixpkgsSeries }` |
 | `inputs` | `extraSpecialArgs` | 所有 flake inputs |
 
 只需在函数参数中声明需要的即可，必须包含 `...`：

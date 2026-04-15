@@ -2,6 +2,7 @@
   nixpkgs,
   home-manager,
   inputs,
+  nixpkgsSeries,
   ...
 }:
 
@@ -21,6 +22,7 @@ let
       system
       isDarwin
       isLinux
+      nixpkgsSeries
       ;
   };
   rootDir = "${inputs.self}";

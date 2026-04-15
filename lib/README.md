@@ -6,7 +6,7 @@ Core utility functions for building NixOS/nix-darwin system and home-manager con
 
 Creates system configurations for both Darwin and NixOS using a unified interface. Detects platform via `builtins.match ".*-darwin"` and calls `darwinSystem` or `nixosSystem` accordingly.
 
-Imports `modules/system.nix` then `hosts/<host>/configuration.nix`. Passes a `settings` attrset (`{ host, system, isDarwin, isLinux }`) to modules via `specialArgs`.
+Imports `modules/system.nix` then `hosts/<host>/configuration.nix`. Passes a `settings` attrset (`{ host, system, isDarwin, isLinux, nixpkgsSeries }`) to modules via `specialArgs`.
 
 ```nix
 darwinConfigurations.dragon = mkSystem {
@@ -15,13 +15,13 @@ darwinConfigurations.dragon = mkSystem {
 };
 ```
 
-Legacy macOS hosts use a pinned variant (`mkSystem-2505`) that substitutes `nixpkgs-2505` and `nix-darwin-2505` inputs into the same builder.
+`flake.nix` imports this file once per channel (see its `series` attrset and `mkBuilders` helper), passing different `nixpkgs`, `nix-darwin`, and `nixpkgsSeries` values. Legacy macOS hosts (`pterosaur`, `mango`) use the `"25.05"` channel; all other hosts use `"default"`.
 
 ---
 
 ## mkHome.nix
 
-Creates home-manager configurations for user environments. Passes a `settings` attrset (`{ user, host, system, isDarwin, isLinux }`) to modules via `extraSpecialArgs`.
+Creates home-manager configurations for user environments. Passes a `settings` attrset (`{ user, host, system, isDarwin, isLinux, nixpkgsSeries }`) to modules via `extraSpecialArgs`.
 
 Imports `modules/nixpkgs-config.nix`, `modules/nixpkgs-overlays.nix`, `home-manager/home.nix`, then `hosts/<host>/home.nix`.
 
@@ -33,7 +33,7 @@ homeConfigurations."erning@dragon" = mkHome {
 };
 ```
 
-Legacy macOS hosts use `mkHome-2505` (same pattern as mkSystem). Feature modules that use options not present in all home-manager versions must guard them with `lib.optionalAttrs (options.path ? attr) { ... }`.
+Like `mkSystem`, this file is imported once per channel via `flake.nix`'s `mkBuilders`. Feature modules that use options not present in all home-manager versions must guard them with `lib.optionalAttrs (options.path ? attr) { ... }`.
 
 ---
 
