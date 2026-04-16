@@ -47,6 +47,7 @@ let
     opencode.enable = lib.mkDefault true;
     pi-agent.enable = lib.mkDefault true;
     factory-droid.enable = lib.mkDefault true;
+    yq.enable = lib.mkDefault true;
   };
 
   graphical = {

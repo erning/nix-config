@@ -12,6 +12,7 @@
     fzf
     bat
     htop
+    jq
 
     gnupg
     age
