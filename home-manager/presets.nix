@@ -19,7 +19,7 @@ let
   terminal = {
     tmux.enable = lib.mkDefault true;
     neovim.enable = lib.mkDefault true;
-    nushell.enable = lib.mkDefault true;
+    nushell.enable = lib.mkDefault false;
     zellij.enable = lib.mkDefault true;
     zoxide.enable = lib.mkDefault true;
     yazi.enable = lib.mkDefault true;
