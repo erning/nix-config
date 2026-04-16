@@ -15,6 +15,7 @@
 
     gnupg
     age
+    sops
 
     wget
     curl
