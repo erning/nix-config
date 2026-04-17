@@ -53,6 +53,8 @@ let
   graphical = {
     fonts.enable = lib.mkDefault true;
     fonts.source-han.enable = lib.mkDefault true;
+    fonts.maple-mono.enable = lib.mkDefault true;
+    fonts.babelstone-han.enable = lib.mkDefault false;
     zed.enable = lib.mkDefault true;
     ghostty.enable = lib.mkDefault true;
     kitty.enable = lib.mkDefault true;
