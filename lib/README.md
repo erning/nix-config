@@ -120,6 +120,8 @@ in
 
 Recursively creates out-of-store symlinks for an entire directory tree. Walks a directory at eval time with `builtins.readDir` and emits one `mkOutOfStoreSymlink` entry per file, making the entire tree editable without rebuild.
 
+Honors yadm-style `name##<tag>` alternates via `lib/alternate-match.nix`. Each base file may have several alternates; the highest-priority matching one wins.
+
 Typically accessed via `config.lib.dotfiles` wrappers defined in `home-manager/home.nix`:
 
 ```nix
@@ -127,3 +129,20 @@ Typically accessed via `config.lib.dotfiles` wrappers defined in `home-manager/h
   xdg.configFile = config.lib.dotfiles.configDir "nvim-lazyvim";
 }
 ```
+
+---
+
+## alternate-match.nix
+
+Parses and ranks `name##<tag>` alternates for both `symlink-dir.nix` (directory trees) and the single-file `resolve`/`exists` helpers in `home-manager/home.nix`.
+
+Tags and priority (highest first):
+
+| Tag                  | Source                          | Priority |
+|----------------------|---------------------------------|----------|
+| `##<host>` (and `##h.<host>`, `##hostname.<host>`) | `settings.host`        | 3        |
+| `##os.<os>`          | `settings.isDarwin` / `isLinux` | 2        |
+| `##series.<series>`  | `settings.nixpkgsSeries`        | 1        |
+| (base file)          | —                               | 0        |
+
+When several alternates exist for the same base name, the highest-priority match wins; the base file is the fallback when none match. Combinations like `##os.darwin,series.25.05` are intentionally not supported — keep tags single and rely on the base file.
