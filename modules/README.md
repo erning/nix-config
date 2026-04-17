@@ -21,12 +21,15 @@ Modules are imported in this order by `modules/system.nix`:
 
 **nixos.nix** - NixOS defaults: locale (en_US.UTF-8), NetworkManager, passwordless sudo for wheel, firewall disabled, SSH with password auth, state version.
 
-**nix-settings.nix** - Enables flakes, configures Chinese mirror substituters with `lib.mkDefault`. Override per-host:
+**nix-settings.nix** - Enables flakes, appends Chinese mirror substituters via `extra-substituters` (USTC + TUNA), and grants trusted-user status to `@wheel` on Linux / `@admin` on Darwin. Mirrors carry `?priority=10/11` so they sort ahead of `cache.nixos.org` (priority 40) which remains as the default fallback. Hosts can append more by assigning `nix.settings.extra-substituters` directly (lists merge):
 
 ```nix
 # hosts/<hostname>/configuration.nix
 {
-  nix.settings.substituters = [ "https://cache.nixos.org" ];
+  nix.settings.extra-substituters = [ "https://nix-community.cachix.org" ];
+  nix.settings.extra-trusted-public-keys = [
+    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+  ];
 }
 ```
 
