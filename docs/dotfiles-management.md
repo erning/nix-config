@@ -220,6 +220,52 @@ xdg.configFile = config.lib.dotfiles.configFiles [
 
 ---
 
+## 条件 Alternate（按 host / os / series 切换文件）
+
+为同一个 dotfile 提供多个变体时,在文件名后追加 `##<tag>`。当 tag 与当前 host 匹配时,该变体替换基础文件部署;否则使用基础文件作为兜底。优先级与匹配规则定义在 `lib/alternate-match.nix`,对所有 `config.lib.dotfiles.*` helper 都生效。
+
+### 支持的 tag
+
+| Tag 写法 | 匹配条件 | 优先级 |
+|---|---|---|
+| `##<host>`(及别名 `##h.<host>` / `##hostname.<host>`) | `settings.host` 等于 `<host>` | 3 |
+| `##os.darwin` / `##os.linux` | `settings.isDarwin` / `isLinux` | 2 |
+| `##series.<series>` | `settings.nixpkgsSeries` 等于 `<series>`(如 `default`、`25.05`) | 1 |
+| (基础文件,无 tag) | 无匹配时兜底 | 0 |
+
+### 解析规则
+
+- 同一基础文件可同时存在多个 alternate;**优先级最高的命中变体获胜**(host > os > series > base)。
+- 部署时会剥掉 `##<tag>` 后缀,例如 `config.local##os.darwin` 部署成 `config.local`。
+- alternate 与基础文件都不存在时,该条目静默跳过(`exists` 返回 false)。
+- **不支持组合写法**(如 `##os.darwin,series.25.05`)——挑最具体的单 tag,基础文件作兜底即可。
+
+### 示例:按 nixpkgs series 切分 starship 配置
+
+`pterosaur` / `mango` 锁在 nixpkgs-25.05,带的 starship 1.23.0 不认识较新版本里的 `[fortran]` / `[xmake]` 模块和若干 `os.symbols` 变体;直接用 base `starship.toml` 会在每次 shell 启动时 warn。解决办法是给老 series 提供一份精简变体:
+
+```text
+dotfiles/.config/
+├── starship.toml                     # 默认(unstable channel,带全部新键)
+└── starship.toml##series.25.05       # 25.05 hosts 用,删掉老 starship 不识别的键
+```
+
+`pterosaur`(series=25.05)解析到变体,`dragon`(series=default)落回基础文件。feature 模块本身无需任何改动:
+
+```nix
+# home-manager/features/starship.nix —— 不感知 alternate
+xdg.configFile = config.lib.dotfiles.configFiles [
+  "starship.toml"
+];
+```
+
+### 何时用 alternate vs Nix 条件分支
+
+- **首选 alternate**:差异是「同一文件的不同内容版本」,且只在文件层面有变化(如不同主机的 git config、不同 starship 版本的精简配置)。
+- **首选 Nix 条件**:差异是「是否引用某个文件 / 是否启用某个 program」,在 feature 模块里用 `lib.mkIf settings.isDarwin ...` 控制更清晰。
+
+---
+
 ## 新建 Feature 的完整步骤
 
 ### 步骤 1：在 `dotfiles/` 下放置配置文件
@@ -309,5 +355,6 @@ nixos-rebuild dry-build --flake .#<host>    # NixOS
 - `home-manager/features/default.nix` — 自动导入入口
 - `lib/mkFeatureImports.nix` — feature 自动包裹引擎（enable option + mkIf）
 - `lib/symlink-dir.nix` — 递归 out-of-store symlink 生成（含 yadm 风格 alternate 支持）
+- `lib/alternate-match.nix` — `##<tag>` alternate 的 parser、匹配逻辑与优先级规则
 - `home-manager/presets.nix` — preset bundles
 - `dotfiles/README.md` — dotfiles 目录说明
