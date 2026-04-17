@@ -37,6 +37,7 @@ nix-config/
 | `home-manager/presets.nix` | non-overlapping building blocks (`core`, `terminal`, `languages`, `devtools`, `graphical`) and composites (`development`, `workstation`) |
 | `lib/mkFeatureImports.nix` | recursive scanner + auto-wrapper for feature modules; derives name from filename, adds enable option + mkIf |
 | `lib/symlink-dir.nix` | recursive out-of-store symlink helper used by `config.lib.dotfiles.configDir` |
+| `lib/alternate-match.nix` | shared yadm-style `##` alternate parser/matcher; defines tag priority |
 | `lib/scan-files.nix` | dynamic loader for overlay directories |
 | `modules/system.nix` | shared system module import order |
 | `home-manager/home.nix` | base HM layer; defines `config.lib.dotfiles` helpers and imports platform modules + features |
@@ -55,7 +56,7 @@ nix-config/
 - Shared abstractions are intentionally thin; most behavior lives in small Nix modules rather than large helper layers.
 - Presets in `home-manager/presets.nix` are non-overlapping building blocks composed into `development` and `workstation` composites; all values use `lib.mkDefault`, then hosts opt in with `lib.mkMerge`.
 - This repo mixes declarative Nix modules with out-of-store dotfile symlinks for tools like git and lazygit.
-- Host-specific dotfiles use yadm-style `##` alternates: `file##hostname` overrides the base `file` on that host. Also supports `##h.hostname` and `##hostname.hostname` prefixes. Resolution and deployment are handled automatically by `lib.dotfiles` helpers and `lib/symlink-dir.nix`.
+- Conditional dotfiles use yadm-style `##` alternates. Supported tags: `##<host>` (with `##h.<host>` / `##hostname.<host>` aliases), `##os.darwin`, `##os.linux`, `##series.<series>` (e.g. `##series.25.05`). When several alternates exist for one base file, the highest-priority match wins (host > os > series > base). Combinations are not supported. The priority spec lives in `lib/alternate-match.nix`; see `dotfiles/README.md` for examples.
 
 ## ANTI-PATTERNS
 - Do not bypass `mkSystem` or `mkHome` when adding hosts; `flake.nix` should stay on the builder path.

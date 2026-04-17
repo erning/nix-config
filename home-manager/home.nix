@@ -6,6 +6,17 @@
   ...
 }:
 
+let
+  # Tags considered when resolving `file##<tag>` alternates. See
+  # `lib/alternate-match.nix` for the full priority spec; in short:
+  # host > os > series > base file.
+  matchers = {
+    host = settings.host;
+    os = if settings.isDarwin then "darwin" else "linux";
+    series = settings.nixpkgsSeries;
+  };
+  alt = import ../lib/alternate-match.nix { inherit matchers; };
+in
 {
   home.username = "${settings.user}";
   home.homeDirectory = (if settings.isDarwin then "/Users" else "/home") + "/${settings.user}";
@@ -15,27 +26,22 @@
     srcPath = "${inputs.self}/dotfiles";
     host = settings.host;
 
-    # Resolve best alternate: ##host > ##h.host > ##hostname.host > base file
+    # Pick the highest-priority alternate that exists on disk; fall back to base.
     resolve =
       file:
       let
-        check = suffix: builtins.pathExists "${srcPath}/${file}##${suffix}";
+        hits = builtins.filter (
+          suffix: builtins.pathExists "${srcPath}/${file}##${suffix}"
+        ) alt.candidateSuffixes;
       in
-      if check host then
-        "${file}##${host}"
-      else if check "h.${host}" then
-        "${file}##h.${host}"
-      else if check "hostname.${host}" then
-        "${file}##hostname.${host}"
-      else
-        file;
+      if hits != [ ] then "${file}##${builtins.head hits}" else file;
 
-    # Check whether any variant (host alternate or base) exists
+    # True if the base file or any candidate alternate exists.
     exists =
       file:
-      builtins.pathExists "${srcPath}/${file}##${host}"
-      || builtins.pathExists "${srcPath}/${file}##h.${host}"
-      || builtins.pathExists "${srcPath}/${file}##hostname.${host}"
+      builtins.any (
+        suffix: builtins.pathExists "${srcPath}/${file}##${suffix}"
+      ) alt.candidateSuffixes
       || builtins.pathExists "${srcPath}/${file}";
 
     symlink = file: config.lib.file.mkOutOfStoreSymlink "${path}/${resolve file}";
@@ -84,7 +90,7 @@
         src = "${srcPath}/.config/${dir}";
         dst = "${path}/.config/${dir}";
         prefix = dir;
-        inherit host;
+        inherit matchers;
       };
 
     homeDir =
@@ -94,7 +100,7 @@
         src = "${srcPath}/${dir}";
         dst = "${path}/${dir}";
         prefix = dir;
-        inherit host;
+        inherit matchers;
       };
   };
 

@@ -36,23 +36,36 @@ xdg.configFile."git/config".source =
     "${config.home.homeDirectory}/.dotfiles/.config/git/config";
 ```
 
-## Host-Specific Alternates
+## Conditional Alternates
 
-To provide host-specific versions of a dotfile, append `##hostname` to the filename:
+Append `##<tag>` to a filename to deploy a variant only when the tag matches the current host:
 
 ```
 dotfiles/.config/git/
-├── config                  # shared across all hosts
-├── config.local##dragon    # only deployed on host "dragon"
-└── config.local##phoenix   # only deployed on host "phoenix"
+├── config                       # shared across all hosts
+├── config.local##dragon         # only on host "dragon"
+├── config.local##os.darwin      # on any macOS host
+└── config.local##series.25.05   # on hosts pinned to the 25.05 nixpkgs channel
 ```
 
+Supported tags (highest priority first):
+
+| Tag form              | Matches when                                        |
+|-----------------------|-----------------------------------------------------|
+| `##<host>`            | `settings.host` equals `<host>`                     |
+| `##h.<host>`          | alias of the above                                  |
+| `##hostname.<host>`   | alias of the above                                  |
+| `##os.darwin`         | `settings.isDarwin == true`                         |
+| `##os.linux`          | `settings.isLinux == true`                          |
+| `##series.<series>`   | `settings.nixpkgsSeries` equals `<series>` (e.g. `default`, `25.05`) |
+
 Rules:
-- `file##hostname` takes priority over `file`; the original file serves as the default fallback.
-- The deployed filename strips the `##hostname` suffix (e.g., `config.local##dragon` becomes `config.local`).
-- If neither the alternate nor the base file exists, the entry is silently skipped.
+- When several alternates exist for the same base, the highest-priority match wins (host > os > series).
+- The base file is the fallback used when no alternate matches.
+- The deployed filename strips the `##<tag>` suffix (e.g., `config.local##os.darwin` deploys as `config.local`).
+- If neither an alternate nor the base file exists, the entry is silently skipped.
 - Works with all dotfile helpers: `configFiles`, `homeFiles`, `configDir`, `homeDir`, and `symlink`.
-- Also accepts yadm-style prefixes: `file##h.hostname` and `file##hostname.hostname`.
+- Combinations like `##os.darwin,series.25.05` are **not** supported — pick the most-specific single tag and let the base file be the fallback.
 
 ## Keep in Mind
 

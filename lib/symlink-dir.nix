@@ -3,28 +3,16 @@
   dst,
   prefix,
   mkSymlink,
-  host,
+  matchers,
 }:
 
-let
-  parseAlternate =
-    name:
-    let
-      m = builtins.match "(.+)##(.+)" name;
-    in
-    if m == null then
-      {
-        base = name;
-        condition = null;
-      }
-    else
-      {
-        base = builtins.elemAt m 0;
-        condition = builtins.elemAt m 1;
-      };
+# Recursively walks `src` and emits one out-of-store symlink per file.
+# Honors yadm-style `name##<condition>` alternates via `lib/alternate-match.nix`:
+# for each base name, the highest-priority matching variant wins; the base file
+# is used only when no alternate matches.
 
-  isHostMatch =
-    condition: condition == host || condition == "h.${host}" || condition == "hostname.${host}";
+let
+  alt = import ./alternate-match.nix { inherit matchers; };
 
   readDirRec =
     base: rel:
@@ -32,54 +20,60 @@ let
       entries = builtins.readDir base;
       names = builtins.attrNames entries;
 
-      # Collect base names that have a host-matched alternate
-      hostMatched = builtins.foldl' (
+      # For each base name, pick the winning alternate (if any).
+      # Result: { <baseName> = { name = <actualFileName>; priority = <int>; } }
+      winners = builtins.foldl' (
         acc: name:
         let
-          p = parseAlternate name;
+          p = alt.parse name;
         in
-        if entries.${name} != "directory" && p.condition != null && isHostMatch p.condition then
-          acc // { ${p.base} = true; }
-        else
+        if entries.${name} == "directory" || p.condition == null || !alt.isMatch p.condition then
           acc
+        else
+          let
+            prio = alt.priority p.condition;
+            existing = acc.${p.base} or { priority = -1; };
+          in
+          if prio > existing.priority then
+            acc // { ${p.base} = { inherit name; priority = prio; }; }
+          else
+            acc
       ) { } names;
     in
     builtins.concatMap (
       name:
       let
         type = entries.${name};
-        p = parseAlternate name;
+        p = alt.parse name;
         actualRel = if rel == "" then name else "${rel}/${name}";
         baseRel = if rel == "" then p.base else "${rel}/${p.base}";
       in
       if type == "directory" then
         readDirRec (base + "/${name}") (if rel == "" then name else "${rel}/${name}")
 
-      else if p.condition != null && isHostMatch p.condition then
-        # Host-matched alternate: deploy under the base name
-        [
-          {
-            name = "${prefix}/${baseRel}";
-            value.source = mkSymlink "${dst}/${actualRel}";
-          }
-        ]
-
       else if p.condition != null then
-        # Non-matching alternate: skip
-        [ ]
-
-      else if hostMatched ? ${name} then
-        # Base file superseded by a host alternate: skip
-        [ ]
+        # Alternate file: emit only if it's the winning variant for its base.
+        if (winners.${p.base} or null) != null && winners.${p.base}.name == name then
+          [
+            {
+              name = "${prefix}/${baseRel}";
+              value.source = mkSymlink "${dst}/${actualRel}";
+            }
+          ]
+        else
+          [ ]
 
       else
-        # Regular file: include as-is
-        [
-          {
-            name = "${prefix}/${actualRel}";
-            value.source = mkSymlink "${dst}/${actualRel}";
-          }
-        ]
+        # Base file: skip if a winning alternate exists for this base.
+        if winners ? ${name} then
+          [ ]
+        else
+          [
+            {
+              name = "${prefix}/${actualRel}";
+              value.source = mkSymlink "${dst}/${actualRel}";
+            }
+          ]
     ) names;
 in
 builtins.listToAttrs (readDirRec src "")
