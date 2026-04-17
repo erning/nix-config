@@ -80,7 +80,27 @@ home-manager build --flake .#erning@<hostname>
 - `pomelo` is the home-manager-only host; validate it with `home-manager build` rather than a system rebuild.
 - `orbstack` is intentionally unusual: it imports `/etc/nixos/configuration.nix`, so evaluation depends on that external file existing on the machine running the command.
 - Flake output names do not always match directory names: `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion`.
-- Mirror defaults (nix substituters, Homebrew mirror) are set with `lib.mkDefault` in shared modules. Override per-host in `configuration.nix` or `home.nix`; see `modules/README.md` for details.
+- Mirror defaults (nix substituters, Homebrew mirror) are appended in shared modules via `extra-substituters`. Hosts can append more in `configuration.nix` or `home.nix`; see `modules/README.md` for details.
+
+## Home-Manager-Only Hosts
+
+For hosts like `pomelo` (Fedora + home-manager only), the system Nix daemon is **not** managed by this flake. `modules/nix-settings.nix` does not apply, so the daemon's `/etc/nix/nix.conf` must be set up manually once before the flake's mirror / trusted-user assumptions hold.
+
+One-time root setup on the machine:
+
+```bash
+sudo tee -a /etc/nix/nix.conf <<'EOF'
+trusted-users = root erning
+extra-substituters = https://mirrors.ustc.edu.cn/nix-channels/store?priority=10 https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=11
+EOF
+sudo systemctl restart nix-daemon
+```
+
+Notes:
+- `trusted-users` is required for the daemon to honor any further substituter requests coming from the user's nix.conf or flake `nixConfig`. Without it the daemon silently ignores them and keeps using only what's in `/etc/nix/nix.conf`.
+- The `extra-substituters` line is what gives this host the same mirror behavior the flake-managed hosts get from `modules/nix-settings.nix`.
+- `extra-trusted-public-keys` is not needed for ustc/tuna — they re-serve `cache.nixos.org`-signed NARs and the upstream key is already trusted by default.
+- This is a one-time bootstrap. Re-running it is harmless (lines just append).
 
 ## Troubleshooting
 

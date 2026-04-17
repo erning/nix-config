@@ -1,16 +1,16 @@
 {
   description = "Personal NixOS and nix-darwin flake for macOS, Linux, VMs, and home-manager-only hosts";
 
-  # # the nixConfig here only affects the flake itself, not the system configuration!
-  # nixConfig = {
-  #   # substituers will be appended to the default substituters when fetching packages
-  #   # nix com    extra-substituters = [munity's cache server
-  #   extra-substituters = [
-  #     "https://mirrors.ustc.edu.cn/nix-channels/store"
-  #     "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
-  #     "https://nix-community.cachix.org"
-  #   ];
-  # };
+  # nixConfig here only affects the flake itself (evaluation-time fetches),
+  # not the system configuration. System-level mirrors live in
+  # modules/nix-settings.nix. priority=10/11 keeps mirrors ahead of
+  # cache.nixos.org (priority 40).
+  nixConfig = {
+    extra-substituters = [
+      "https://mirrors.ustc.edu.cn/nix-channels/store?priority=10"
+      "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=11"
+    ];
+  };
 
   inputs = {
     nixos-hardware.url = "github:NixOS/nixos-hardware";
