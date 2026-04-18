@@ -5,3 +5,6 @@
 if vim.g.neovide then
   vim.o.guifont = "JetBrainsMono Nerd Font Mono,LXGW WenKai Mono:h17"
 end
+
+-- Don't conceal Markdown syntax (e.g. * or _) so characters remain visible during editing.
+vim.opt.conceallevel = 0
