@@ -7,25 +7,13 @@ mouse-hide-while-typing = true
 # Strip trailing whitespace when copying to clipboard
 clipboard-trim-trailing-spaces = true
 
-# Primary font family
-font-family = 0xProto Nerd Font Mono
-
 # Font size in points
-font-size = 18
+font-size = 16
 
-# Thicker font strokes on macOS Retina displays for better readability
-# font-thicken = true
-
-# CJK font mapping: use LXGW WenKai Mono for Chinese characters and symbols
-# U+4E00-U+9FFF  CJK Unified Ideographs (basic)
-# U+3400-U+4DBF  CJK Unified Ideographs Extension A
-# U+FF00-U+FFEF  Fullwidth Forms (fullwidth punctuation, letters, etc.)
-# U+3000-U+303F  CJK Symbols and Punctuation (。、「」 etc.)
-# U+2E80-U+2EFF  CJK Radicals Supplement
-font-codepoint-map = U+4E00-U+9FFF,U+3400-U+4DBF,U+FF00-U+FFEF,U+3000-U+303F,U+2E80-U+2EFF=LXGW WenKai Mono Medium
-
-# Increase line height slightly for better readability
-adjust-cell-height = 1
+# Load font configuration: create a symlink `font.conf` pointing to
+# `fonts/maple.conf` or `fonts/0xproto.conf` to switch fonts without
+# editing this file.
+config-file = ?font.conf
 
 # Color theme
 theme = Catppuccin Mocha
