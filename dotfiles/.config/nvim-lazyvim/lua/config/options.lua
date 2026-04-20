@@ -3,7 +3,7 @@
 -- Add any additional options here
 
 if vim.g.neovide then
-  vim.o.guifont = "JetBrainsMono Nerd Font Mono,LXGW WenKai Mono:h17"
+  vim.o.background = "dark"
 end
 
 -- Don't conceal Markdown syntax (e.g. * or _) so characters remain visible during editing.

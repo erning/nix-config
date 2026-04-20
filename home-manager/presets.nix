@@ -59,6 +59,7 @@ let
     ghostty.enable = lib.mkDefault true;
     kitty.enable = lib.mkDefault true;
     alacritty.enable = lib.mkDefault true;
+    neovide.enable = lib.mkDefault true;
   };
 
   # === Composites (self-contained) ===
