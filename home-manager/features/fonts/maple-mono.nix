@@ -1,15 +1,11 @@
 { pkgs, ... }:
 {
-  _description = "fonts - Maple Mono (Nerd Font, with and without CN)";
+  _description = "fonts - Maple Mono NF CN (ligature + Normal variants)";
 
   home.packages = with pkgs.unstable; [
     maple-mono.NF-CN
-    maple-mono.NL-NF-CN
+    # Alternate: traditional glyph shapes (a, g, i, l, @ ...) baked in — use
+    # directly in apps that don't support font-feature settings (cv01/cv35/...)
     maple-mono.Normal-NF-CN
-    maple-mono.NormalNL-NF-CN
-    maple-mono.NF
-    maple-mono.NL-NF
-    maple-mono.Normal-NF
-    maple-mono.NormalNL-NF
   ];
 }

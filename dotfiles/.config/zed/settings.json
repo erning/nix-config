@@ -9,7 +9,7 @@
 {
   "vim_mode": true,
   "vim": {
-    "use_system_clipboard": "never"
+    "use_system_clipboard": "never",
   },
 
   "icon_theme": "Catppuccin Mocha",
@@ -21,6 +21,13 @@
 
   "ui_font_size": 18,
   "buffer_font_family": "Maple Mono NF CN",
+  "buffer_font_features": {
+    "calt": true,
+    "zero": true,
+    "cv01": true, // @$
+    "cv35": true, // l
+    "cv61": true, // ,.
+  },
   "buffer_font_size": 18,
   "buffer_line_height": "standard",
 
@@ -66,12 +73,12 @@
               "images": false,
               "parallel_tool_calls": false,
               "prompt_cache_key": false,
-              "chat_completions": true
-            }
-          }
-        ]
-      }
-    }
+              "chat_completions": true,
+            },
+          },
+        ],
+      },
+    },
   },
 
   "agent": {
@@ -83,8 +90,8 @@
 
   "agent_servers": {
     "kimi": {
-      "type": "registry"
-    }
+      "type": "registry",
+    },
   },
 
   "edit_predictions": {
@@ -94,8 +101,8 @@
       "api_url": "https://open.bigmodel.cn/api/coding/paas/v4",
       "model": "glm-5",
       "prompt_format": "glm",
-      "max_output_tokens": 256
-    }
+      "max_output_tokens": 256,
+    },
   },
 
   "telemetry": {
