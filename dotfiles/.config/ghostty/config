@@ -11,7 +11,7 @@ clipboard-trim-trailing-spaces = true
 font-size = 16
 
 # Load font configuration: create a symlink `font.conf` pointing to
-# `fonts/maple.conf` or `fonts/0xproto.conf` to switch fonts without
+# `fonts/maple-mono.conf` or `fonts/0xproto.conf` to switch fonts without
 # editing this file.
 config-file = ?font.conf
 
