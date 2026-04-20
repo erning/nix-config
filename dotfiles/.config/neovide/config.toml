@@ -1,0 +1,16 @@
+grid = "100x40"
+theme = "dark"
+idle = true
+vsync = true
+
+# macOS: hide window-control buttons and title text for a cleaner frame
+# frame = "buttonless"
+# title-hidden = false
+
+# Font: Maple Mono NF CN with the same OpenType features as ghostty.
+# Setting font here (rather than `vim.o.guifont` in options.lua) is what
+# lets Neovide apply the `features` map — guifont strings can't carry it.
+[font]
+normal = ["Maple Mono NF CN"]
+size = 18.0
+features = { "Maple Mono NF CN" = ["+calt", "+zero", "+cv01", "+cv35", "+cv61"] }
