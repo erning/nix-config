@@ -64,7 +64,7 @@
         "api_url": "https://open.bigmodel.cn/api/coding/paas/v4",
         "available_models": [
           {
-            "name": "glm-5",
+            "name": "glm-5.1",
             "max_tokens": 200000,
             "max_output_tokens": 128000,
             "max_completion_tokens": 128000,
@@ -84,7 +84,7 @@
   "agent": {
     "default_model": {
       "provider": "zhipu",
-      "model": "glm-5",
+      "model": "glm-5.1",
     },
   },
 
@@ -99,7 +99,7 @@
     "provider": "open_ai_compatible_api",
     "open_ai_compatible_api": {
       "api_url": "https://open.bigmodel.cn/api/coding/paas/v4",
-      "model": "glm-5",
+      "model": "glm-5.1",
       "prompt_format": "glm",
       "max_output_tokens": 256,
     },
@@ -108,5 +108,10 @@
   "telemetry": {
     "metrics": false,
     "diagnostics": false,
+  },
+
+  "auto_install_extensions": {
+    "catppuccin": true,
+    "catppuccin-icons": true,
   },
 }
