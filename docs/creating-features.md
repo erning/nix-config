@@ -262,4 +262,10 @@ feature 模块函数可以使用以下参数（框架会透传所有模块参数
 3. 如需引用 dotfiles，先在 `dotfiles/` 对应路径下创建文件
 4. 添加 `_description = "...";` 作为返回 attrset 的第一个属性
 5. 在 host `home.nix` 或 `home-manager/presets.nix` preset 中启用
-6. 验证：`nix run home-manager -- build --flake .#erning@<host>`
+6. 验证：至少在一个 default-series host 和一个 25.05-series host 上构建
+   ```bash
+   # default/unstable channel
+   home-manager build --flake .#erning@dragon
+   # 25.05 channel
+   home-manager build --flake .#erning@pterosaur
+   ```

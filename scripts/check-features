@@ -1,0 +1,150 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# check-features — static analysis for home-manager/feature modules
+# Usage: check-features [OPTIONS]
+#
+# Checks for common cross-version compatibility issues and style violations
+# in home-manager/features/*.nix files.
+
+FEATURES_DIR="${FEATURES_DIR:-home-manager/features}"
+EXIT_CODE=0
+
+# Colors
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+warn() {
+  printf "${YELLOW}WARN${NC}  %s\n" "$1"
+}
+
+error() {
+  printf "${RED}ERROR${NC} %s\n" "$1"
+  EXIT_CODE=1
+}
+
+ok() {
+  printf "${GREEN}OK${NC}    %s\n" "$1"
+}
+
+info() {
+  printf "      %s\n" "$1"
+}
+
+# ── Check 1: Dangerous mkIf pattern ──────────────────────────────────
+check_mkif_version_guard() {
+  local file="$1"
+  if grep -q 'mkIf.*options\.' "$file" 2>/dev/null; then
+    error "$file: uses 'mkIf' with 'options.' check"
+    info "      Use 'lib.optionalAttrs (options.path ? attr)' instead"
+    return 1
+  fi
+  return 0
+}
+
+# ── Check 2: Missing _description ────────────────────────────────────
+check_description() {
+  local file="$1"
+  if ! grep -q '_description' "$file" 2>/dev/null; then
+    warn "$file: missing '_description' attribute"
+    return 1
+  fi
+  return 0
+}
+
+# ── Check 3: Deep programs.* paths without optionalAttrs ─────────────
+check_deep_programs_paths() {
+  local file="$1"
+  local basename
+  basename=$(basename "$file")
+
+  # Skip files that already use optionalAttrs.
+  # NOTE: This is a conservative heuristic. A file may have both guarded
+  # and unguarded deep paths; the script does not track brace ranges.
+  # If you add optionalAttrs to a file, review all remaining programs.*
+  # paths manually.
+  if grep -q 'optionalAttrs' "$file" 2>/dev/null; then
+    return 0
+  fi
+
+  # Look for programs.*.* or services.*.* patterns
+  # This catches things like programs.yazi.enableNushellIntegration
+  local matches
+  matches=$(grep -n 'programs\.[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*' "$file" 2>/dev/null | grep -v 'enable\s*=' | grep -v 'shellAliases' | grep -v '\.fish\.\|\.bash\.\|\.zsh\.' || true)
+
+  if [ -n "$matches" ]; then
+    warn "$file: sets deep programs.* paths without optionalAttrs guard"
+    while IFS= read -r line; do
+      info "      $line"
+    done <<<"$matches"
+    return 1
+  fi
+  return 0
+}
+
+# ── Check 4: Missing 'options' in function args ──────────────────────
+check_options_arg() {
+  local file="$1"
+
+  # Only check files that use optionalAttrs (they need 'options' arg)
+  if ! grep -q 'optionalAttrs' "$file" 2>/dev/null; then
+    return 0
+  fi
+
+  # Check if function args include 'options'
+  # Read first 10 lines and look for 'options' in the argument block
+  if ! head -10 "$file" | tr '\n' ' ' | grep -q '{.*options.*}:'; then
+    error "$file: uses 'optionalAttrs' but missing 'options' in function args"
+    return 1
+  fi
+  return 0
+}
+
+# ── Check 5: Verify against reference files ──────────────────────────
+check_reference_patterns() {
+  local file="$1"
+  local basename
+  basename=$(basename "$file")
+
+  # Check if file follows the standard pattern from go.nix
+  # (has optionalAttrs for version-sensitive options)
+  case "$basename" in
+  go.nix | ssh.nix)
+    if grep -q 'optionalAttrs' "$file"; then
+      ok "$file: follows reference pattern (optionalAttrs guard)"
+    fi
+    ;;
+  esac
+}
+
+# ── Main ─────────────────────────────────────────────────────────────
+
+echo "Checking feature modules in ${FEATURES_DIR}/"
+echo
+
+# Find all .nix files excluding default.nix
+mapfile -t files < <(find "$FEATURES_DIR" -name '*.nix' ! -name 'default.nix' | sort)
+
+if [ ${#files[@]} -eq 0 ]; then
+  echo "No feature files found in ${FEATURES_DIR}/"
+  exit 1
+fi
+
+for file in "${files[@]}"; do
+  check_mkif_version_guard "$file"
+  check_description "$file"
+  check_deep_programs_paths "$file"
+  check_options_arg "$file"
+  check_reference_patterns "$file"
+done
+
+echo
+if [ "$EXIT_CODE" -eq 0 ]; then
+  echo "All checks passed."
+else
+  echo "Some checks failed. See above for details."
+fi
+
+exit "$EXIT_CODE"
