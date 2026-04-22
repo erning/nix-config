@@ -175,6 +175,15 @@
       "zhipuai-coding-plan/glm-5-turbo": 5
     }
   },
+  "disabled_hooks": ["session-notification"],
+  "claude_code": {
+    "skills": false,
+    "commands": false,
+    "hooks": false,
+    "mcp": false,
+    "agents": false,
+    "plugins": false
+  },
   "runtime_fallback": {
     "enabled": true,
     "notify_on_fallback": true
@@ -184,10 +193,12 @@
     "layout": "main-vertical",
     "main_pane_size": 60,
     "main_pane_min_width": 120,
-    "agent_pane_min_width": 40
+    "agent_pane_min_width": 40,
+    "isolation": "inline"
   },
   "git_master": {
     "commit_footer": false,
-    "include_co_authored_by": false
+    "include_co_authored_by": false,
+    "git_env_prefix": "GIT_MASTER=1"
   }
 }
