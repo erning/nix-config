@@ -39,9 +39,7 @@ in
     # True if the base file or any candidate alternate exists.
     exists =
       file:
-      builtins.any (
-        suffix: builtins.pathExists "${srcPath}/${file}##${suffix}"
-      ) alt.candidateSuffixes
+      builtins.any (suffix: builtins.pathExists "${srcPath}/${file}##${suffix}") alt.candidateSuffixes
       || builtins.pathExists "${srcPath}/${file}";
 
     symlink = file: config.lib.file.mkOutOfStoreSymlink "${path}/${resolve file}";
@@ -112,6 +110,17 @@ in
 
   home.stateVersion = lib.mkDefault "26.05"; # Please read the comment before changing.
   programs.home-manager.enable = true;
+
+  home.activation.checkDotfiles = lib.hm.dag.entryBefore [ "writeBoundary" ] ''
+    if [[ ! -L "${config.lib.dotfiles.path}" ]]; then
+      echo "WARNING: ~/.dotfiles symlink is missing." >&2
+      echo "  Run: ln -s ${config.lib.dotfiles.srcPath} ${config.lib.dotfiles.path}" >&2
+    elif [[ "$(readlink ${config.lib.dotfiles.path})" != "${config.lib.dotfiles.srcPath}" ]]; then
+      echo "WARNING: ~/.dotfiles points to unexpected location." >&2
+      echo "  Expected: ${config.lib.dotfiles.srcPath}" >&2
+      echo "  Actual:   $(readlink ${config.lib.dotfiles.path})" >&2
+    fi
+  '';
 
   #
   #
