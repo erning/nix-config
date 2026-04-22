@@ -58,6 +58,8 @@ nix-config/
 - This repo mixes declarative Nix modules with out-of-store dotfile symlinks for tools like git and lazygit.
 - Conditional dotfiles use yadm-style `##` alternates. Supported tags: `##<host>` (with `##h.<host>` / `##hostname.<host>` aliases), `##os.darwin`, `##os.linux`, `##series.<series>` (e.g. `##series.25.05`). When several alternates exist for one base file, the highest-priority match wins (host > os > series > base). Combinations are not supported. The priority spec lives in `lib/alternate-match.nix`; see `dotfiles/README.md` for examples.
 - Git commit messages (subject and body) are always written in English, even when the surrounding conversation is in another language. Translate non-English doc/section names when summarizing changes; code identifiers, file paths, and shell snippets stay verbatim.
+- Git commit subjects use Conventional Commits style, following the repository's existing history, such as `feat(opencode): add catppuccin-macchiato tui theme`, `fix(zsh): use relative dotDir on 25.05`, or `chore(ai): bump kimi to k2p6 and glm to 5.1`.
+- Git commit bodies, when present, follow the repository's existing style: short paragraphs or `-` bullets wrapped around 72 characters, with continuation lines indented by two spaces when wrapping a bullet.
 
 ## ANTI-PATTERNS
 - Do not bypass `mkSystem` or `mkHome` when adding hosts; `flake.nix` should stay on the builder path.
