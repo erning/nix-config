@@ -40,7 +40,7 @@ nixos-rebuild dry-build --flake .#phoenix
 home-manager build --flake .#erning@dragon
 ```
 
-Note: `nix flake check` is not pure-eval-safe on machines that lack `/etc/nixos/configuration.nix` for the `orbstack` host.
+Note: the `orbstack` host conditionally imports `/etc/nixos/configuration.nix` so non-OrbStack evaluations do not place a store-external absolute path in `imports`; real OrbStack NixOS environments are expected to provide that file.
 
 ## Project Structure
 
