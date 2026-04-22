@@ -27,6 +27,9 @@ cursor-style = bar
 # Merge tabs into titlebar to save vertical space (macOS)
 macos-titlebar-style = tabs
 
+# Treat Option key as Alt for terminal sequences (e.g. <alt-h>)
+macos-option-as-alt = true
+
 # Content padding (in points)
 window-padding-x = 4
 window-padding-y = 2,0

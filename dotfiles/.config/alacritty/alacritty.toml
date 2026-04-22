@@ -12,3 +12,6 @@ opacity = 0.95
 [window.dimensions]
 columns = 80
 lines = 25
+
+[keyboard]
+option_as_alt = "Both"
