@@ -6,6 +6,7 @@
 }:
 
 {
+  # Avoid putting a store-external absolute path in imports on non-OrbStack machines.
   imports = lib.optional (builtins.pathExists "/etc/nixos/configuration.nix") "/etc/nixos/configuration.nix";
 
   networking.hostName = lib.mkForce "${settings.host}";
