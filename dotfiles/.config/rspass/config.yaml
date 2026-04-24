@@ -1,0 +1,8 @@
+mounts:
+
+identities:
+  - ~/.config/age/keys.txt
+  - /etc/age/ssh_host_ed25519.txt
+
+include:
+  - conf.d/*.yaml
