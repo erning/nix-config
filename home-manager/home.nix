@@ -114,10 +114,9 @@ in
   home.activation.checkDotfiles = lib.hm.dag.entryBefore [ "writeBoundary" ] ''
     if [[ ! -L "${config.lib.dotfiles.path}" ]]; then
       echo "WARNING: ~/.dotfiles symlink is missing." >&2
-      echo "  Run: ln -s ${config.lib.dotfiles.srcPath} ${config.lib.dotfiles.path}" >&2
-    elif [[ "$(readlink ${config.lib.dotfiles.path})" != "${config.lib.dotfiles.srcPath}" ]]; then
-      echo "WARNING: ~/.dotfiles points to unexpected location." >&2
-      echo "  Expected: ${config.lib.dotfiles.srcPath}" >&2
+      echo "  Run from the nix-config checkout: ln -s \"\$(pwd)/dotfiles\" ${config.lib.dotfiles.path}" >&2
+    elif [[ ! -d "${config.lib.dotfiles.path}/.config" ]]; then
+      echo "WARNING: ~/.dotfiles does not look like this repo's dotfiles directory." >&2
       echo "  Actual:   $(readlink ${config.lib.dotfiles.path})" >&2
     fi
   '';
