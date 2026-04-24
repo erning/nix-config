@@ -6,13 +6,13 @@
       "fallback_models": [
         "zhipuai-coding-plan/glm-5.1",
         {
-          "model": "openai/gpt-5.4",
+          "model": "openai/gpt-5.5",
           "variant": "medium"
         }
       ]
     },
     "hephaestus": {
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.5",
       "variant": "medium",
       "fallback_models": [
         "kimi-for-coding/k2p6",
@@ -20,7 +20,7 @@
       ]
     },
     "oracle": {
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.5",
       "variant": "high",
       "fallback_models": [
         "kimi-for-coding/k2p6",
@@ -55,13 +55,13 @@
       "fallback_models": [
         "zhipuai-coding-plan/glm-5.1",
         {
-          "model": "openai/gpt-5.4",
+          "model": "openai/gpt-5.5",
           "variant": "medium"
         }
       ]
     },
     "metis": {
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.5",
       "variant": "high",
       "fallback_models": [
         "kimi-for-coding/k2p6",
@@ -69,7 +69,7 @@
       ]
     },
     "momus": {
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.5",
       "variant": "xhigh",
       "fallback_models": [
         "kimi-for-coding/k2p6",
@@ -81,7 +81,7 @@
       "fallback_models": [
         "zhipuai-coding-plan/glm-5.1",
         {
-          "model": "openai/gpt-5.4",
+          "model": "openai/gpt-5.5",
           "variant": "medium"
         }
       ]
@@ -98,7 +98,7 @@
       ]
     },
     "ultrabrain": {
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.5",
       "variant": "xhigh",
       "fallback_models": [
         "kimi-for-coding/k2p6",
@@ -106,7 +106,7 @@
       ]
     },
     "deep": {
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.5",
       "variant": "high",
       "fallback_models": [
         "kimi-for-coding/k2p6",
@@ -133,7 +133,7 @@
       "fallback_models": [
         "zhipuai-coding-plan/glm-5.1",
         {
-          "model": "openai/gpt-5.4",
+          "model": "openai/gpt-5.5",
           "variant": "medium"
         }
       ]
@@ -143,7 +143,7 @@
       "fallback_models": [
         "zhipuai-coding-plan/glm-5.1",
         {
-          "model": "openai/gpt-5.4",
+          "model": "openai/gpt-5.5",
           "variant": "high"
         }
       ]
@@ -169,7 +169,7 @@
       "zhipuai-coding-plan": 5
     },
     "modelConcurrency": {
-      "openai/gpt-5.4": 2,
+      "openai/gpt-5.5": 2,
       "openai/gpt-5.4-mini-fast": 8,
       "kimi-for-coding/k2p6": 3,
       "zhipuai-coding-plan/glm-5-turbo": 5
