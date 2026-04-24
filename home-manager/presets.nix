@@ -40,6 +40,7 @@ let
     just.enable = lib.mkDefault true;
     direnv.enable = lib.mkDefault true;
     gopass.enable = lib.mkDefault true;
+    rspass.enable = lib.mkDefault true;
     gradle.enable = lib.mkDefault true;
     typst.enable = lib.mkDefault true;
     docker.enable = lib.mkDefault true;

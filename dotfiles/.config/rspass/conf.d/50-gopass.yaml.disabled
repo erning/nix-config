@@ -1,0 +1,4 @@
+identities:
+   - ~/.config/gopass/age/identities
+mounts:
+   "ai": ~/projects/gopass-ai
