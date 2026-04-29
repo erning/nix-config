@@ -3,17 +3,17 @@
     "zai": {
       "api": "openai-completions",
       "baseUrl": "https://open.bigmodel.cn/api/coding/paas/v4/",
-      "apiKey": "!gopass show -o ai/zhipu/key/opencode"
+      "apiKey": "!rspass show ai/zhipu/key/opencode"
     },
     "kimi-coding": {
       "api": "anthropic-messages",
       "baseUrl": "https://api.kimi.com/coding",
-      "apiKey": "!gopass show -o ai/kimi/coding/key/opencode"
+      "apiKey": "!rspass show ai/kimi/coding/key/opencode"
     },
     "minimax-cn": {
       "api": "anthropic-messages",
       "baseUrl": "https://api.minimaxi.com/anthropic",
-      "apiKey": "!gopass show -o ai/minimax/coding/key/default"
+      "apiKey": "!rspass show ai/minimax/coding/key/default"
     }
   }
 }
