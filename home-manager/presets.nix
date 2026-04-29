@@ -49,6 +49,7 @@ let
     pi-agent.enable = lib.mkDefault true;
     factory-droid.enable = lib.mkDefault true;
     yq.enable = lib.mkDefault true;
+    cue.enable = lib.mkDefault true;
   };
 
   graphical = {
