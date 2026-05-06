@@ -1,5 +1,5 @@
 # Shell integration: push terminfo and env vars over SSH
-shell-integration-features = ssh-terminfo,ssh-env
+shell-integration-features = ssh-terminfo,ssh-env,cursor,sudo,title
 
 # Hide mouse cursor while typing, reappears on mouse movement
 mouse-hide-while-typing = true
@@ -22,7 +22,8 @@ theme = Catppuccin Mocha
 minimum-contrast = 1.1
 
 # Cursor style: bar pairs well with vim (auto-switches to block in normal mode)
-cursor-style = bar
+# cursor-style = bar
+# cursor-style-blink = true
 
 # Merge tabs into titlebar to save vertical space (macOS)
 macos-titlebar-style = tabs
