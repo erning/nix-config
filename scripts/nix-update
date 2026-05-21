@@ -1,0 +1,125 @@
+#!/bin/sh
+set -eu
+
+# nix-update — update flake inputs, rebuild, and diff package versions with nvd.
+# Usage: nix-update [HOST] [--no-update] [--system-only] [--home-only] [--help]
+
+USER_NAME="${USER:-$(id -un)}"
+HOST=""
+DO_UPDATE=1
+DO_SYSTEM=1
+DO_HOME=1
+
+usage() {
+  cat <<'EOF'
+Usage: nix-update [HOST] [OPTIONS]
+
+Update flake inputs, rebuild the system and/or home-manager configuration,
+then list package version changes with nvd.
+
+Arguments:
+  HOST               Flake host name (default: short hostname)
+
+Options:
+  -n, --no-update    Skip "nix flake update" (just rebuild and diff)
+      --system-only  Only rebuild and diff the system configuration
+      --home-only    Only rebuild and diff the home-manager configuration
+  -h, --help         Show this help message
+
+nvd is invoked from PATH if available, otherwise via "nix run nixpkgs#nvd".
+EOF
+}
+
+info() { printf ':: %s\n' "$*"; }
+warn() { printf 'warning: %s\n' "$*" >&2; }
+die()  { printf 'error: %s\n' "$*" >&2; exit 1; }
+
+# Run nvd from PATH if installed, otherwise fetch it on the fly.
+run_nvd() {
+  if command -v nvd >/dev/null 2>&1; then
+    nvd "$@"
+  else
+    nix run nixpkgs#nvd -- "$@"
+  fi
+}
+
+# ── Parse arguments ──────────────────────────────────────────────────
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -n|--no-update) DO_UPDATE=0; shift ;;
+    --system-only)  DO_HOME=0; shift ;;
+    --home-only)    DO_SYSTEM=0; shift ;;
+    -h|--help)      usage; exit 0 ;;
+    -*)             warn "unknown option: $1"; usage >&2; exit 1 ;;
+    *)
+      [ -z "$HOST" ] || die "unexpected argument: $1"
+      HOST="$1"; shift ;;
+  esac
+done
+
+[ -n "$HOST" ] || HOST="$(hostname -s 2>/dev/null || hostname)"
+
+# ── Locate the flake (repo root = parent of this script) ─────────────
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+FLAKE_DIR="$(dirname "$SCRIPT_DIR")"
+cd "$FLAKE_DIR"
+
+# ── Detect system kind ───────────────────────────────────────────────
+SYS_KIND=none
+if [ "$(uname)" = Darwin ] && command -v darwin-rebuild >/dev/null 2>&1; then
+  SYS_KIND=darwin
+elif [ -e /etc/NIXOS ] || command -v nixos-rebuild >/dev/null 2>&1; then
+  SYS_KIND=nixos
+fi
+
+info "Flake:  $FLAKE_DIR"
+info "Host:   $HOST"
+info "User:   $USER_NAME"
+info "System: $SYS_KIND"
+echo
+
+# ── 1. Update flake inputs ───────────────────────────────────────────
+if [ "$DO_UPDATE" -eq 1 ]; then
+  info "Updating flake inputs (nix flake update)"
+  nix flake update
+else
+  info "Skipping flake update (--no-update)"
+fi
+echo
+
+# ── 2. System configuration ──────────────────────────────────────────
+if [ "$DO_SYSTEM" -eq 1 ]; then
+  if [ "$SYS_KIND" = none ]; then
+    info "No system configuration on this host, skipping system diff"
+  elif [ ! -e /run/current-system ]; then
+    warn "/run/current-system not found, skipping system diff"
+  else
+    case "$SYS_KIND" in
+      darwin) attr=".#darwinConfigurations.${HOST}.system" ;;
+      nixos)  attr=".#nixosConfigurations.${HOST}.config.system.build.toplevel" ;;
+    esac
+    info "Building system: $attr"
+    new="$(nix build --no-link --print-out-paths "$attr")"
+    info "Changes (system):"
+    run_nvd diff /run/current-system "$new"
+  fi
+  echo
+fi
+
+# ── 3. Home-manager configuration ────────────────────────────────────
+if [ "$DO_HOME" -eq 1 ]; then
+  hm_profile="${XDG_STATE_HOME:-$HOME/.local/state}/nix/profiles/home-manager"
+  attr=".#homeConfigurations.\"${USER_NAME}@${HOST}\".activationPackage"
+  info "Building home: $attr"
+  new="$(nix build --no-link --print-out-paths "$attr")"
+  if [ -e "$hm_profile" ]; then
+    info "Changes (home):"
+    run_nvd diff "$hm_profile" "$new"
+  else
+    warn "home-manager profile not found at $hm_profile"
+    info "Built: $new"
+  fi
+  echo
+fi
+
+info "Done."
