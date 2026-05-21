@@ -50,6 +50,7 @@ let
     factory-droid.enable = lib.mkDefault true;
     yq.enable = lib.mkDefault true;
     cue.enable = lib.mkDefault true;
+    nvd.enable = lib.mkDefault true;
   };
 
   graphical = {
