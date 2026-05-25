@@ -10,7 +10,6 @@
   _description = "SSH client";
   programs.ssh = {
     enable = true;
-    matchBlocks."*" = { };
 
     includes = [
       "conf.d/*.conf"
@@ -22,6 +21,12 @@
       NoHostAuthenticationForLocalhost yes
       StrictHostKeyChecking no
     '';
+  }
+  // lib.optionalAttrs (options.programs.ssh ? settings) {
+    settings."*" = { };
+  }
+  // lib.optionalAttrs (!(options.programs.ssh ? settings)) {
+    matchBlocks."*" = { };
   }
   // lib.optionalAttrs (options.programs.ssh ? enableDefaultConfig) {
     enableDefaultConfig = false;
