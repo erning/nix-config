@@ -20,7 +20,7 @@
   },
 
   "ui_font_size": 18,
-  "buffer_font_family": "Maple Mono NF CN",
+  "buffer_font_family": "Maple Mono Normal NF CN",
   "buffer_font_features": {
     "calt": true,
     "zero": true,
