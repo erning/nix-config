@@ -4,5 +4,6 @@
 
   home.file = config.lib.dotfiles.homeFiles [
     ".pi/agent/models.json"
+    ".pi/agent/auth.json"
   ];
 }
