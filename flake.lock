@@ -85,6 +85,27 @@
         "type": "github"
       }
     },
+    "home-manager-2605": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-2605"
+        ]
+      },
+      "locked": {
+        "lastModified": 1780361225,
+        "narHash": "sha256-wnV9ttf4fPWNonBIQmvlrSlNpQYgx5HgWWd007mwIFA=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "e28654b71096e08c019d4861ca26acb646f583d8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "release-26.05",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
     "home-manager-stable": {
       "inputs": {
         "nixpkgs": [
@@ -144,6 +165,27 @@
       "original": {
         "owner": "lnl7",
         "ref": "nix-darwin-25.05",
+        "repo": "nix-darwin",
+        "type": "github"
+      }
+    },
+    "nix-darwin-2605": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-2605"
+        ]
+      },
+      "locked": {
+        "lastModified": 1779036909,
+        "narHash": "sha256-zXcwYQGCT6pzinK+1dBB2ekTVtfxGZAapb3Evdcu4fY=",
+        "owner": "lnl7",
+        "repo": "nix-darwin",
+        "rev": "56c666e108467d87d13508936aade6d567f2a501",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lnl7",
+        "ref": "nix-darwin-26.05",
         "repo": "nix-darwin",
         "type": "github"
       }
@@ -240,6 +282,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-2605": {
+      "locked": {
+        "lastModified": 1780203844,
+        "narHash": "sha256-K5sT4jTpGs15ADhviMKNBH38REpPf5Q6mM1+N6cArVE=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "b51242d7d43689db2f3be91bd05d5b24fbb469c4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-26.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1779796641,
@@ -289,13 +347,16 @@
       "inputs": {
         "agenix": "agenix",
         "home-manager-2505": "home-manager-2505",
+        "home-manager-2605": "home-manager-2605",
         "home-manager-stable": "home-manager-stable",
         "home-manager-unstable": "home-manager-unstable",
         "nix-darwin-2505": "nix-darwin-2505",
+        "nix-darwin-2605": "nix-darwin-2605",
         "nix-darwin-stable": "nix-darwin-stable",
         "nix-darwin-unstable": "nix-darwin-unstable",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs-2505": "nixpkgs-2505",
+        "nixpkgs-2605": "nixpkgs-2605",
         "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "secrets": "secrets"

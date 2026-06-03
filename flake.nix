@@ -37,6 +37,18 @@
       inputs.nixpkgs.follows = "nixpkgs-2505";
     };
 
+    # pinned for Intel macOS (x86_64-darwin) — 26.05 is the last
+    # nixpkgs release to support x86_64-darwin.
+    nixpkgs-2605.url = "github:nixos/nixpkgs/nixos-26.05";
+    nix-darwin-2605 = {
+      url = "github:lnl7/nix-darwin/nix-darwin-26.05";
+      inputs.nixpkgs.follows = "nixpkgs-2605";
+    };
+    home-manager-2605 = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs-2605";
+    };
+
     # unstable
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     # nixpkgs-unstable.url = "github:nixos/nixpkgs/master";
@@ -72,6 +84,11 @@
           nix-darwin = inputs.nix-darwin-2505;
           home-manager = inputs.home-manager-2505;
         };
+        "26.05" = {
+          nixpkgs = inputs.nixpkgs-2605;
+          nix-darwin = inputs.nix-darwin-2605;
+          home-manager = inputs.home-manager-2605;
+        };
       };
 
       mkBuilders =
@@ -95,6 +112,7 @@
       builders = {
         default = mkBuilders "default";
         "25.05" = mkBuilders "25.05";
+        "26.05" = mkBuilders "26.05";
       };
 
       lib = series.default.nixpkgs.lib;
@@ -109,9 +127,11 @@
         }
 
         # MacBookPro16,1 (16-inch, 2019) — macOS Tohoe 26.3.1
+        # Pinned to 26.05, the last nixpkgs release supporting x86_64-darwin.
         {
           name = "dinosaur";
           system = "x86_64-darwin";
+          pinned = "26.05";
         }
 
         # MacBookPro6,1 (17-inch, Mid 2010) — NixOS
