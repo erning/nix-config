@@ -2,18 +2,7 @@
   "providers": {
     "zai": {
       "api": "openai-completions",
-      "baseUrl": "https://open.bigmodel.cn/api/coding/paas/v4/",
-      "apiKey": "!rspass show ai/zhipu/key/opencode"
-    },
-    "kimi-coding": {
-      "api": "anthropic-messages",
-      "baseUrl": "https://api.kimi.com/coding",
-      "apiKey": "!rspass show ai/kimi/coding/key/opencode"
-    },
-    "minimax-cn": {
-      "api": "anthropic-messages",
-      "baseUrl": "https://api.minimaxi.com/anthropic",
-      "apiKey": "!rspass show ai/minimax/coding/key/default"
+      "baseUrl": "https://open.bigmodel.cn/api/coding/paas/v4/"
     }
   }
 }
