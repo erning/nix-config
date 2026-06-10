@@ -35,6 +35,7 @@
   "agent_buffer_font_size": 18,
 
   //
+  "cli_default_open_behavior": "new_window",
   "restore_on_startup": "empty_tab",
   "format_on_save": "off",
 
