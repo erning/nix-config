@@ -54,6 +54,9 @@ set hlsearch
 " press esc twice to turn off search highlight
 nnoremap <esc><esc> :silent! nohls<cr>
 
+" Save readonly files with :w!! via sudo.
+cnoreabbrev <expr> w!! getcmdtype() ==# ':' && getcmdline() ==# 'w!!' ? 'w !sudo tee % >/dev/null' : 'w!!'
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => lightline
