@@ -1,8 +1,8 @@
 {
   "customModels": [
     {
-      "model": "glm-5.1",
-      "displayName": "GLM-5.1 [zhipu]",
+      "model": "glm-5.2",
+      "displayName": "GLM-5.2 [zhipu]",
       "baseUrl": "https://open.bigmodel.cn/api/anthropic",
       "apiKey": "${ZHIPU_API_KEY}",
       "provider": "anthropic"
