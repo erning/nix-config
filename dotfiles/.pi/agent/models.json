@@ -1,8 +1,0 @@
-{
-  "providers": {
-    "zai": {
-      "api": "openai-completions",
-      "baseUrl": "https://open.bigmodel.cn/api/coding/paas/v4/"
-    }
-  }
-}
