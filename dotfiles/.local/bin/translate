@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+system_prompt=$(
+    cat <<'PROMPT'
+You are a concise Chinese-English translator.
+
+Rules:
+- If the input contains any Chinese, including mixed Chinese and non-Chinese
+  text, translate the full meaning into natural English.
+- If the input contains no Chinese, translate the full meaning into natural
+  Simplified Chinese.
+- Preserve names, code, paths, commands, URLs, numbers, and quoted text unless
+  translation is clearly needed.
+- Return only the translation. Do not include explanations, notes, quotes, or
+  extra formatting.
+PROMPT
+)
+
+exec pi -p \
+    --no-session \
+    --no-tools \
+    --no-context-files \
+    --no-skills \
+    --no-extensions \
+    --no-prompt-templates \
+    --no-themes \
+    --no-approve \
+    --thinking off \
+    --system-prompt "$system_prompt" \
+    "$@"

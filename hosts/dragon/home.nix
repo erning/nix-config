@@ -25,4 +25,8 @@ in
     postgresql
     mariadb.client
   ];
+
+  home.file = config.lib.dotfiles.homeFiles [
+    ".local/bin/translate"
+  ];
 }
