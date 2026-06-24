@@ -18,7 +18,32 @@ Rules:
 PROMPT
 )
 
+has_provider=false
+has_model=false
+
+for arg in "$@"; do
+    case "$arg" in
+        --provider | --provider=*)
+            has_provider=true
+            ;;
+        --model | --model=*)
+            has_model=true
+            ;;
+    esac
+done
+
+default_args=()
+
+if [[ "$has_provider" == false ]]; then
+    default_args+=(--provider kimi-coding)
+fi
+
+if [[ "$has_model" == false ]]; then
+    default_args+=(--model k2p7)
+fi
+
 exec pi -p \
+    "${default_args[@]}" \
     --no-session \
     --no-tools \
     --no-context-files \
