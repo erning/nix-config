@@ -2,8 +2,40 @@
 
 set -euo pipefail
 
-system_prompt=$(
-    cat <<'PROMPT'
+language=auto
+pi_args=()
+
+while (($# > 0)); do
+    case "$1" in
+        --language)
+            if (($# < 2)); then
+                printf 'translate: --language requires auto, en, or zh\n' >&2
+                exit 2
+            fi
+
+            language="$2"
+            shift 2
+            ;;
+        --language=*)
+            language="${1#--language=}"
+            shift
+            ;;
+        --)
+            shift
+            pi_args+=("$@")
+            break
+            ;;
+        *)
+            pi_args+=("$1")
+            shift
+            ;;
+    esac
+done
+
+case "$language" in
+    auto)
+        system_prompt=$(
+            cat <<'PROMPT'
 You are a concise translation router.
 
 Rules:
@@ -20,12 +52,49 @@ Rules:
 - Return only the translation. Do not include explanations, notes, quotes, or
   extra formatting.
 PROMPT
-)
+        )
+        ;;
+    en)
+        system_prompt=$(
+            cat <<'PROMPT'
+You are a concise translator.
+
+Rules:
+- Translate the full meaning of the input into natural English, regardless of
+  the input language.
+- Preserve names, code, paths, commands, URLs, numbers, and quoted text unless
+  translation is clearly needed.
+- Return only the translation. Do not include explanations, notes, quotes, or
+  extra formatting.
+PROMPT
+        )
+        ;;
+    zh)
+        system_prompt=$(
+            cat <<'PROMPT'
+You are a concise translator.
+
+Rules:
+- Translate the full meaning of the input into natural Simplified Chinese,
+  regardless of the input language.
+- Preserve names, code, paths, commands, URLs, numbers, and quoted text unless
+  translation is clearly needed.
+- Return only the translation. Do not include explanations, notes, quotes, or
+  extra formatting.
+PROMPT
+        )
+        ;;
+    *)
+        printf 'translate: invalid --language: %s\n' "$language" >&2
+        printf 'translate: expected one of: auto, en, zh\n' >&2
+        exit 2
+        ;;
+esac
 
 has_provider=false
 has_model=false
 
-for arg in "$@"; do
+for arg in "${pi_args[@]}"; do
     case "$arg" in
         --provider | --provider=*)
             has_provider=true
@@ -48,6 +117,7 @@ fi
 
 exec pi -p \
     "${default_args[@]}" \
+    --offline \
     --no-session \
     --no-tools \
     --no-context-files \
@@ -58,4 +128,4 @@ exec pi -p \
     --no-approve \
     --thinking off \
     --system-prompt "$system_prompt" \
-    "$@"
+    "${pi_args[@]}"
