@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+auth_env="$HOME/.pi/agent/auth.env"
+if [[ -f "$auth_env" ]]; then
+  # shellcheck disable=SC1090
+  source "$auth_env"
+fi
+
+# Drop this script's own directory from PATH so `pi` below resolves to the
+# real binary instead of recursing back into this wrapper.
+self_dir=$(cd -- "$(dirname -- "$0")" && pwd)
+IFS=: read -ra path_dirs <<<"$PATH"
+real_path=""
+for dir in "${path_dirs[@]}"; do
+  [[ "$dir" == "$self_dir" ]] && continue
+  real_path="${real_path:+$real_path:}$dir"
+done
+
+PATH="$real_path" exec pi "$@"
