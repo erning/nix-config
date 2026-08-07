@@ -45,6 +45,7 @@ let
     gradle.enable = lib.mkDefault true;
     typst.enable = lib.mkDefault true;
     docker.enable = lib.mkDefault true;
+    herdr.enable = lib.mkDefault true;
     claude-code.enable = lib.mkDefault true;
     opencode.enable = lib.mkDefault true;
     pi-agent.enable = lib.mkDefault true;
