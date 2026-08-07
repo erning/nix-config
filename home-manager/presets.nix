@@ -17,6 +17,7 @@ let
   };
 
   terminal = {
+    asciinema.enable = lib.mkDefault true;
     glow.enable = lib.mkDefault true;
     tmux.enable = lib.mkDefault true;
     neovim.enable = lib.mkDefault true;
