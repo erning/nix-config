@@ -1,0 +1,16 @@
+onboarding = false
+
+[theme]
+name = "catppuccin"
+auto_switch = true
+dark_name = "catppuccin"
+light_name = "catppuccin-latte"
+
+[keys]
+prefix = "ctrl+a"
+
+settings = "prefix+shift+s"
+detach = "prefix+d"
+
+split_vertical = "prefix+v"
+split_horizontal = "prefix+s"
