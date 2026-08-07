@@ -17,6 +17,7 @@ let
   };
 
   terminal = {
+    glow.enable = lib.mkDefault true;
     tmux.enable = lib.mkDefault true;
     neovim.enable = lib.mkDefault true;
     nushell.enable = lib.mkDefault false;
