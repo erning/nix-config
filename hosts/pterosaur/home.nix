@@ -19,5 +19,6 @@ in
 
   features = lib.mkMerge [
     presets.development
+    { linuxbrew.enable = true; }
   ];
 }
