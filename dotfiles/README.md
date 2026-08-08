@@ -45,7 +45,7 @@ dotfiles/.config/git/
 ├── config                       # shared across all hosts
 ├── config.local##dragon         # only on host "dragon"
 ├── config.local##os.darwin      # on any macOS host
-└── config.local##series.25.05   # on hosts pinned to the 25.05 nixpkgs channel
+└── config.local##series.26.05   # on hosts pinned to the 26.05 nixpkgs channel
 ```
 
 Supported tags (highest priority first):
@@ -57,7 +57,7 @@ Supported tags (highest priority first):
 | `##hostname.<host>`   | alias of the above                                  |
 | `##os.darwin`         | `settings.isDarwin == true`                         |
 | `##os.linux`          | `settings.isLinux == true`                          |
-| `##series.<series>`   | `settings.nixpkgsSeries` equals `<series>` (e.g. `default`, `25.05`) |
+| `##series.<series>`   | `settings.nixpkgsSeries` equals `<series>` (e.g. `default`, `26.05`) |
 
 Rules:
 - When several alternates exist for the same base, the highest-priority match wins (host > os > series).
@@ -65,7 +65,7 @@ Rules:
 - The deployed filename strips the `##<tag>` suffix (e.g., `config.local##os.darwin` deploys as `config.local`).
 - If neither an alternate nor the base file exists, the entry is silently skipped.
 - Works with all dotfile helpers: `configFiles`, `homeFiles`, `configDir`, `homeDir`, and `symlink`.
-- Combinations like `##os.darwin,series.25.05` are **not** supported — pick the most-specific single tag and let the base file be the fallback.
+- Combinations like `##os.darwin,series.26.05` are **not** supported — pick the most-specific single tag and let the base file be the fallback.
 
 ## Keep in Mind
 

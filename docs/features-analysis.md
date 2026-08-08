@@ -27,7 +27,7 @@ Classification criteria:
 | `jdk.nix` | jdk |
 | `kotlin.nix` | kotlin |
 | `gradle.nix` | gradle |
-| `nix-support.nix` | nil, nixd, nixfmt (nixfmt-rfc-style on the `"25.05"` channel) |
+| `nix-support.nix` | nil, nixd, nixfmt |
 | `build-essential.nix` | bison, flex, fontforge, makeWrapper, pkg-config, gnumake, gcc, libiconv, autoconf, automake, libtool |
 | `typst.nix` | typst (+ conditional fonts: libertinus, jetbrains-mono, newcomputermodern if fonts feature enabled) |
 
