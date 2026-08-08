@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# set-fish-shell — use the Fish installed by Home Manager as the login shell.
+# Usage: set-fish-shell [USER]
+#
+# Run this after the user's first successful Home Manager activation. The
+# ~/.nix-profile path is stable across generations; never register a direct
+# /nix/store path as a login shell. This script intentionally does not install
+# Fish with the operating system's package manager.
+
+usage() {
+  cat <<'EOF'
+Usage: set-fish-shell [USER]
+
+Register the Fish executable from USER's Home Manager profile in /etc/shells,
+then set it as USER's login shell. USER defaults to the current user, or to
+SUDO_USER when the script itself is run through sudo.
+
+The script must run after Home Manager has installed Fish at:
+  ~/.nix-profile/bin/fish
+EOF
+}
+
+info() {
+  printf ':: %s\n' "$*"
+}
+
+die() {
+  printf 'error: %s\n' "$*" >&2
+  exit 1
+}
+
+run_as_root() {
+  if [ "$EUID" -eq 0 ]; then
+    "$@"
+  else
+    sudo "$@"
+  fi
+}
+
+case "$#" in
+  0)
+    if [ "$EUID" -eq 0 ]; then
+      if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != root ]; then
+        targetUser="$SUDO_USER"
+      else
+        die "pass a target user when running directly as root"
+      fi
+    else
+      targetUser="$(id -un)"
+    fi
+    ;;
+  1)
+    case "$1" in
+      -h | --help)
+        usage
+        exit 0
+        ;;
+      -*) die "invalid user name: $1" ;;
+      *) targetUser="$1" ;;
+    esac
+    ;;
+  *)
+    usage >&2
+    exit 1
+    ;;
+esac
+
+if [ "$(uname -s)" != Linux ]; then
+  die "this script only supports Linux"
+fi
+
+for requiredCommand in getent grep cut chsh tee; do
+  command -v "$requiredCommand" >/dev/null 2>&1 \
+    || die "required command not found: $requiredCommand"
+done
+
+if [ "$EUID" -ne 0 ]; then
+  command -v sudo >/dev/null 2>&1 || die "sudo is required"
+fi
+
+passwdEntry="$(getent passwd "$targetUser")" \
+  || die "user not found: $targetUser"
+targetHome="$(printf '%s\n' "$passwdEntry" | cut -d: -f6)"
+currentShell="$(printf '%s\n' "$passwdEntry" | cut -d: -f7)"
+
+case "$targetHome" in
+  /*) ;;
+  *) die "invalid home directory for $targetUser: $targetHome" ;;
+esac
+
+fishPath="$targetHome/.nix-profile/bin/fish"
+if [ ! -x "$fishPath" ]; then
+  die "Fish is not executable at $fishPath; activate Home Manager first"
+fi
+
+if [ ! -f /etc/shells ]; then
+  die "/etc/shells does not exist"
+fi
+
+info "User:  $targetUser"
+info "Fish:  $fishPath"
+info "Found: $("$fishPath" --version)"
+
+if grep -Fqx -- "$fishPath" /etc/shells; then
+  info "Already registered in /etc/shells"
+else
+  info "Registering Fish in /etc/shells"
+  printf '%s\n' "$fishPath" | run_as_root tee -a /etc/shells >/dev/null
+fi
+
+if [ "$currentShell" = "$fishPath" ]; then
+  info "Fish is already the login shell"
+else
+  info "Changing the login shell from $currentShell"
+  run_as_root chsh -s "$fishPath" "$targetUser"
+fi
+
+configuredShell="$(getent passwd "$targetUser" | cut -d: -f7)"
+if [ "$configuredShell" != "$fishPath" ]; then
+  die "login shell verification failed: $configuredShell"
+fi
+
+info "Login shell updated successfully"
+info "Keep this session open and verify the change in a new login session"
+info "Rollback command: sudo chsh -s /bin/bash $targetUser"
