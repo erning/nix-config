@@ -125,7 +125,8 @@ in
   #
   #
   imports = [
-    (if settings.isDarwin then ./darwin.nix else ./nixos.nix)
+    (if settings.isDarwin then ./darwin.nix else ./linux.nix)
+    ./generic-linux.nix
     ./packages.nix
     ./secrets.nix
     ./features

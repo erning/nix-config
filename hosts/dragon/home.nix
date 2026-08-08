@@ -19,6 +19,7 @@ in
 
   features = lib.mkMerge [
     presets.workstation
+    { homebrew.enable = true; }
   ];
 
   home.packages = with pkgs; [

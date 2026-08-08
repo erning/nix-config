@@ -16,9 +16,11 @@ in
     (ssh-key "id_ed25519")
   ];
 
+  targets.genericLinux.enable = true;
+
   features = lib.mkMerge [
     presets.workstation
-    { linuxbrew.enable = true; }
+    { homebrew.enable = true; }
   ];
 
   home.packages = with pkgs; [
