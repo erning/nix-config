@@ -240,9 +240,9 @@ xdg.configFile = config.lib.dotfiles.configFiles [
 - alternate 与基础文件都不存在时,该条目静默跳过(`exists` 返回 false)。
 - **不支持组合写法**(如 `##os.darwin,series.25.05`)——挑最具体的单 tag,基础文件作兜底即可。
 
-### 示例:按 nixpkgs series 切分 starship 配置
+### 示例：按 nixpkgs series 切分 Starship 配置
 
-`pterosaur` / `mango` 锁在 nixpkgs-25.05,带的 starship 1.23.0 不认识较新版本里的 `[fortran]` / `[xmake]` 模块和若干 `os.symbols` 变体;直接用 base `starship.toml` 会在每次 shell 启动时 warn。解决办法是给老 series 提供一份精简变体:
+`mango` 锁定在 `nixpkgs-25.05`，所带的 Starship 1.23.0 不支持较新版本中的 `[fortran]`、`[xmake]` 模块和若干 `os.symbols` 变体；直接使用基础 `starship.toml` 会在每次 shell 启动时显示警告。解决办法是为旧 `series` 提供一份精简变体：
 
 ```text
 dotfiles/.config/
@@ -250,7 +250,7 @@ dotfiles/.config/
 └── starship.toml##series.25.05       # 25.05 hosts 用,删掉老 starship 不识别的键
 ```
 
-`pterosaur`(series=25.05)解析到变体,`dragon`(series=default)落回基础文件。feature 模块本身无需任何改动:
+`mango`（`series = 25.05`）会解析到变体，`dragon`（`series = default`）会回退到基础文件。feature 模块本身无需任何改动：
 
 ```nix
 # home-manager/features/starship.nix —— 不感知 alternate

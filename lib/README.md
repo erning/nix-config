@@ -15,7 +15,7 @@ darwinConfigurations.dragon = mkSystem {
 };
 ```
 
-`flake.nix` imports this file once per channel (see its `series` attrset and `mkBuilders` helper), passing different `nixpkgs`, `nix-darwin`, and `nixpkgsSeries` values. Legacy macOS hosts (`pterosaur`, `mango`) use the `"25.05"` channel; all other hosts use `"default"`.
+`flake.nix` imports this file once per channel (see its `series` attrset and `mkBuilders` helper), passing different `nixpkgs`, `nix-darwin`, and `nixpkgsSeries` values. The legacy macOS host `mango` uses the `"25.05"` channel, `dinosaur` uses `"26.05"`, and all other hosts use `"default"`.
 
 ---
 

@@ -28,7 +28,7 @@ darwin-rebuild switch --flake .#dragon
 nixos-rebuild switch --flake .#phoenix
 
 # home-manager only
-nix run home-manager -- switch --flake .#erning@dragon
+nix run home-manager/master -- switch --flake .#erning@pterosaur
 ```
 
 ## Validation
@@ -71,7 +71,7 @@ nix-config/
 | `dinosaur` | `x86_64-darwin` | Intel macOS workstation |
 | `phoenix` | `x86_64-linux` | NixOS laptop |
 | `pomelo` | `x86_64-linux` | Fedora + home-manager only |
-| `pterosaur` | `x86_64-darwin` | Intel macOS workstation |
+| `pterosaur` | `x86_64-linux` | Ubuntu Server 26.04 LTS + home-manager only |
 | `mango` | `x86_64-darwin` | lightweight macOS host |
 | `orbstack` | `aarch64-linux` | NixOS VM with external `/etc/nixos/configuration.nix` |
 | `vmfusion` | `aarch64-linux` | NixOS VM |

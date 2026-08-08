@@ -267,5 +267,5 @@ feature 模块函数可以使用以下参数（框架会透传所有模块参数
    # default/unstable channel
    home-manager build --flake .#erning@dragon
    # 25.05 channel
-   home-manager build --flake .#erning@pterosaur
+   home-manager build --flake .#erning@mango
    ```

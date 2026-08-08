@@ -15,10 +15,9 @@ in
     (ssh-key "id_ed25519")
   ];
 
-  home.stateVersion = "25.05";
+  targets.genericLinux.enable = true;
 
   features = lib.mkMerge [
-    presets.workstation
-    { nushell.enable = false; }
+    presets.development
   ];
 }

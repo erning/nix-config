@@ -365,10 +365,10 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1776771104,
-        "narHash": "sha256-WlRdi+RMA0QwxC3m018U0qmpbHTRSmtF2M9jDL5gpoA=",
+        "lastModified": 1786191398,
+        "narHash": "sha256-pdlhkiTI17uGY6k3umx5sNtd7CGedu5WW8yQIj98ZVs=",
         "ref": "refs/heads/master",
-        "rev": "a934363c8c7fe7187e2de1c619281f8b0906c1df",
+        "rev": "f088752d911655a678d4709ddba6ec95065443b6",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/erning/nix-secrets.git"
