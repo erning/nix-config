@@ -15,7 +15,10 @@ in
     (ssh-key "id_ed25519")
   ];
 
-  targets.genericLinux.enable = true;
+  targets.genericLinux = {
+    enable = true;
+    gpu.enable = false;
+  };
 
   features = lib.mkMerge [
     presets.development
