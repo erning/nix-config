@@ -26,7 +26,7 @@
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
-    # pinned for legacy macOS (Monterey, Big Sur 11.3+)
+    # pinned for legacy macOS (Big Sur 11.3+)
     nixpkgs-2505.url = "github:nixos/nixpkgs/nixos-25.05";
     nix-darwin-2505 = {
       url = "github:lnl7/nix-darwin/nix-darwin-25.05";
@@ -147,11 +147,11 @@
           homeOnly = true;
         }
 
-        # MacBookPro13,3 (15-inch, 2016) — macOS Monterey 12.7.6
+        # MacBookPro13,3 (15-inch, 2016) — Ubuntu Server 26.04 LTS + home-manager only
         {
           name = "pterosaur";
-          system = "x86_64-darwin";
-          pinned = "25.05";
+          system = "x86_64-linux";
+          homeOnly = true;
         }
 
         # MacBook8,1 (12-inch, Early 2015) — macOS Big Sur 11.7.10

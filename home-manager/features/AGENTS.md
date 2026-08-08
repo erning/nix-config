@@ -79,7 +79,7 @@ After adding or changing a feature, verify against both channels:
 home-manager build --flake .#erning@dragon
 
 # 25.05 channel
-home-manager build --flake .#erning@pterosaur
+home-manager build --flake .#erning@mango
 ```
 
 ## NOTES

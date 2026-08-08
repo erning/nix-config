@@ -11,7 +11,7 @@ For subtree-specific editing rules and exceptions, see `hosts/AGENTS.md`.
 | `dinosaur` | `x86_64-darwin` | MacBook Pro 16" 2019 | Intel macOS workstation |
 | `phoenix` | `x86_64-linux` | MacBook Pro 17" 2010 | NixOS laptop |
 | `pomelo` | `x86_64-linux` | MacBook Air 13" 2019 | Fedora + home-manager only |
-| `pterosaur` | `x86_64-darwin` | MacBook Pro 15" 2016 | Intel macOS workstation |
+| `pterosaur` | `x86_64-linux` | MacBook Pro 15" 2016 | Ubuntu Server 26.04 LTS + home-manager only |
 | `mango` | `x86_64-darwin` | MacBook 12" 2015 | lightweight macOS host |
 | `orbstack` | `aarch64-linux` | OrbStack VM | NixOS VM using external `/etc/nixos/configuration.nix` |
 | `vmfusion` | `aarch64-linux` | VMware Fusion VM | NixOS VM |
@@ -77,19 +77,21 @@ home-manager build --flake .#erning@<hostname>
 
 - Desktop Darwin hosts usually use `presets.workstation` (or combine `presets.development` with `presets.graphical`).
 - Linux and VM hosts usually use `presets.development` or combine `presets.core` and `presets.terminal` with targeted additions.
-- `pomelo` is the home-manager-only host; validate it with `home-manager build` rather than a system rebuild.
+- `pterosaur` uses `presets.development` with `targets.genericLinux.enable` for its headless Ubuntu environment.
+- `pomelo` and `pterosaur` are home-manager-only hosts; validate them with `home-manager build` rather than a system rebuild.
 - `orbstack` is intentionally unusual: it imports OrbStack's `/etc/nixos/configuration.nix` only when that path exists, which avoids store-external absolute-path warnings/errors during evaluation on non-OrbStack machines.
 - Flake output names do not always match directory names: `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion`.
 - Mirror defaults (nix substituters, Homebrew mirror) are appended in shared modules via `extra-substituters`. Hosts can append more in `configuration.nix` or `home.nix`; see `modules/README.md` for details.
 
 ## Home-Manager-Only Hosts
 
-For hosts like `pomelo` (Fedora + home-manager only), the system Nix daemon is **not** managed by this flake. `modules/nix-settings.nix` does not apply, so the daemon's `/etc/nix/nix.conf` must be set up manually once before the flake's mirror / trusted-user assumptions hold.
+For hosts like `pomelo` (Fedora) and `pterosaur` (Ubuntu Server), the system Nix daemon is **not** managed by this flake. `modules/nix-settings.nix` does not apply, so the daemon's `/etc/nix/nix.conf` must be set up manually once before the flake's experimental-feature, mirror, and trusted-user assumptions hold.
 
 One-time root setup on the machine:
 
 ```bash
 sudo tee -a /etc/nix/nix.conf <<'EOF'
+experimental-features = nix-command flakes
 trusted-users = root erning
 extra-substituters = https://mirrors.ustc.edu.cn/nix-channels/store?priority=10 https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=11
 EOF
@@ -97,6 +99,7 @@ sudo systemctl restart nix-daemon
 ```
 
 Notes:
+- The `experimental-features` line enables the `nix` command and flakes used by this repository.
 - `trusted-users` is required for the daemon to honor any further substituter requests coming from the user's nix.conf or flake `nixConfig`. Without it the daemon silently ignores them and keeps using only what's in `/etc/nix/nix.conf`.
 - The `extra-substituters` line is what gives this host the same mirror behavior the flake-managed hosts get from `modules/nix-settings.nix`.
 - `extra-trusted-public-keys` is not needed for ustc/tuna — they re-serve `cache.nixos.org`-signed NARs and the upstream key is already trusted by default.

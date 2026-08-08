@@ -51,7 +51,7 @@ nix-config/
 - Feature modules are pure config functions — no boilerplate needed. `mkFeatureImports` auto-wraps each file with `options.features.<name>.enable` and `lib.mkIf`. Every feature should include `_description = "...";` as the first attribute — it provides the `mkEnableOption` description and is stripped before merging. The underscore prefix follows the module system's own convention (`_file`, `_class`).
 - Host homes usually compose presets with `lib.mkMerge [ presets.<name> ... ]`.
 - Dotfile helpers live in `config.lib.dotfiles`: use `configFiles` for XDG files, `homeFiles` for home-level files, `configDir` for recursive editable directories, and `symlink` for one-off paths.
-- Legacy macOS hosts (`pterosaur`, `mango`) use the `"25.05"` channel defined in `flake.nix`'s `series` attrset — pinned to nixpkgs-25.05, nix-darwin-25.05, and home-manager-25.05 inputs. The channel name surfaces to modules as `settings.nixpkgsSeries = "25.05"`.
+- The legacy macOS host `mango` uses the `"25.05"` channel defined in `flake.nix`'s `series` attrset — pinned to nixpkgs-25.05, nix-darwin-25.05, and home-manager-25.05 inputs. The channel name surfaces to modules as `settings.nixpkgsSeries = "25.05"`.
 - Feature modules that use options not present in all home-manager versions must guard them with `lib.optionalAttrs (options.path ? attr) { ... }` so the attribute path is absent entirely when the option does not exist; `lib.mkIf` only wraps the value and still exposes the path to the module system (see `go.nix`).
 - Shared abstractions are intentionally thin; most behavior lives in small Nix modules rather than large helper layers.
 - Presets in `home-manager/presets.nix` are non-overlapping building blocks composed into `development` and `workstation` composites; all values use `lib.mkDefault`, then hosts opt in with `lib.mkMerge`.
@@ -78,7 +78,7 @@ home-manager build --flake .#erning@dragon
 
 ## NOTES
 - `hosts/orbstack/configuration.nix` conditionally imports `/etc/nixos/configuration.nix` when present, falling back to `boot.isContainer = true` on non-OrbStack machines so `nix flake check` passes everywhere.
-- `pomelo` is home-manager-only; it has no system `configuration.nix`.
+- `pomelo` (Fedora) and `pterosaur` (Ubuntu Server 26.04 LTS) are home-manager-only; they have no system `configuration.nix`.
 - Flake output names do not always match host directories: `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion` are intentional.
-- `pterosaur` (macOS Monterey 12.7.6) and `mango` (macOS Big Sur 11.7.10) are pinned to nixpkgs-25.05 / nix-darwin-25.05 / home-manager-25.05 because nixpkgs-unstable requires macOS Sonoma 14.0+.
+- `mango` (macOS Big Sur 11.7.10) is pinned to nixpkgs-25.05 / nix-darwin-25.05 / home-manager-25.05 because nixpkgs-unstable requires macOS Sonoma 14.0+.
 - `CLAUDE.md` is a symlink to `AGENTS.md` — they are the same file; only edit `AGENTS.md`.
