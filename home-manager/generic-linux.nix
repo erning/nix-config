@@ -23,6 +23,11 @@ let
 in
 {
   config = lib.mkIf config.targets.genericLinux.enable {
+    home.sessionPath = lib.mkAfter [
+      "$HOME/.nix-profile/bin"
+      "/nix/var/nix/profiles/default/bin"
+    ];
+
     # genericLinux sources nix.sh after home.sessionPath, which moves the user
     # Nix profile ahead of the preferred paths. Rebuild PATH afterwards so the
     # declared session paths take precedence while preserving the original
