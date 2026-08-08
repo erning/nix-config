@@ -19,6 +19,9 @@ in
 
   features = lib.mkMerge [
     presets.workstation
-    { nushell.enable = false; }
+    {
+      homebrew.enable = true;
+      nushell.enable = false;
+    }
   ];
 }
