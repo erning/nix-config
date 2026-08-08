@@ -230,39 +230,20 @@ xdg.configFile = config.lib.dotfiles.configFiles [
 |---|---|---|
 | `##<host>`(及别名 `##h.<host>` / `##hostname.<host>`) | `settings.host` 等于 `<host>` | 3 |
 | `##os.darwin` / `##os.linux` | `settings.isDarwin` / `isLinux` | 2 |
-| `##series.<series>` | `settings.nixpkgsSeries` 等于 `<series>`(如 `default`、`25.05`) | 1 |
-| (基础文件,无 tag) | 无匹配时兜底 | 0 |
+| `##series.<series>` | `settings.nixpkgsSeries` 等于 `<series>`（如 `default`、`26.05`） | 1 |
+| （基础文件，无 tag） | 无匹配时兜底 | 0 |
 
 ### 解析规则
 
-- 同一基础文件可同时存在多个 alternate;**优先级最高的命中变体获胜**(host > os > series > base)。
-- 部署时会剥掉 `##<tag>` 后缀,例如 `config.local##os.darwin` 部署成 `config.local`。
-- alternate 与基础文件都不存在时,该条目静默跳过(`exists` 返回 false)。
-- **不支持组合写法**(如 `##os.darwin,series.25.05`)——挑最具体的单 tag,基础文件作兜底即可。
-
-### 示例：按 nixpkgs series 切分 Starship 配置
-
-`mango` 锁定在 `nixpkgs-25.05`，所带的 Starship 1.23.0 不支持较新版本中的 `[fortran]`、`[xmake]` 模块和若干 `os.symbols` 变体；直接使用基础 `starship.toml` 会在每次 shell 启动时显示警告。解决办法是为旧 `series` 提供一份精简变体：
-
-```text
-dotfiles/.config/
-├── starship.toml                     # 默认(unstable channel,带全部新键)
-└── starship.toml##series.25.05       # 25.05 hosts 用,删掉老 starship 不识别的键
-```
-
-`mango`（`series = 25.05`）会解析到变体，`dragon`（`series = default`）会回退到基础文件。feature 模块本身无需任何改动：
-
-```nix
-# home-manager/features/starship.nix —— 不感知 alternate
-xdg.configFile = config.lib.dotfiles.configFiles [
-  "starship.toml"
-];
-```
+- 同一基础文件可同时存在多个 alternate；**优先级最高的命中变体获胜**（host > os > series > base）。
+- 部署时会剥掉 `##<tag>` 后缀，例如 `config.local##os.darwin` 部署成 `config.local`。
+- alternate 与基础文件都不存在时，该条目静默跳过（`exists` 返回 false）。
+- **不支持组合写法**（如 `##os.darwin,series.26.05`）——挑最具体的单 tag，基础文件作兜底即可。
 
 ### 何时用 alternate vs Nix 条件分支
 
-- **首选 alternate**:差异是「同一文件的不同内容版本」,且只在文件层面有变化(如不同主机的 git config、不同 starship 版本的精简配置)。
-- **首选 Nix 条件**:差异是「是否引用某个文件 / 是否启用某个 program」,在 feature 模块里用 `lib.mkIf settings.isDarwin ...` 控制更清晰。
+- **首选 alternate**：差异是“同一文件的不同内容版本”，且只在文件层面有变化（如不同主机的 Git 配置）。
+- **首选 Nix 条件**：差异是“是否引用某个文件 / 是否启用某个 program”，在 feature 模块里用 `lib.mkIf settings.isDarwin ...` 控制更清晰。
 
 ---
 

@@ -26,17 +26,6 @@
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
-    # pinned for legacy macOS (Big Sur 11.3+)
-    nixpkgs-2505.url = "github:nixos/nixpkgs/nixos-25.05";
-    nix-darwin-2505 = {
-      url = "github:lnl7/nix-darwin/nix-darwin-25.05";
-      inputs.nixpkgs.follows = "nixpkgs-2505";
-    };
-    home-manager-2505 = {
-      url = "github:nix-community/home-manager/release-25.05";
-      inputs.nixpkgs.follows = "nixpkgs-2505";
-    };
-
     # pinned for Intel macOS (x86_64-darwin) — 26.05 is the last
     # nixpkgs release to support x86_64-darwin.
     nixpkgs-2605.url = "github:nixos/nixpkgs/nixos-26.05";
@@ -79,11 +68,6 @@
           nix-darwin = inputs.nix-darwin-unstable;
           home-manager = inputs.home-manager-unstable;
         };
-        "25.05" = {
-          nixpkgs = inputs.nixpkgs-2505;
-          nix-darwin = inputs.nix-darwin-2505;
-          home-manager = inputs.home-manager-2505;
-        };
         "26.05" = {
           nixpkgs = inputs.nixpkgs-2605;
           nix-darwin = inputs.nix-darwin-2605;
@@ -111,7 +95,6 @@
 
       builders = {
         default = mkBuilders "default";
-        "25.05" = mkBuilders "25.05";
         "26.05" = mkBuilders "26.05";
       };
 
@@ -154,11 +137,11 @@
           homeOnly = true;
         }
 
-        # MacBook8,1 (12-inch, Early 2015) — macOS Big Sur 11.7.10
+        # MacBook8,1 (12-inch, Early 2015) — Ubuntu Desktop 26.04 LTS + home-manager only
         {
           name = "mango";
-          system = "x86_64-darwin";
-          pinned = "25.05";
+          system = "x86_64-linux";
+          homeOnly = true;
         }
 
         # OrbStack VM

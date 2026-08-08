@@ -1,7 +1,7 @@
 { inputs, lib, settings, ... }:
 
 let
-  # nixpkgs-unstable has dropped x86_64-darwin, so pinned legacy hosts
+  # nixpkgs-unstable has dropped x86_64-darwin, so the pinned Intel host
   # cannot import it at all. On a pinned series, alias `pkgs.unstable`
   # to that series' own pinned nixpkgs instead.
   unstableSrc =

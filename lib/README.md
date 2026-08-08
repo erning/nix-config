@@ -15,7 +15,7 @@ darwinConfigurations.dragon = mkSystem {
 };
 ```
 
-`flake.nix` imports this file once per channel (see its `series` attrset and `mkBuilders` helper), passing different `nixpkgs`, `nix-darwin`, and `nixpkgsSeries` values. The legacy macOS host `mango` uses the `"25.05"` channel, `dinosaur` uses `"26.05"`, and all other hosts use `"default"`.
+`flake.nix` imports this file once per channel (see its `series` attrset and `mkBuilders` helper), passing different `nixpkgs`, `nix-darwin`, and `nixpkgsSeries` values. The Intel macOS host `dinosaur` uses the `"26.05"` channel, and all other hosts use `"default"`.
 
 ---
 
@@ -145,4 +145,4 @@ Tags and priority (highest first):
 | `##series.<series>`  | `settings.nixpkgsSeries`        | 1        |
 | (base file)          | —                               | 0        |
 
-When several alternates exist for the same base name, the highest-priority match wins; the base file is the fallback when none match. Combinations like `##os.darwin,series.25.05` are intentionally not supported — keep tags single and rely on the base file.
+When several alternates exist for the same base name, the highest-priority match wins; the base file is the fallback when none match. Combinations like `##os.darwin,series.26.05` are intentionally not supported — keep tags single and rely on the base file.

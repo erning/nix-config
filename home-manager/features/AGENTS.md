@@ -34,7 +34,7 @@
 
 - A disabled feature still has its config paths seen by the module system.
 - `lib.mkIf` only makes the **value** conditional; it does **not** hide the option path.
-- If a feature references `programs.foo.newOption` and that option does not exist in the host's Home Manager version (e.g. HM 25.05), evaluation fails even when the feature is disabled.
+- If a feature references `programs.foo.newOption` and that option does not exist in the host's Home Manager version (e.g. HM 26.05), evaluation fails even when the feature is disabled.
 
 ### Safe pattern: `lib.optionalAttrs`
 
@@ -66,7 +66,7 @@ lib.mkIf (options.programs.example ? newOption) {
 
 ### When to guard
 
-- Always guard `programs.*` or `services.*` options that were added recently (after HM 25.05).
+- Always guard `programs.*` or `services.*` options that were added recently (after HM 26.05).
 - When in doubt, guard it. The check is cheap and prevents silent failures on legacy hosts.
 - Options like `home.packages`, `home.file`, and `xdg.configFile` are universal and do not need guarding.
 
@@ -78,8 +78,8 @@ After adding or changing a feature, verify against both channels:
 # Default/unstable channel
 home-manager build --flake .#erning@dragon
 
-# 25.05 channel
-home-manager build --flake .#erning@mango
+# 26.05 channel
+home-manager build --flake .#erning@dinosaur
 ```
 
 ## NOTES

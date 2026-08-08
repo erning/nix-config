@@ -11,7 +11,7 @@
 #   ##h.<host>          -> matchers.host   (alias)
 #   ##hostname.<host>   -> matchers.host   (alias)
 #   ##os.<os>           -> matchers.os     ("darwin" | "linux")
-#   ##series.<series>   -> matchers.series (e.g. "default", "25.05")
+#   ##series.<series>   -> matchers.series (e.g. "default", "26.05")
 #
 # Priority order (most specific wins):
 #   3. host (and its aliases)
@@ -19,7 +19,7 @@
 #   1. series
 #   0. base file (no condition)
 #
-# Combinations like "##os.darwin,series.25.05" are intentionally NOT supported.
+# Combinations like "##os.darwin,series.26.05" are intentionally NOT supported.
 # Pick the most-specific single tag and let the base file act as fallback.
 
 { matchers }:
@@ -51,9 +51,7 @@ let
 
   isMatch =
     condition:
-    builtins.elem condition hostConditions
-    || condition == osCondition
-    || condition == seriesCondition;
+    builtins.elem condition hostConditions || condition == osCondition || condition == seriesCondition;
 
   # Higher = more specific. 0 means "not a winning alternate" (base or no match).
   priority =
