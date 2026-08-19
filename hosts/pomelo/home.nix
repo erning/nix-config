@@ -19,12 +19,10 @@ in
   targets.genericLinux.enable = true;
 
   features = lib.mkMerge [
-    presets.workstation
+    presets.omarchy
     { homebrew.enable = true; }
   ];
 
   home.packages = with pkgs; [
-    postgresql
-    mariadb.client
   ];
 }

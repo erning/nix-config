@@ -8,9 +8,10 @@ For subtree-specific editing rules and exceptions, see `hosts/AGENTS.md`.
 | Host | System | Hardware | Role |
 |------|--------|----------|------|
 | `dragon` | `aarch64-darwin` | MacBook Pro 16" 2021 | primary macOS workstation |
-| `dinosaur` | `x86_64-darwin` | MacBook Pro 16" 2019 | Intel macOS workstation |
+| `dinosaur-macos` | `x86_64-darwin` | MacBook Pro 16" 2019 | Intel macOS workstation (`dinosaur` hostname) |
+| `dinosaur` | `x86_64-linux` | MacBook Pro 16" 2019 | Omarchy + home-manager only |
 | `phoenix` | `x86_64-linux` | MacBook Pro 17" 2010 | NixOS laptop |
-| `pomelo` | `x86_64-linux` | MacBook Air 13" 2019 | Fedora + home-manager only |
+| `pomelo` | `x86_64-linux` | MacBook Air 13" 2019 | Omarchy + home-manager only |
 | `pterosaur` | `x86_64-linux` | MacBook Pro 15" 2016 | Ubuntu Server 26.04 LTS + home-manager only |
 | `mango` | `x86_64-linux` | MacBook 12" 2015 | Ubuntu Desktop 26.04 LTS + home-manager only |
 | `orbstack` | `aarch64-linux` | OrbStack VM | NixOS VM using external `/etc/nixos/configuration.nix` |
@@ -45,20 +46,20 @@ in
 }
 ```
 
-Typical `flake.nix` wiring:
+Typical `flake.nix` host inventory entry:
 
 ```nix
-darwinConfigurations.<hostname> = mkSystem {
+{
+  name = "<output-name>";
   host = "<hostname>";
+  configName = "<config-directory>";
   system = "aarch64-darwin";
-};
-
-homeConfigurations."erning@<hostname>" = mkHome {
-  user = "erning";
-  host = "<hostname>";
-  system = "aarch64-darwin";
-};
+}
 ```
+
+`host` defaults to `name`, and `configName` defaults to `host`. Set
+`configName` only when the flake output and runtime hostname should load a
+different directory below `hosts/`.
 
 ## Validation
 
@@ -79,14 +80,14 @@ home-manager build --flake .#erning@<hostname>
 - Linux and VM hosts usually use `presets.development` or combine `presets.core` and `presets.terminal` with targeted additions.
 - `pterosaur` uses `presets.development` with `targets.genericLinux.enable` for its headless Ubuntu environment.
 - `mango` uses `presets.workstation` with `targets.genericLinux.enable` for its Ubuntu desktop environment.
-- `pomelo`, `pterosaur`, and `mango` are home-manager-only hosts; validate them with `home-manager build` rather than a system rebuild.
+- `dinosaur`, `pomelo`, `pterosaur`, and `mango` are home-manager-only hosts; validate them with `home-manager build` rather than a system rebuild.
 - `orbstack` is intentionally unusual: it imports OrbStack's `/etc/nixos/configuration.nix` only when that path exists, which avoids store-external absolute-path warnings/errors during evaluation on non-OrbStack machines.
-- Flake output names do not always match directory names: `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion`.
+- Output names, runtime hostnames, and configuration directories can differ: `dinosaur-macos` loads `hosts/dinosaur-macos/` with hostname `dinosaur`, while `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion` map output names to configuration directories.
 - Mirror defaults (nix substituters, Homebrew mirror) are appended in shared modules via `extra-substituters`. Hosts can append more in `configuration.nix` or `home.nix`; see `modules/README.md` for details.
 
 ## Home-Manager-Only Hosts
 
-For hosts like `pomelo` (Fedora), `pterosaur` (Ubuntu Server), and `mango` (Ubuntu Desktop), the system Nix daemon is **not** managed by this flake. `modules/nix-settings.nix` does not apply, so the daemon's `/etc/nix/nix.conf` must be set up manually once before the flake's experimental-feature, mirror, and trusted-user assumptions hold.
+For hosts like `dinosaur` and `pomelo` (Omarchy), `pterosaur` (Ubuntu Server), and `mango` (Ubuntu Desktop), the system Nix daemon is **not** managed by this flake. `modules/nix-settings.nix` does not apply, so the daemon's `/etc/nix/nix.conf` must be set up manually once before the flake's experimental-feature, mirror, and trusted-user assumptions hold.
 
 One-time root setup on the machine:
 

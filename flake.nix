@@ -111,12 +111,21 @@
           system = "aarch64-darwin";
         }
 
-        # MacBookPro16,1 (16-inch, 2019) — macOS Tohoe 26.3.1
+        # MacBookPro16,1 (16-inch, 2019) — macOS Tahoe 26.3.1
         # Pinned to 26.05, the last nixpkgs release supporting x86_64-darwin.
         {
-          name = "dinosaur";
+          name = "dinosaur-macos";
+          host = "dinosaur";
+          configName = "dinosaur-macos";
           system = "x86_64-darwin";
           pinned = "26.05";
+        }
+
+        # MacBookPro16,1 (16-inch, 2019) — Omarchy
+        {
+          name = "dinosaur";
+          system = "x86_64-linux";
+          homeOnly = true;
         }
 
         # MacBookPro6,1 (17-inch, Mid 2010) — NixOS
@@ -125,7 +134,7 @@
           system = "x86_64-linux";
         }
 
-        # MacBookAir8,2 (13-inch, 2019) — Fedora + home-manager only
+        # MacBookAir8,2 (13-inch, 2019) — Omarchy + home-manager only
         {
           name = "pomelo";
           system = "x86_64-linux";
@@ -166,14 +175,22 @@
         let
           user = h.user or "erning";
           host = h.host or h.name;
+          configName = h.configName or host;
           system = h.system;
           homeOnly = h.homeOnly or false;
           b = builders.${h.pinned or "default"};
           sysKey = if isDarwin system then "darwinConfigurations" else "nixosConfigurations";
         in
-        (if homeOnly then { } else { ${sysKey}.${h.name} = b.sys { inherit host system; }; })
+        (if homeOnly then { } else { ${sysKey}.${h.name} = b.sys { inherit host configName system; }; })
         // {
-          homeConfigurations."${user}@${h.name}" = b.hm { inherit user host system; };
+          homeConfigurations."${user}@${h.name}" = b.hm {
+            inherit
+              user
+              host
+              configName
+              system
+              ;
+          };
         }
       ) hosts;
     in

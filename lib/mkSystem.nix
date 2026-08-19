@@ -8,6 +8,7 @@
 
 {
   host,
+  configName ? host,
   system,
 }:
 let
@@ -31,7 +32,7 @@ in
   specialArgs = { inherit settings inputs; };
   modules = [
     "${rootDir}/modules/system.nix"
-    "${rootDir}/hosts/${host}/configuration.nix"
+    "${rootDir}/hosts/${configName}/configuration.nix"
   ];
 
 }
