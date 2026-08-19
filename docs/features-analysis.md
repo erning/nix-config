@@ -78,7 +78,7 @@ Install packages AND provide configuration.
 | `zellij.nix` | zellij | - | xdg.configFile (config.kdl symlink) |
 | `fonts.nix` | libertine, lxgw-wenkai, lxgw-neoxihei, nerd-fonts.jetbrains-mono, nerd-fonts._0xproto, font-awesome, nerd-fonts.symbols-only (unstable) | - | fonts.fontconfig.enable |
 | `fonts/source-han.nix` | source-han-sans, source-han-serif, source-han-mono (unstable) | - | - |
-| `starship.nix` | - | starship (unstable, explicit package override) | programs.starship + shell integrations + xdg.configFile (starship.toml symlink) |
+| `starship.nix` | - | starship | programs.starship + shell integrations + xdg.configFile (starship.toml symlink) |
 | `tmux.nix` | - | tmux | programs.tmux (prefix, vi-mode, mouse, keybindings, tmux-256color terminal, historyLimit 50000, focus-events, renumber-windows, copy-mode-vi bindings, Catppuccin theme v2.3.0) |
 | `yazi.nix` | - | yazi | programs.yazi + shell integrations + xdg.configFile (theme.toml symlink, Catppuccin-mocha.tmTheme via inputs.self) |
 
@@ -102,7 +102,7 @@ Install packages AND provide configuration.
 |---|---|
 | `settings.isDarwin` | ssh.nix (conditional OrbStack SSH config include) |
 | `lib.optionalAttrs` (version guard) | go.nix (`programs.go.env`), ssh.nix (`programs.ssh.enableDefaultConfig`) |
-| `pkgs.unstable` | fonts.nix, fonts/source-han.nix, starship.nix |
+| `pkgs.unstable` | fonts.nix, fonts/source-han.nix, fonts/maple-mono.nix, fonts/babelstone-han.nix, typst.nix |
 | `inputs.self` (store path) | bat.nix (themes dir), yazi.nix (Catppuccin tmTheme) |
 | `configDir` (recursive symlink) | neovim.nix (nvim-lazyvim/) |
 | Feature cross-reference | typst.nix (reads `config.features.fonts.enable` for conditional font packages) |
