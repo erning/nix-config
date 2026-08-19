@@ -9,6 +9,7 @@
 {
   user,
   host,
+  configName ? host,
   system,
 }:
 let
@@ -34,6 +35,6 @@ home-manager.lib.homeManagerConfiguration {
     "${rootDir}/modules/nixpkgs-config.nix"
     "${rootDir}/modules/nixpkgs-overlays.nix"
     "${rootDir}/home-manager/home.nix"
-    "${rootDir}/hosts/${host}/home.nix"
+    "${rootDir}/hosts/${configName}/home.nix"
   ];
 }

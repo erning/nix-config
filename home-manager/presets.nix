@@ -53,7 +53,6 @@ let
     opencode.enable = lib.mkDefault true;
     pi-agent.enable = lib.mkDefault true;
     yq.enable = lib.mkDefault true;
-    cue.enable = lib.mkDefault true;
     nvd.enable = lib.mkDefault true;
   };
 
@@ -74,6 +73,46 @@ let
   development = core // terminal // languages // devtools;
   workstation = development // graphical;
 
+  # Omarchy owns Bash and the dotfiles for its bundled terminal tools. Keep
+  # those dotfiles out of this preset while allowing intentional package
+  # overlap and user-level font overrides. Fish and Zsh remain optional
+  # interactive shells, while Bash stays under Omarchy's control.
+  omarchy = {
+    fish.enable = lib.mkDefault true;
+    zsh.enable = lib.mkDefault true;
+    vim.enable = lib.mkDefault true;
+    ssh.enable = lib.mkDefault true;
+
+    # rustup.enable = lib.mkDefault true;
+    # zig.enable = lib.mkDefault true;
+    # python.enable = lib.mkDefault true;
+    # go.enable = lib.mkDefault true;
+    # nodejs.enable = lib.mkDefault true;
+    # jdk.enable = lib.mkDefault true;
+    # kotlin.enable = lib.mkDefault true;
+
+    # asciinema.enable = lib.mkDefault true;
+    # glow.enable = lib.mkDefault true;
+    # zellij.enable = lib.mkDefault true;
+    # yazi.enable = lib.mkDefault true;
+
+    nix-support.enable = lib.mkDefault true;
+    just.enable = lib.mkDefault true;
+    # direnv.enable = lib.mkDefault true;
+    # gopass.enable = lib.mkDefault true;
+    rspass.enable = lib.mkDefault true;
+    # gradle.enable = lib.mkDefault true;
+    # typst.enable = lib.mkDefault true;
+    # defuddle.enable = lib.mkDefault true;
+    # yq.enable = lib.mkDefault true;
+    nvd.enable = lib.mkDefault true;
+
+    fonts.enable = lib.mkDefault true;
+    fonts.source-han.enable = lib.mkDefault true;
+    fonts.maple-mono.enable = lib.mkDefault true;
+    fonts.babelstone-han.enable = lib.mkDefault false;
+  };
+
 in
 {
   inherit
@@ -83,5 +122,5 @@ in
     devtools
     graphical
     ;
-  inherit development workstation;
+  inherit development workstation omarchy;
 }

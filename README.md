@@ -68,9 +68,10 @@ nix-config/
 | Host | System | Role |
 |------|--------|------|
 | `dragon` | `aarch64-darwin` | primary macOS workstation |
-| `dinosaur` | `x86_64-darwin` | Intel macOS workstation |
+| `dinosaur-macos` | `x86_64-darwin` | Intel macOS workstation (`dinosaur` hostname) |
+| `dinosaur` | `x86_64-linux` | Omarchy + home-manager only |
 | `phoenix` | `x86_64-linux` | NixOS laptop |
-| `pomelo` | `x86_64-linux` | Fedora + home-manager only |
+| `pomelo` | `x86_64-linux` | Omarchy + home-manager only |
 | `pterosaur` | `x86_64-linux` | Ubuntu Server 26.04 LTS + home-manager only |
 | `mango` | `x86_64-linux` | Ubuntu Desktop 26.04 LTS + home-manager only |
 | `orbstack` | `aarch64-linux` | NixOS VM with external `/etc/nixos/configuration.nix` |
@@ -98,6 +99,7 @@ Feature presets live in `home-manager/presets.nix` and are typically merged in `
 |--------|-------------|
 | `development` | `core` + `terminal` + `languages` + `devtools` |
 | `workstation` | `development` + `graphical` |
+| `omarchy` | Selected user tools, alternate shells, and font overrides for Omarchy hosts |
 
 For feature-module conventions, see `home-manager/features/AGENTS.md`.
 

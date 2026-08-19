@@ -6,16 +6,17 @@ Core utility functions for building NixOS/nix-darwin system and home-manager con
 
 Creates system configurations for both Darwin and NixOS using a unified interface. Detects platform via `builtins.match ".*-darwin"` and calls `darwinSystem` or `nixosSystem` accordingly.
 
-Imports `modules/system.nix` then `hosts/<host>/configuration.nix`. Passes a `settings` attrset (`{ host, system, isDarwin, isLinux, nixpkgsSeries }`) to modules via `specialArgs`.
+Imports `modules/system.nix` then `hosts/<configName>/configuration.nix`. `configName` defaults to `host`, while the `settings` attrset passed to modules retains the runtime `host` value.
 
 ```nix
-darwinConfigurations.dragon = mkSystem {
-  host = "dragon";
-  system = "aarch64-darwin";
+darwinConfigurations.dinosaur-macos = mkSystem {
+  host = "dinosaur";
+  configName = "dinosaur-macos";
+  system = "x86_64-darwin";
 };
 ```
 
-`flake.nix` imports this file once per channel (see its `series` attrset and `mkBuilders` helper), passing different `nixpkgs`, `nix-darwin`, and `nixpkgsSeries` values. The Intel macOS host `dinosaur` uses the `"26.05"` channel, and all other hosts use `"default"`.
+`flake.nix` imports this file once per channel (see its `series` attrset and `mkBuilders` helper), passing different `nixpkgs`, `nix-darwin`, and `nixpkgsSeries` values. The Intel macOS output `dinosaur-macos` uses the `"26.05"` channel, and all other hosts use `"default"`.
 
 ---
 
@@ -23,7 +24,7 @@ darwinConfigurations.dragon = mkSystem {
 
 Creates home-manager configurations for user environments. Passes a `settings` attrset (`{ user, host, system, isDarwin, isLinux, nixpkgsSeries }`) to modules via `extraSpecialArgs`.
 
-Imports `modules/nixpkgs-config.nix`, `modules/nixpkgs-overlays.nix`, `home-manager/home.nix`, then `hosts/<host>/home.nix`.
+Imports `modules/nixpkgs-config.nix`, `modules/nixpkgs-overlays.nix`, `home-manager/home.nix`, then `hosts/<configName>/home.nix`. `configName` defaults to `host`.
 
 ```nix
 homeConfigurations."erning@dragon" = mkHome {
