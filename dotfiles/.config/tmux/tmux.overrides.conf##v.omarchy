@@ -1,0 +1,10 @@
+# Prefix
+set -g prefix C-a
+set -g prefix2 None
+bind C-a send-prefix
+
+# Pane navigation
+bind -r C-h select-pane -L
+bind -r C-j select-pane -D
+bind -r C-k select-pane -U
+bind -r C-l select-pane -R

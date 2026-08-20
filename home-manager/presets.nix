@@ -83,6 +83,7 @@ let
     omarchy.git.enable = lib.mkDefault true;
     omarchy.ghostty.enable = lib.mkDefault true;
     omarchy.starship.enable = lib.mkDefault true;
+    omarchy.tmux.enable = lib.mkDefault true;
     omarchy.zsh.enable = lib.mkDefault true;
 
     vim.enable = lib.mkDefault true;
