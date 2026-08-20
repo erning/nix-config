@@ -73,18 +73,18 @@ let
   development = core // terminal // languages // devtools;
   workstation = development // graphical;
 
-  # Omarchy needs specialized ownership and configuration variants for Bash
+  # Omarchy needs specialized ownership and configuration variants for shells
   # and its bundled terminal tools. Namespaced features keep those integrations
   # separate from the generic features while still allowing shared base
   # dotfiles, intentional package overlap, and user-level font overrides.
   omarchy = {
     omarchy.bash.enable = lib.mkDefault true;
+    omarchy.fish.enable = lib.mkDefault true;
     omarchy.git.enable = lib.mkDefault true;
     omarchy.ghostty.enable = lib.mkDefault true;
     omarchy.starship.enable = lib.mkDefault true;
+    omarchy.zsh.enable = lib.mkDefault true;
 
-    fish.enable = lib.mkDefault true;
-    zsh.enable = lib.mkDefault true;
     vim.enable = lib.mkDefault true;
     ssh.enable = lib.mkDefault true;
 

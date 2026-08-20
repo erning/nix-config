@@ -1,0 +1,25 @@
+: ${OMARCHY_PATH:=/usr/share/omarchy}
+export OMARCHY_PATH
+
+if [[ -d "$OMARCHY_PATH/bin" && "$OMARCHY_PATH" != /usr/share/omarchy ]]; then
+  case ":$PATH:" in
+    *":$OMARCHY_PATH/bin:"*) ;;
+    *) export PATH="$OMARCHY_PATH/bin:$PATH" ;;
+  esac
+fi
+
+miseShims="$HOME/.local/share/mise/shims"
+case ":$PATH:" in
+  *":$miseShims:"*) ;;
+  *) export PATH="$PATH:$miseShims" ;;
+esac
+unset miseShims
+
+: ${EDITOR:="omarchy-launch-editor --inline"}
+export EDITOR
+export SUDO_EDITOR="$EDITOR"
+: ${BROWSER:=omarchy-launch-browser}
+export BROWSER
+export BAT_THEME=ansi
+export MANROFFOPT=-c
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
