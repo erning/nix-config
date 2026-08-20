@@ -1,0 +1,22 @@
+# Primary font family
+font-family = Maple Mono NF CN
+
+# cv01: @ $
+# cv35: l
+# cv61: , .
+font-feature = +calt
+font-feature = +zero
+font-feature = +cv01
+font-feature = +cv35
+font-feature = +cv61
+
+# Maple Mono NF CN already includes CJK glyphs, so no separate CJK font is needed
+
+# Font size in points
+# font-size = 18
+
+# Thicker font strokes on macOS Retina displays for better readability
+# font-thicken = true
+
+# Increase line height slightly for better readability
+# adjust-cell-height = 1
