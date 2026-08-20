@@ -6,26 +6,14 @@
 }:
 
 let
-  preferredPath = lib.concatStringsSep ":" config.home.sessionPath;
-
   # Splitting is delegated to awk (via -v RS=:) rather than shell IFS/for
   # word-splitting: zsh has SH_WORD_SPLIT off by default, so `for x in $path`
   # does not split on ":" there and silently no-ops the dedup. awk's field
   # splitting doesn't depend on the invoking shell, so it works the same
   # whether this script is sourced by bash, zsh, or a plain POSIX sh.
-  normalizePath = ''
-    hmPreferredPath="${preferredPath}"
-    export PATH="$(
-      printf '%s:%s' "$hmPreferredPath" "$PATH" |
-        ${pkgs.gawk}/bin/awk -v RS=: '
-          length($0) && !seen[$0]++ {
-            output = output (length(output) ? ":" : "") $0
-          }
-          END { printf "%s", output }
-        '
-    )"
-    unset hmPreferredPath
-  '';
+  normalizePath = import ../lib/normalize-path.nix {
+    inherit config lib pkgs;
+  };
 in
 {
   config = lib.mkIf config.targets.genericLinux.enable {
