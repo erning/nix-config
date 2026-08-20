@@ -79,6 +79,7 @@ let
   # dotfiles, intentional package overlap, and user-level font overrides.
   omarchy = {
     omarchy.bash.enable = lib.mkDefault true;
+    omarchy.git.enable = lib.mkDefault true;
     omarchy.ghostty.enable = lib.mkDefault true;
 
     fish.enable = lib.mkDefault true;
