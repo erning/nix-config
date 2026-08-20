@@ -81,6 +81,7 @@ let
     omarchy.bash.enable = lib.mkDefault true;
     omarchy.git.enable = lib.mkDefault true;
     omarchy.ghostty.enable = lib.mkDefault true;
+    omarchy.starship.enable = lib.mkDefault true;
 
     fish.enable = lib.mkDefault true;
     zsh.enable = lib.mkDefault true;
