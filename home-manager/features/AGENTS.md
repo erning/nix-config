@@ -20,6 +20,7 @@
 - Update `home-manager/presets.nix` only when the new feature should join a preset like `core`, `terminal`, `languages`, `devtools`, or `graphical`.
 - Follow existing patterns for platform guards: use `settings.isDarwin` / `settings.isLinux`.
 - Dotfile-backed features should usually use `config.lib.dotfiles.configFiles` / `homeFiles`; use `configDir` when the whole directory should stay recursively editable.
+- Variant-aware features should use `configDirWith { dir = "..."; variant = "..."; }`; files without a matching `##variant.<name>` / `##v.<name>` alternate fall back to the base file. Use `exclude` only when a path should not be deployed at all.
 
 ## ANTI-PATTERNS
 - Do not hand-write `options.features.*` boilerplate in routine feature files; the wrapper already does that.

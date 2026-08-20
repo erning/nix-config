@@ -73,11 +73,14 @@ let
   development = core // terminal // languages // devtools;
   workstation = development // graphical;
 
-  # Omarchy owns Bash and the dotfiles for its bundled terminal tools. Keep
-  # those dotfiles out of this preset while allowing intentional package
-  # overlap and user-level font overrides. Fish and Zsh remain optional
-  # interactive shells, while Bash stays under Omarchy's control.
+  # Omarchy needs specialized ownership and configuration variants for Bash
+  # and its bundled terminal tools. Namespaced features keep those integrations
+  # separate from the generic features while still allowing shared base
+  # dotfiles, intentional package overlap, and user-level font overrides.
   omarchy = {
+    omarchy.bash.enable = lib.mkDefault true;
+    omarchy.ghostty.enable = lib.mkDefault true;
+
     fish.enable = lib.mkDefault true;
     zsh.enable = lib.mkDefault true;
     vim.enable = lib.mkDefault true;

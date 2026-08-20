@@ -10,11 +10,14 @@
 #   ##<host>            -> matchers.host
 #   ##h.<host>          -> matchers.host   (alias)
 #   ##hostname.<host>   -> matchers.host   (alias)
+#   ##variant.<variant> -> matchers.variant
+#   ##v.<variant>       -> matchers.variant (alias)
 #   ##os.<os>           -> matchers.os     ("darwin" | "linux")
 #   ##series.<series>   -> matchers.series (e.g. "default", "26.05")
 #
 # Priority order (most specific wins):
-#   3. host (and its aliases)
+#   4. host (and its aliases)
+#   3. variant (and its alias)
 #   2. os
 #   1. series
 #   0. base file (no condition)
@@ -30,6 +33,15 @@ let
     "h.${matchers.host}"
     "hostname.${matchers.host}"
   ];
+  variant = matchers.variant or null;
+  variantConditions =
+    if variant == null then
+      [ ]
+    else
+      [
+        "variant.${variant}"
+        "v.${variant}"
+      ];
   osCondition = "os.${matchers.os}";
   seriesCondition = "series.${matchers.series}";
 
@@ -51,7 +63,10 @@ let
 
   isMatch =
     condition:
-    builtins.elem condition hostConditions || condition == osCondition || condition == seriesCondition;
+    builtins.elem condition hostConditions
+    || builtins.elem condition variantConditions
+    || condition == osCondition
+    || condition == seriesCondition;
 
   # Higher = more specific. 0 means "not a winning alternate" (base or no match).
   priority =
@@ -59,6 +74,8 @@ let
     if condition == null then
       0
     else if builtins.elem condition hostConditions then
+      4
+    else if builtins.elem condition variantConditions then
       3
     else if condition == osCondition then
       2
@@ -69,10 +86,13 @@ let
 
   # Candidate suffixes ordered by priority (highest first). Used by single-file
   # `resolve`/`exists` lookups that don't walk a directory.
-  candidateSuffixes = hostConditions ++ [
-    osCondition
-    seriesCondition
-  ];
+  candidateSuffixes =
+    hostConditions
+    ++ variantConditions
+    ++ [
+      osCondition
+      seriesCondition
+    ];
 in
 {
   inherit
