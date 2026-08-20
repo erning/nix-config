@@ -1,12 +1,25 @@
 set -q OMARCHY_PATH; or set -gx OMARCHY_PATH /usr/share/omarchy
+set -q HOMEBREW_PREFIX; or set -gx HOMEBREW_PREFIX /home/linuxbrew/.linuxbrew
 
+set -l preferredPath "$HOME/.local/bin"
 if test -d "$OMARCHY_PATH/bin"; and test "$OMARCHY_PATH" != /usr/share/omarchy
-  contains -- "$OMARCHY_PATH/bin" $PATH; or set -gx PATH "$OMARCHY_PATH/bin" $PATH
+  set -a preferredPath "$OMARCHY_PATH/bin"
 end
+set -a preferredPath \
+  "$HOME/.local/share/mise/shims" \
+  "$HOMEBREW_PREFIX/bin" \
+  "$HOMEBREW_PREFIX/sbin" \
+  "$HOME/.nix-profile/bin" \
+  /nix/var/nix/profiles/default/bin
 
-set -l miseShims "$HOME/.local/share/mise/shims"
-contains -- "$miseShims" $PATH; or set -gx PATH $PATH "$miseShims"
-set -e miseShims
+set -l normalizedPath
+for pathEntry in $preferredPath $PATH
+  if test -n "$pathEntry"; and not contains -- "$pathEntry" $normalizedPath
+    set -a normalizedPath "$pathEntry"
+  end
+end
+set -gx PATH $normalizedPath
+set -e normalizedPath pathEntry preferredPath
 
 if status is-interactive
   set -q EDITOR; or set -gx EDITOR "omarchy-launch-editor --inline"

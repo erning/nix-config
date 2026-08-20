@@ -4,7 +4,17 @@ if [[ -r "$hmSessionVars" ]]; then
 fi
 unset hmSessionVars
 
-hmPreferredPath="$HOME/.local/bin:$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin"
+: "${OMARCHY_PATH:=/usr/share/omarchy}"
+: "${HOMEBREW_PREFIX:=/home/linuxbrew/.linuxbrew}"
+
+hmPreferredPath="$HOME/.local/bin"
+if [[ -d "$OMARCHY_PATH/bin" && "$OMARCHY_PATH" != /usr/share/omarchy ]]; then
+  hmPreferredPath="$hmPreferredPath:$OMARCHY_PATH/bin"
+fi
+hmPreferredPath="$hmPreferredPath:$HOME/.local/share/mise/shims"
+hmPreferredPath="$hmPreferredPath:$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin"
+hmPreferredPath="$hmPreferredPath:$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin"
+
 export PATH="$(
   printf '%s:%s' "$hmPreferredPath" "$PATH" |
     awk -v RS=: '
