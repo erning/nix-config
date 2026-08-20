@@ -2,7 +2,7 @@
 {
   _description = "Omarchy-integrated Ghostty terminal emulator";
 
-  xdg.configFile = config.lib.dotfiles.configDirWith {
+  xdg.configFile = config.lib.dotfiles.configDir {
     dir = "ghostty";
     variant = "omarchy";
     exclude = [

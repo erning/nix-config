@@ -45,14 +45,12 @@ in
 
     symlink = file: config.lib.file.mkOutOfStoreSymlink "${path}/${resolve file}";
 
-    configFiles = files: configFilesWith { inherit files; };
-
-    configFilesWith =
-      {
-        files,
-        variant ? null,
-      }:
+    configFiles =
+      filesOrOptions:
       let
+        options = if builtins.isList filesOrOptions then { files = filesOrOptions; } else filesOrOptions;
+        files = options.files;
+        variant = options.variant or null;
         scopedMatchers = matchers // lib.optionalAttrs (variant != null) { inherit variant; };
         scopedAlt = import ../lib/alternate-match.nix { matchers = scopedMatchers; };
         resolveScoped =
@@ -89,15 +87,36 @@ in
       );
 
     homeFiles =
-      files:
+      filesOrOptions:
+      let
+        options = if builtins.isList filesOrOptions then { files = filesOrOptions; } else filesOrOptions;
+        files = options.files;
+        variant = options.variant or null;
+        scopedMatchers = matchers // lib.optionalAttrs (variant != null) { inherit variant; };
+        scopedAlt = import ../lib/alternate-match.nix { matchers = scopedMatchers; };
+        resolveScoped =
+          file:
+          let
+            hits = builtins.filter (
+              suffix: builtins.pathExists "${srcPath}/${file}##${suffix}"
+            ) scopedAlt.candidateSuffixes;
+          in
+          if hits != [ ] then "${file}##${builtins.head hits}" else file;
+        existsScoped =
+          file:
+          builtins.any (
+            suffix: builtins.pathExists "${srcPath}/${file}##${suffix}"
+          ) scopedAlt.candidateSuffixes
+          || builtins.pathExists "${srcPath}/${file}";
+      in
       builtins.listToAttrs (
         builtins.concatMap (
           file:
-          if exists file then
+          if existsScoped file then
             [
               {
                 name = file;
-                value.source = config.lib.file.mkOutOfStoreSymlink "${path}/${resolve file}";
+                value.source = config.lib.file.mkOutOfStoreSymlink "${path}/${resolveScoped file}";
               }
             ]
           else
@@ -105,12 +124,14 @@ in
         ) files
       );
 
-    configDirWith =
-      {
-        dir,
-        variant ? null,
-        exclude ? [ ],
-      }:
+    configDir =
+      dirOrOptions:
+      let
+        options = if builtins.isAttrs dirOrOptions then dirOrOptions else { dir = dirOrOptions; };
+        dir = options.dir;
+        variant = options.variant or null;
+        exclude = options.exclude or [ ];
+      in
       import ../lib/symlink-dir.nix {
         mkSymlink = config.lib.file.mkOutOfStoreSymlink;
         src = "${srcPath}/.config/${dir}";
@@ -120,16 +141,21 @@ in
         inherit exclude;
       };
 
-    configDir = dir: configDirWith { inherit dir; };
-
     homeDir =
-      dir:
+      dirOrOptions:
+      let
+        options = if builtins.isAttrs dirOrOptions then dirOrOptions else { dir = dirOrOptions; };
+        dir = options.dir;
+        variant = options.variant or null;
+        exclude = options.exclude or [ ];
+      in
       import ../lib/symlink-dir.nix {
         mkSymlink = config.lib.file.mkOutOfStoreSymlink;
         src = "${srcPath}/${dir}";
         dst = "${path}/${dir}";
         prefix = dir;
-        inherit matchers;
+        matchers = matchers // lib.optionalAttrs (variant != null) { inherit variant; };
+        inherit exclude;
       };
   };
 

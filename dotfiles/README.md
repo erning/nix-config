@@ -68,17 +68,25 @@ Rules:
 - The base file is the fallback used when no alternate matches.
 - The deployed filename strips the `##<tag>` suffix (e.g., `config.local##os.darwin` deploys as `config.local`).
 - If neither an alternate nor the base file exists, the entry is silently skipped.
-- Host, OS, and series tags work with all dotfile helpers. Variant tags are scoped explicitly through `configDirWith`.
+- Host, OS, and series tags work with all dotfile helpers. Variant tags are
+  scoped explicitly by passing `variant` to `configFiles`, `homeFiles`,
+  `configDir`, or `homeDir`.
 - Combinations like `##os.darwin,series.26.05` are **not** supported — pick the most-specific single tag and let the base file be the fallback.
 
-Use `configDirWith` when a feature needs a variant-aware directory. Files
+Pass an attribute set when a feature needs variant-aware files or directories.
+The original list and string forms remain available for unscoped calls. Files
 without a matching variant fall back to their base version:
 
 ```nix
-xdg.configFile = config.lib.dotfiles.configDirWith {
+xdg.configFile = config.lib.dotfiles.configDir {
   dir = "ghostty";
   variant = "omarchy";
   exclude = [ "omarchy-owned.conf" ];
+};
+
+home.file = config.lib.dotfiles.homeFiles {
+  files = [ ".gitconfig" ];
+  variant = "work";
 };
 ```
 

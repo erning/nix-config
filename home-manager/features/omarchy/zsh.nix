@@ -12,7 +12,7 @@
     '';
   };
 
-  xdg.configFile = config.lib.dotfiles.configDirWith {
+  xdg.configFile = config.lib.dotfiles.configDir {
     dir = "zsh";
     variant = "omarchy";
   };

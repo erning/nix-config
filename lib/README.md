@@ -131,14 +131,20 @@ Typically accessed via `config.lib.dotfiles` wrappers defined in `home-manager/h
 }
 ```
 
-Variant-aware features can select a scoped directory variant while retaining
-base files as fallbacks:
+Variant-aware features can pass an attribute set with `variant` to the same
+helper while retaining base files as fallbacks:
 
 ```nix
 {
-  xdg.configFile = config.lib.dotfiles.configDirWith {
+  xdg.configFile = config.lib.dotfiles.configDir {
     dir = "ghostty";
     variant = "omarchy";
+    exclude = [ ];
+  };
+
+  home.file = config.lib.dotfiles.homeDir {
+    dir = ".vim";
+    variant = "work";
     exclude = [ ];
   };
 }
