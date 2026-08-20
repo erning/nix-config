@@ -106,12 +106,13 @@ let
     nix-support.enable = lib.mkDefault true;
     just.enable = lib.mkDefault true;
     direnv.enable = lib.mkDefault true;
-    # gopass.enable = lib.mkDefault true;
     rspass.enable = lib.mkDefault true;
     typst.enable = lib.mkDefault true;
     defuddle.enable = lib.mkDefault true;
     yq.enable = lib.mkDefault true;
     nvd.enable = lib.mkDefault true;
+
+    claude-code.enable = lib.mkDefault true;
 
     fonts.enable = lib.mkDefault true;
     fonts.source-han.enable = lib.mkDefault true;
