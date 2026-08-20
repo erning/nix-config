@@ -45,19 +45,42 @@ in
 
     symlink = file: config.lib.file.mkOutOfStoreSymlink "${path}/${resolve file}";
 
-    configFiles =
-      files:
+    configFiles = files: configFilesWith { inherit files; };
+
+    configFilesWith =
+      {
+        files,
+        variant ? null,
+      }:
+      let
+        scopedMatchers = matchers // lib.optionalAttrs (variant != null) { inherit variant; };
+        scopedAlt = import ../lib/alternate-match.nix { matchers = scopedMatchers; };
+        resolveScoped =
+          file:
+          let
+            hits = builtins.filter (
+              suffix: builtins.pathExists "${srcPath}/${file}##${suffix}"
+            ) scopedAlt.candidateSuffixes;
+          in
+          if hits != [ ] then "${file}##${builtins.head hits}" else file;
+        existsScoped =
+          file:
+          builtins.any (
+            suffix: builtins.pathExists "${srcPath}/${file}##${suffix}"
+          ) scopedAlt.candidateSuffixes
+          || builtins.pathExists "${srcPath}/${file}";
+      in
       builtins.listToAttrs (
         builtins.concatMap (
           file:
           let
             dotFile = ".config/${file}";
           in
-          if exists dotFile then
+          if existsScoped dotFile then
             [
               {
                 name = file;
-                value.source = config.lib.file.mkOutOfStoreSymlink "${path}/${resolve dotFile}";
+                value.source = config.lib.file.mkOutOfStoreSymlink "${path}/${resolveScoped dotFile}";
               }
             ]
           else

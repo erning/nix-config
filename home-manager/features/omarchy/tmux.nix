@@ -9,17 +9,18 @@ let
   };
 in
 {
-  _description = "tmux terminal multiplexer";
-
-  home.packages = [ pkgs.tmux ];
+  _description = "Omarchy-provided tmux";
 
   xdg.configFile = {
     # Symlink catppuccin plugin to a fixed path so dotfile can reference it
     "tmux/plugins/catppuccin".source = catppuccin-tmux;
   }
-  // config.lib.dotfiles.configFiles [
-    "tmux/tmux.conf"
-    "tmux/tmux.catppuccin.conf"
-    "tmux/tmux.overrides.conf"
-  ];
+  // config.lib.dotfiles.configFilesWith {
+    variant = "omarchy";
+    files = [
+      "tmux/tmux.conf"
+      "tmux/tmux.catppuccin.conf"
+      "tmux/tmux.overrides.conf"
+    ];
+  };
 }
