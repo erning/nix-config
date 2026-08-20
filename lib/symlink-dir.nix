@@ -4,15 +4,18 @@
   prefix,
   mkSymlink,
   matchers,
+  exclude ? [ ],
 }:
 
 # Recursively walks `src` and emits one out-of-store symlink per file.
 # Honors yadm-style `name##<condition>` alternates via `lib/alternate-match.nix`:
 # for each base name, the highest-priority matching variant wins; the base file
-# is used only when no alternate matches.
+# is used only when no alternate matches. `exclude` contains target-relative
+# file or directory paths that should not be emitted.
 
 let
   alt = import ./alternate-match.nix { inherit matchers; };
+  isExcluded = rel: builtins.elem rel exclude;
 
   readDirRec =
     base: rel:
@@ -35,7 +38,13 @@ let
             existing = acc.${p.base} or { priority = -1; };
           in
           if prio > existing.priority then
-            acc // { ${p.base} = { inherit name; priority = prio; }; }
+            acc
+            // {
+              ${p.base} = {
+                inherit name;
+                priority = prio;
+              };
+            }
           else
             acc
       ) { } names;
@@ -49,7 +58,10 @@ let
         baseRel = if rel == "" then p.base else "${rel}/${p.base}";
       in
       if type == "directory" then
-        readDirRec (base + "/${name}") (if rel == "" then name else "${rel}/${name}")
+        if isExcluded actualRel then [ ] else readDirRec (base + "/${name}") actualRel
+
+      else if isExcluded baseRel then
+        [ ]
 
       else if p.condition != null then
         # Alternate file: emit only if it's the winning variant for its base.
@@ -64,16 +76,16 @@ let
           [ ]
 
       else
-        # Base file: skip if a winning alternate exists for this base.
-        if winners ? ${name} then
-          [ ]
-        else
-          [
-            {
-              name = "${prefix}/${actualRel}";
-              value.source = mkSymlink "${dst}/${actualRel}";
-            }
-          ]
+      # Base file: skip if a winning alternate exists for this base.
+      if winners ? ${name} then
+        [ ]
+      else
+        [
+          {
+            name = "${prefix}/${actualRel}";
+            value.source = mkSymlink "${dst}/${actualRel}";
+          }
+        ]
     ) names;
 in
 builtins.listToAttrs (readDirRec src "")

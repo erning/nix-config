@@ -9,7 +9,8 @@
 let
   # Tags considered when resolving `file##<tag>` alternates. See
   # `lib/alternate-match.nix` for the full priority spec; in short:
-  # host > os > series > base file.
+  # host > variant > os > series > base file. The base matcher has no variant;
+  # variant-aware helpers add one for their own lookup scope.
   matchers = {
     host = settings.host;
     os = if settings.isDarwin then "darwin" else "linux";
@@ -81,15 +82,22 @@ in
         ) files
       );
 
-    configDir =
-      dir:
+    configDirWith =
+      {
+        dir,
+        variant ? null,
+        exclude ? [ ],
+      }:
       import ../lib/symlink-dir.nix {
         mkSymlink = config.lib.file.mkOutOfStoreSymlink;
         src = "${srcPath}/.config/${dir}";
         dst = "${path}/.config/${dir}";
         prefix = dir;
-        inherit matchers;
+        matchers = matchers // lib.optionalAttrs (variant != null) { inherit variant; };
+        inherit exclude;
       };
+
+    configDir = dir: configDirWith { inherit dir; };
 
     homeDir =
       dir:

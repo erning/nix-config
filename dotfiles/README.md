@@ -44,6 +44,8 @@ Append `##<tag>` to a filename to deploy a variant only when the tag matches the
 dotfiles/.config/git/
 ├── config                       # shared across all hosts
 ├── config.local##dragon         # only on host "dragon"
+├── config.local##variant.omarchy # selected by an Omarchy-aware helper
+├── config.local##v.omarchy      # alias of ##variant.omarchy
 ├── config.local##os.darwin      # on any macOS host
 └── config.local##series.26.05   # on hosts pinned to the 26.05 nixpkgs channel
 ```
@@ -55,17 +57,34 @@ Supported tags (highest priority first):
 | `##<host>`            | `settings.host` equals `<host>`                     |
 | `##h.<host>`          | alias of the above                                  |
 | `##hostname.<host>`   | alias of the above                                  |
+| `##variant.<variant>` | a variant-aware helper selects `<variant>`          |
+| `##v.<variant>`       | alias of the above                                  |
 | `##os.darwin`         | `settings.isDarwin == true`                         |
 | `##os.linux`          | `settings.isLinux == true`                          |
 | `##series.<series>`   | `settings.nixpkgsSeries` equals `<series>` (e.g. `default`, `26.05`) |
 
 Rules:
-- When several alternates exist for the same base, the highest-priority match wins (host > os > series).
+- When several alternates exist for the same base, the highest-priority match wins (host > variant > os > series).
 - The base file is the fallback used when no alternate matches.
 - The deployed filename strips the `##<tag>` suffix (e.g., `config.local##os.darwin` deploys as `config.local`).
 - If neither an alternate nor the base file exists, the entry is silently skipped.
-- Works with all dotfile helpers: `configFiles`, `homeFiles`, `configDir`, `homeDir`, and `symlink`.
+- Host, OS, and series tags work with all dotfile helpers. Variant tags are scoped explicitly through `configDirWith`.
 - Combinations like `##os.darwin,series.26.05` are **not** supported — pick the most-specific single tag and let the base file be the fallback.
+
+Use `configDirWith` when a feature needs a variant-aware directory. Files
+without a matching variant fall back to their base version:
+
+```nix
+xdg.configFile = config.lib.dotfiles.configDirWith {
+  dir = "ghostty";
+  variant = "omarchy";
+  exclude = [ "omarchy-owned.conf" ];
+};
+```
+
+`exclude` contains paths relative to the selected directory. An excluded file
+or directory is not deployed at all; omitting a variant is different and falls
+back to the base file.
 
 ## Keep in Mind
 

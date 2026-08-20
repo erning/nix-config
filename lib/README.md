@@ -131,6 +131,19 @@ Typically accessed via `config.lib.dotfiles` wrappers defined in `home-manager/h
 }
 ```
 
+Variant-aware features can select a scoped directory variant while retaining
+base files as fallbacks:
+
+```nix
+{
+  xdg.configFile = config.lib.dotfiles.configDirWith {
+    dir = "ghostty";
+    variant = "omarchy";
+    exclude = [ ];
+  };
+}
+```
+
 ---
 
 ## alternate-match.nix
@@ -141,7 +154,8 @@ Tags and priority (highest first):
 
 | Tag                  | Source                          | Priority |
 |----------------------|---------------------------------|----------|
-| `##<host>` (and `##h.<host>`, `##hostname.<host>`) | `settings.host`        | 3        |
+| `##<host>` (and `##h.<host>`, `##hostname.<host>`) | `settings.host`        | 4        |
+| `##variant.<variant>` (and `##v.<variant>`) | scoped helper variant | 3        |
 | `##os.<os>`          | `settings.isDarwin` / `isLinux` | 2        |
 | `##series.<series>`  | `settings.nixpkgsSeries`        | 1        |
 | (base file)          | —                               | 0        |
