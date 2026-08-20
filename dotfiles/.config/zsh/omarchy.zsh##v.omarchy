@@ -1,19 +1,23 @@
 : ${OMARCHY_PATH:=/usr/share/omarchy}
 export OMARCHY_PATH
+: ${HOMEBREW_PREFIX:=/home/linuxbrew/.linuxbrew}
+export HOMEBREW_PREFIX
 
+preferredPath=("$HOME/.local/bin")
 if [[ -d "$OMARCHY_PATH/bin" && "$OMARCHY_PATH" != /usr/share/omarchy ]]; then
-  case ":$PATH:" in
-    *":$OMARCHY_PATH/bin:"*) ;;
-    *) export PATH="$OMARCHY_PATH/bin:$PATH" ;;
-  esac
+  preferredPath+=("$OMARCHY_PATH/bin")
 fi
+preferredPath+=(
+  "$HOME/.local/share/mise/shims"
+  "$HOMEBREW_PREFIX/bin"
+  "$HOMEBREW_PREFIX/sbin"
+  "$HOME/.nix-profile/bin"
+  /nix/var/nix/profiles/default/bin
+)
 
-miseShims="$HOME/.local/share/mise/shims"
-case ":$PATH:" in
-  *":$miseShims:"*) ;;
-  *) export PATH="$PATH:$miseShims" ;;
-esac
-unset miseShims
+path=("$preferredPath[@]" "$path[@]")
+typeset -U path
+unset preferredPath
 
 : ${EDITOR:="omarchy-launch-editor --inline"}
 export EDITOR

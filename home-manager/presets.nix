@@ -88,6 +88,11 @@ let
     vim.enable = lib.mkDefault true;
     ssh.enable = lib.mkDefault true;
 
+    asciinema.enable = lib.mkDefault true;
+    glow.enable = lib.mkDefault true;
+    # zellij.enable = lib.mkDefault true;
+    yazi.enable = lib.mkDefault true;
+
     # rustup.enable = lib.mkDefault true;
     # zig.enable = lib.mkDefault true;
     # python.enable = lib.mkDefault true;
@@ -95,21 +100,16 @@ let
     # nodejs.enable = lib.mkDefault true;
     # jdk.enable = lib.mkDefault true;
     # kotlin.enable = lib.mkDefault true;
-
-    # asciinema.enable = lib.mkDefault true;
-    # glow.enable = lib.mkDefault true;
-    # zellij.enable = lib.mkDefault true;
-    # yazi.enable = lib.mkDefault true;
+    # gradle.enable = lib.mkDefault true;
 
     nix-support.enable = lib.mkDefault true;
     just.enable = lib.mkDefault true;
-    # direnv.enable = lib.mkDefault true;
+    direnv.enable = lib.mkDefault true;
     # gopass.enable = lib.mkDefault true;
     rspass.enable = lib.mkDefault true;
-    # gradle.enable = lib.mkDefault true;
-    # typst.enable = lib.mkDefault true;
-    # defuddle.enable = lib.mkDefault true;
-    # yq.enable = lib.mkDefault true;
+    typst.enable = lib.mkDefault true;
+    defuddle.enable = lib.mkDefault true;
+    yq.enable = lib.mkDefault true;
     nvd.enable = lib.mkDefault true;
 
     fonts.enable = lib.mkDefault true;
