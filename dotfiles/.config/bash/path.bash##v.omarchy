@@ -1,0 +1,17 @@
+hmSessionVars="$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+if [[ -r "$hmSessionVars" ]]; then
+  source "$hmSessionVars"
+fi
+unset hmSessionVars
+
+hmPreferredPath="$HOME/.local/bin:$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin"
+export PATH="$(
+  printf '%s:%s' "$hmPreferredPath" "$PATH" |
+    awk -v RS=: '
+      length($0) && !seen[$0]++ {
+        output = output (length(output) ? ":" : "") $0
+      }
+      END { printf "%s", output }
+    '
+)"
+unset hmPreferredPath
