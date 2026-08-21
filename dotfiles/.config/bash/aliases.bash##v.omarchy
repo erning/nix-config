@@ -1,0 +1,16 @@
+# Keep only the selected Omarchy aliases. Saving their definitions before
+# clearing the alias table also makes future upstream aliases opt-in by default.
+omarchyAliasDefinitions=()
+for aliasName in ls lt mup cd ff eff t; do
+  if aliasDefinition=$(alias "$aliasName" 2>/dev/null); then
+    omarchyAliasDefinitions+=("$aliasDefinition")
+  fi
+done
+
+unalias -a
+
+for aliasDefinition in "${omarchyAliasDefinitions[@]}"; do
+  eval "$aliasDefinition"
+done
+
+unset aliasDefinition aliasName omarchyAliasDefinitions
