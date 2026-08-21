@@ -8,12 +8,13 @@ Core architecture is builder-driven: `flake.nix` wires hosts through `lib/mkSyst
 ```text
 nix-config/
 |- flake.nix              # all host and home entrypoints
-|- lib/                   # mkSystem, mkHome, mkFeatureImports
+|- lib/                   # builders, feature auto-import, symlink/alternate helpers
 |- modules/               # shared system modules and overlays/secrets wiring
 |- home-manager/          # base HM config plus auto-imported features
 |- hosts/                 # per-host configuration.nix + home.nix pairs
-|- dev-shells/            # standalone dev shell flakes
 |- dotfiles/              # app configs referenced by feature modules
+|- docs/                  # long-form guides (feature authoring, dotfiles, gopass)
+|- scripts/               # maintenance and lint scripts (check-features, nix-update, ...)
 `- overlays/              # custom overlays auto-loaded when present
 ```
 
@@ -27,6 +28,8 @@ nix-config/
 | Change builder flow | `lib/mkSystem.nix`, `lib/mkHome.nix` | keep import order intact |
 | Update symlinked app config | `dotfiles/` plus owning feature module | paths in features must stay aligned |
 | Change dotfile wiring helpers | `home-manager/home.nix`, `lib/symlink-dir.nix` | `config.lib.dotfiles` is the public helper surface |
+| Add or change a feature module | `home-manager/features/` | subtree has its own `AGENTS.md`; see also `docs/creating-features.md` |
+| Per-host SSH keys | `lib/ssh-key.nix` + `hosts/<host>/home.nix` | keys come from the private `secrets` flake input via agenix |
 
 ## CODE MAP
 | File | Role |
@@ -39,8 +42,12 @@ nix-config/
 | `lib/symlink-dir.nix` | recursive out-of-store symlink helper used by `config.lib.dotfiles.configDir` |
 | `lib/alternate-match.nix` | shared yadm-style `##` alternate parser/matcher; defines tag priority |
 | `lib/scan-files.nix` | dynamic loader for overlay directories |
+| `lib/ssh-key.nix` | per-host agenix SSH key module factory imported by every `hosts/<host>/home.nix` |
+| `lib/normalize-path.nix` | PATH dedup script emitted by `home-manager/generic-linux.nix` |
 | `modules/system.nix` | shared system module import order |
 | `home-manager/home.nix` | base HM layer; defines `config.lib.dotfiles` helpers and imports platform modules + features |
+| `modules/secrets.nix` | system-side agenix wiring: age identities, ssh-to-age derivation |
+| `home-manager/secrets.nix` | home-side agenix wiring and age identity paths |
 | `home-manager/features/default.nix` | auto-import boundary; delegates to `mkFeatureImports` |
 
 ## CONVENTIONS
@@ -50,7 +57,7 @@ nix-config/
 - New feature files under `home-manager/features/` become available automatically through `lib/mkFeatureImports.nix`. Subdirectories create nested features (e.g., `fonts/source-han.nix` → `features.fonts.source-han`).
 - Feature modules are pure config functions — no boilerplate needed. `mkFeatureImports` auto-wraps each file with `options.features.<name>.enable` and `lib.mkIf`. Every feature should include `_description = "...";` as the first attribute — it provides the `mkEnableOption` description and is stripped before merging. The underscore prefix follows the module system's own convention (`_file`, `_class`).
 - Host homes usually compose presets with `lib.mkMerge [ presets.<name> ... ]`.
-- Dotfile helpers live in `config.lib.dotfiles`: use `configFiles` for XDG files, `homeFiles` for home-level files, `configDir` for recursive editable directories, and `symlink` for one-off paths.
+- Dotfile helpers live in `config.lib.dotfiles`: use `configFiles` for XDG files, `homeFiles` for home-level files, `configDir`/`homeDir` for recursive editable directories, and `symlink` for one-off paths. The collection helpers also accept `{ variant = "<name>"; }` to prefer `##variant.<name>` alternates, and the directory helpers accept `exclude` lists.
 - The Intel macOS output `dinosaur-macos` uses hostname `dinosaur`, loads `hosts/dinosaur-macos/`, and is pinned to the `"26.05"` channel. The Omarchy output `dinosaur` loads `hosts/dinosaur/` on `x86_64-linux`.
 - Feature modules that use options not present in all home-manager versions must guard them with `lib.optionalAttrs (options.path ? attr) { ... }` so the attribute path is absent entirely when the option does not exist; `lib.mkIf` only wraps the value and still exposes the path to the module system (see `go.nix`).
 - Shared abstractions are intentionally thin; most behavior lives in small Nix modules rather than large helper layers.
@@ -74,6 +81,7 @@ nix flake check
 darwin-rebuild build --flake .#dragon
 nixos-rebuild dry-build --flake .#phoenix
 home-manager build --flake .#erning@dragon
+scripts/check-features
 ```
 
 ## NOTES
@@ -81,4 +89,6 @@ home-manager build --flake .#erning@dragon
 - `dinosaur` and `pomelo` (Omarchy), `pterosaur` (Ubuntu Server 26.04 LTS), and `mango` (Ubuntu Desktop 26.04 LTS) are home-manager-only; they have no system `configuration.nix`.
 - Flake output names do not always match host directories or runtime hostnames: `dinosaur-macos` uses hostname `dinosaur`, while `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion` map output names to configuration directories.
 - `dinosaur-macos` is pinned to the `"26.05"` series because nixpkgs-unstable no longer supports `x86_64-darwin`.
+- Nested knowledge: `hosts/AGENTS.md` and `home-manager/features/AGENTS.md` refine the rules for those subtrees; long-form guides live under `docs/` (feature authoring, dotfiles management, gopass setup — some in Chinese); `lib/`, `modules/`, `overlays/`, `hosts/`, and `dotfiles/` each have their own `README.md`.
+- Secrets: the `secrets` input is a private `git+ssh` repo (`erning/nix-secrets`) consumed by `lib/ssh-key.nix` and the agenix wiring in `modules/secrets.nix` / `home-manager/secrets.nix`; building hosts that import SSH keys requires access to it. Plain credential dotfiles live under `dotfiles/.config/cce/` and `dotfiles/.pi/` — never print, diff, or commit changes to them. git-crypt is initialized (`.git-crypt/`) but currently encrypts no files.
 - `CLAUDE.md` is a symlink to `AGENTS.md` — they are the same file; only edit `AGENTS.md`.
