@@ -80,11 +80,13 @@ let
   omarchy = {
     omarchy.bash.enable = lib.mkDefault true;
     omarchy.fish.enable = lib.mkDefault true;
+    omarchy.starship.enable = lib.mkDefault true;
+    omarchy.fzf.enable = lib.mkDefault true;
+    omarchy.zsh.enable = lib.mkDefault true;
+    omarchy.zoxide.enable = lib.mkDefault true;
     omarchy.git.enable = lib.mkDefault true;
     omarchy.ghostty.enable = lib.mkDefault true;
-    omarchy.starship.enable = lib.mkDefault true;
     omarchy.tmux.enable = lib.mkDefault true;
-    omarchy.zsh.enable = lib.mkDefault true;
 
     vim.enable = lib.mkDefault true;
     ssh.enable = lib.mkDefault true;
