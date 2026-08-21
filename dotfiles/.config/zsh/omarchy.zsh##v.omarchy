@@ -19,6 +19,11 @@ path=("$preferredPath[@]" "$path[@]")
 typeset -U path
 unset preferredPath
 
+# Enable mise's directory-aware environment updates in interactive shells.
+if [[ -o interactive ]] && (( $+commands[mise] )); then
+  eval "$(mise activate zsh)"
+fi
+
 : ${EDITOR:="omarchy-launch-editor --inline"}
 export EDITOR
 export SUDO_EDITOR="$EDITOR"

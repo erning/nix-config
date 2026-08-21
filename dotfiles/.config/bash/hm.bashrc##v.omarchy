@@ -1,9 +1,11 @@
+# Load environment variables exported by Home Manager.
 hmSessionVars="$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 if [[ -r "$hmSessionVars" ]]; then
   source "$hmSessionVars"
 fi
 unset hmSessionVars
 
+# Keep Home Manager and Omarchy-managed tools ahead of inherited PATH entries.
 : "${OMARCHY_PATH:=/usr/share/omarchy}"
 : "${HOMEBREW_PREFIX:=/home/linuxbrew/.linuxbrew}"
 
