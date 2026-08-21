@@ -8,6 +8,5 @@
   # auth.env instead, sourced by the .local/bin/pi wrapper below.
   home.file = config.lib.dotfiles.homeFiles [
     ".pi/agent/auth.env"
-    ".local/bin/pi"
   ];
 }
