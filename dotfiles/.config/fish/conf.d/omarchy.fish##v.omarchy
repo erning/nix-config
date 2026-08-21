@@ -22,6 +22,11 @@ set -gx PATH $normalizedPath
 set -e normalizedPath pathEntry preferredPath
 
 if status is-interactive
+  # Enable mise's directory-aware environment updates in interactive shells.
+  if command -q mise
+    mise activate fish | source
+  end
+
   set -q EDITOR; or set -gx EDITOR "omarchy-launch-editor --inline"
   set -gx SUDO_EDITOR "$EDITOR"
   set -q BROWSER; or set -gx BROWSER omarchy-launch-browser
