@@ -1,0 +1,36 @@
+# Omarchy environment (OMARCHY_PATH + PATH), needed even for non-interactive shells
+[[ -r /usr/share/omarchy/default/bash/env-bootstrap ]] && source /usr/share/omarchy/default/bash/env-bootstrap
+
+# If not running interactively, don't do anything else (leave this above the rc source)
+[[ $- != *i* ]] && return
+
+# Omarchy's default Bash init uses full mise activation, which rewrites PATH
+# whenever the prompt is refreshed. Temporarily intercept that exact call and
+# use the stable shim directory instead; all other mise commands pass through.
+if command -v mise &> /dev/null; then
+  mise() {
+    if [[ ${1-} == activate && ${2-} == bash ]]; then
+      command mise activate bash --shims "${@:3}"
+    else
+      command mise "$@"
+    fi
+  }
+fi
+
+# Load the complete upstream rc so Omarchy aliases, functions, and future init
+# changes remain available. The temporary wrapper only affects its mise call.
+# (Don't modify the files under /usr/share/omarchy directly.)
+source "$OMARCHY_PATH/default/bash/rc"
+
+# Restore normal command lookup after the upstream initialization has finished.
+if declare -F mise &> /dev/null; then
+  unset -f mise
+fi
+
+# Add your own exports, aliases, and functions here.
+#
+# Make an alias for invoking commands you use constantly
+# alias p='python'
+
+[[ -r "$HOME/.config/bash/aliases.bash" ]] && source "$HOME/.config/bash/aliases.bash"
+[[ -r "$HOME/.config/bash/environment.bash" ]] && source "$HOME/.config/bash/environment.bash"
