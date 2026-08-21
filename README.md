@@ -51,7 +51,6 @@ nix-config/
 |- modules/
 |- home-manager/
 |- hosts/
-|- dev-shells/
 |- dotfiles/
 `- overlays/
 ```
