@@ -27,3 +27,9 @@ export PATH="$(
     '
 )"
 unset hmPreferredPath
+
+# services.ssh-agent.enable = true
+# programs.bash.enable = true;
+if [[ -z ${SSH_AUTH_SOCK:-} || -z ${SSH_CONNECTION:-} ]]; then
+  export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent"
+fi
