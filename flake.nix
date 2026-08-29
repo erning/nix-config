@@ -141,6 +141,13 @@
           homeOnly = true;
         }
 
+        # iMac18,2 (Retina 4K, 21.5-inch, 2017) — Omarchy + home-manager only
+        {
+          name = "raptor";
+          system = "x86_64-linux";
+          homeOnly = true;
+        }
+
         # MacBookPro13,3 (15-inch, 2016) — Ubuntu Server 26.04 LTS + home-manager only
         {
           name = "pterosaur";

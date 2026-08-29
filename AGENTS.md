@@ -86,7 +86,7 @@ scripts/check-features
 
 ## NOTES
 - `hosts/orbstack/configuration.nix` conditionally imports `/etc/nixos/configuration.nix` when present, falling back to `boot.isContainer = true` on non-OrbStack machines so `nix flake check` passes everywhere.
-- `dinosaur` and `pomelo` (Omarchy), `pterosaur` (Ubuntu Server 26.04 LTS), and `mango` (Ubuntu Desktop 26.04 LTS) are home-manager-only; they have no system `configuration.nix`.
+- `dinosaur`, `pomelo`, and `raptor` (Omarchy), `pterosaur` (Ubuntu Server 26.04 LTS), and `mango` (Ubuntu Desktop 26.04 LTS) are home-manager-only; they have no system `configuration.nix`.
 - Flake output names do not always match host directories or runtime hostnames: `dinosaur-macos` uses hostname `dinosaur`, while `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion` map output names to configuration directories.
 - `dinosaur-macos` is pinned to the `"26.05"` series because nixpkgs-unstable no longer supports `x86_64-darwin`.
 - Nested knowledge: `hosts/AGENTS.md` and `home-manager/features/AGENTS.md` refine the rules for those subtrees; long-form guides live under `docs/` (feature authoring, dotfiles management, gopass setup — some in Chinese); `lib/`, `modules/`, `overlays/`, `hosts/`, and `dotfiles/` each have their own `README.md`.

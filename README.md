@@ -71,6 +71,7 @@ nix-config/
 | `dinosaur` | `x86_64-linux` | Omarchy + home-manager only |
 | `phoenix` | `x86_64-linux` | NixOS laptop |
 | `pomelo` | `x86_64-linux` | Omarchy + home-manager only |
+| `raptor` | `x86_64-linux` | Omarchy + home-manager only |
 | `pterosaur` | `x86_64-linux` | Ubuntu Server 26.04 LTS + home-manager only |
 | `mango` | `x86_64-linux` | Ubuntu Desktop 26.04 LTS + home-manager only |
 | `orbstack` | `aarch64-linux` | NixOS VM with external `/etc/nixos/configuration.nix` |

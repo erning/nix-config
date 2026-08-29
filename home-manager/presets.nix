@@ -120,7 +120,6 @@ let
     fonts.enable = lib.mkDefault true;
     fonts.source-han.enable = lib.mkDefault true;
     fonts.maple-mono.enable = lib.mkDefault true;
-    fonts.babelstone-han.enable = lib.mkDefault false;
   };
 
 in
