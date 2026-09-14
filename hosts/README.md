@@ -14,7 +14,7 @@ For subtree-specific editing rules and exceptions, see `hosts/AGENTS.md`.
 | `pomelo` | `x86_64-linux` | MacBook Air 13" 2019 | Omarchy + home-manager only |
 | `raptor` | `x86_64-linux` | iMac Retina 4K 21.5" 2017 (iMac18,2) | Omarchy + home-manager only |
 | `pterosaur` | `x86_64-linux` | MacBook Pro 15" 2016 | Ubuntu Server 26.04 LTS + home-manager only |
-| `mango` | `x86_64-linux` | MacBook 12" 2015 | Ubuntu Desktop 26.04 LTS + home-manager only |
+| `mango` | `x86_64-linux` | MacBook 12" 2015 | Omarchy + home-manager only |
 | `orbstack` | `aarch64-linux` | OrbStack VM | NixOS VM using external `/etc/nixos/configuration.nix` |
 | `vmfusion` | `aarch64-linux` | VMware Fusion VM | NixOS VM |
 
@@ -80,7 +80,7 @@ home-manager build --flake .#erning@<hostname>
 - Desktop hosts usually use `presets.workstation` (or combine `presets.development` with `presets.graphical`).
 - Linux and VM hosts usually use `presets.development` or combine `presets.core` and `presets.terminal` with targeted additions.
 - `pterosaur` uses `presets.development` with `targets.genericLinux.enable` for its headless Ubuntu environment.
-- `mango` uses `presets.workstation` with `targets.genericLinux.enable` for its Ubuntu desktop environment.
+- `mango` uses `presets.omarchy` with `targets.genericLinux.enable` and Homebrew, matching `raptor`.
 - `dinosaur`, `pomelo`, `raptor`, `pterosaur`, and `mango` are home-manager-only hosts; validate them with `home-manager build` rather than a system rebuild.
 - `orbstack` is intentionally unusual: it imports OrbStack's `/etc/nixos/configuration.nix` only when that path exists, which avoids store-external absolute-path warnings/errors during evaluation on non-OrbStack machines.
 - Output names, runtime hostnames, and configuration directories can differ: `dinosaur-macos` loads `hosts/dinosaur-macos/` with hostname `dinosaur`, while `orb-aarch64 -> orbstack` and `vm-aarch64 -> vmfusion` map output names to configuration directories.
@@ -88,7 +88,7 @@ home-manager build --flake .#erning@<hostname>
 
 ## Home-Manager-Only Hosts
 
-For hosts like `dinosaur`, `pomelo`, and `raptor` (Omarchy), `pterosaur` (Ubuntu Server), and `mango` (Ubuntu Desktop), the system Nix daemon is **not** managed by this flake. `modules/nix-settings.nix` does not apply, so the daemon's `/etc/nix/nix.conf` must be set up manually once before the flake's experimental-feature, mirror, and trusted-user assumptions hold.
+For hosts like `dinosaur`, `pomelo`, `raptor`, and `mango` (Omarchy) and `pterosaur` (Ubuntu Server), the system Nix daemon is **not** managed by this flake. `modules/nix-settings.nix` does not apply, so the daemon's `/etc/nix/nix.conf` must be set up manually once before the flake's experimental-feature, mirror, and trusted-user assumptions hold.
 
 One-time root setup on the machine:
 

@@ -155,7 +155,7 @@
           homeOnly = true;
         }
 
-        # MacBook8,1 (12-inch, Early 2015) — Ubuntu Desktop 26.04 LTS + home-manager only
+        # MacBook8,1 (12-inch, Early 2015) — Omarchy + home-manager only
         {
           name = "mango";
           system = "x86_64-linux";

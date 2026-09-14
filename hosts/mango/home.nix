@@ -18,10 +18,7 @@ in
   targets.genericLinux.enable = true;
 
   features = lib.mkMerge [
-    presets.workstation
-    {
-      homebrew.enable = true;
-      nushell.enable = false;
-    }
+    presets.omarchy
+    { homebrew.enable = true; }
   ];
 }
