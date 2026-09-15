@@ -15,7 +15,7 @@ let
   '';
 in
 {
-  _description = "Claude Code CLI";
+  _description = "Claude Code environment and provider configuration";
 
   home.packages = [ cce ];
 

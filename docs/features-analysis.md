@@ -70,7 +70,7 @@ Install packages AND provide configuration.
 | Feature | Explicit Packages | Implicit Packages | Configuration |
 |---|---|---|---|
 | `git.nix` | git, git-lfs, git-crypt, delta, lazygit | - | xdg.configFile (git/config, git/config.local, git/catppuccin.gitconfig, lazygit/config.yml), home.file (.gitignore_global) |
-| `claude-code.nix` | cce (fetched from github.com/erning/cce at v2.1.6 via fetchFromGitHub + runCommand) | - | xdg.configFile (cce/kimi.env, cce/minimax.env, cce/zhipu.env) |
+| `claude-code-environment.nix` | cce (fetched from github.com/erning/cce at v2.1.6 via fetchFromGitHub + runCommand) | - | xdg.configFile (cce/kimi.env, cce/minimax.env, cce/zhipu.env) |
 | `neovim.nix` | neovim, nvim-profiles (lazyvim dispatcher via writeShellScriptBin + runCommand) | - | xdg.configFile (nvim-lazyvim/ via configDir), sessionVariables (EDITOR, VISUAL), shell aliases (vi) |
 | `vim.nix` | vim | - | home.file (.vim/vimrc via symlink, plugins: catppuccin, polyglot, editorconfig, lightline) |
 | `nodejs.nix` | nodejs_24, pnpm, bun | - | home.file (.npmrc symlink) |
@@ -91,7 +91,7 @@ Install packages AND provide configuration.
 | **core** | fish, bash, zsh, starship, eza, fzf, bat, vim, git, ssh |
 | **terminal** | tmux, neovim, nushell, zellij, zoxide, yazi |
 | **languages** | rustup, zig, python, go, nodejs, jdk, kotlin |
-| **devtools** | nix-support, just, direnv, gradle, typst, docker, claude-code, opencode |
+| **devtools** | nix-support, just, direnv, gradle, typst, docker, claude-code-environment, opencode |
 | **graphical** | fonts, fonts.source-han, zed, ghostty, kitty, alacritty |
 | **development** | core + terminal + languages + devtools |
 | **workstation** | development + graphical |
