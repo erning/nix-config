@@ -31,6 +31,26 @@ nixos-rebuild switch --flake .#phoenix
 nix run home-manager/master -- switch --flake .#erning@pterosaur
 ```
 
+### Terminfo for local and SSH sessions
+
+The `terminfo` feature installs Ghostty's terminal descriptions in
+`~/.terminfo` on macOS and Linux. It is enabled by the
+`terminal` and standalone `omarchy` presets, covering all current hosts. A host
+can opt out with `features.terminfo.enable = false`.
+
+Only the package's `terminfo` output is installed: `ghostty-bin.terminfo` on
+macOS and `ghostty.terminfo` on Linux. The Ghostty application is not required.
+The per-user entries let system and Nix applications recognize
+`TERM=xterm-ghostty`, including SSH sessions without `TERMINFO` variables.
+Installing the system's Ghostty app alone may not expose its terminfo to Nix.
+
+After reinstalling a host, apply its Home Manager configuration as usual;
+the terminfo entries are restored automatically. For `dinosaur`:
+
+```bash
+home-manager switch --flake .#erning@dinosaur
+```
+
 ## Validation
 
 ```bash
@@ -88,7 +108,7 @@ Feature presets live in `home-manager/presets.nix` and are typically merged in `
 | Preset | Purpose |
 |--------|---------|
 | `core` | essential shells, prompt, editors, git, ssh |
-| `terminal` | terminal-focused workflow (neovim, tmux, nushell, zellij, yazi) |
+| `terminal` | terminal-focused workflow (neovim, tmux, nushell, zellij, yazi, Ghostty terminfo) |
 | `languages` | language runtimes (rust, zig, python, go, nodejs, jdk, kotlin) |
 | `devtools` | build tools and dev utilities (nix-support, just, direnv, gradle, typst, docker, claude-code, opencode) |
 | `graphical` | GUI terminals, fonts, desktop apps |

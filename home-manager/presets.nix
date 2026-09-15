@@ -17,6 +17,7 @@ let
   };
 
   terminal = {
+    terminfo.enable = lib.mkDefault true;
     asciinema.enable = lib.mkDefault true;
     glow.enable = lib.mkDefault true;
     tmux.enable = lib.mkDefault true;
@@ -90,6 +91,7 @@ let
 
     vim.enable = lib.mkDefault true;
     ssh.enable = lib.mkDefault true;
+    terminfo.enable = lib.mkDefault true;
 
     asciinema.enable = lib.mkDefault true;
     glow.enable = lib.mkDefault true;
