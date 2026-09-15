@@ -110,7 +110,7 @@ Feature presets live in `home-manager/presets.nix` and are typically merged in `
 | `core` | essential shells, prompt, editors, git, ssh |
 | `terminal` | terminal-focused workflow (neovim, tmux, nushell, zellij, yazi, Ghostty terminfo) |
 | `languages` | language runtimes (rust, zig, python, go, nodejs, jdk, kotlin) |
-| `devtools` | build tools and dev utilities (nix-support, just, direnv, gradle, typst, docker, claude-code-environment, opencode) |
+| `devtools` | build tools and dev utilities (nix-support, just, direnv, gradle, typst, docker, claude-code-environment) |
 | `graphical` | GUI terminals, fonts, desktop apps |
 
 **Composites** (self-contained):

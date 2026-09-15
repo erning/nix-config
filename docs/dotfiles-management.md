@@ -74,7 +74,6 @@
 | `nodejs.nix` | `.npmrc` | `homeFiles` |
 | `vim.nix` | `.config/vim/vimrc` | `symlink` |
 | `claude-code-environment.nix` | `cce/kimi.env`, `cce/minimax.env`, `cce/zhipu.env` | `configFiles` |
-| `opencode.nix` | `opencode/opencode.json` | `configFiles` |
 
 ---
 
