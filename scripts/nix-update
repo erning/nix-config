@@ -32,7 +32,10 @@ EOF
 
 info() { printf ':: %s\n' "$*"; }
 warn() { printf 'warning: %s\n' "$*" >&2; }
-die()  { printf 'error: %s\n' "$*" >&2; exit 1; }
+die() {
+  printf 'error: %s\n' "$*" >&2
+  exit 1
+}
 
 # Run nvd from PATH if installed, otherwise fetch it on the fly.
 run_nvd() {
@@ -46,14 +49,32 @@ run_nvd() {
 # ── Parse arguments ──────────────────────────────────────────────────
 while [ $# -gt 0 ]; do
   case "$1" in
-    -n|--no-update) DO_UPDATE=0; shift ;;
-    --system-only)  DO_HOME=0; shift ;;
-    --home-only)    DO_SYSTEM=0; shift ;;
-    -h|--help)      usage; exit 0 ;;
-    -*)             warn "unknown option: $1"; usage >&2; exit 1 ;;
+    -n | --no-update)
+      DO_UPDATE=0
+      shift
+      ;;
+    --system-only)
+      DO_HOME=0
+      shift
+      ;;
+    --home-only)
+      DO_SYSTEM=0
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -*)
+      warn "unknown option: $1"
+      usage >&2
+      exit 1
+      ;;
     *)
       [ -z "$HOST" ] || die "unexpected argument: $1"
-      HOST="$1"; shift ;;
+      HOST="$1"
+      shift
+      ;;
   esac
 done
 
@@ -96,7 +117,7 @@ if [ "$DO_SYSTEM" -eq 1 ]; then
   else
     case "$SYS_KIND" in
       darwin) attr=".#darwinConfigurations.${HOST}.system" ;;
-      nixos)  attr=".#nixosConfigurations.${HOST}.config.system.build.toplevel" ;;
+      nixos) attr=".#nixosConfigurations.${HOST}.config.system.build.toplevel" ;;
     esac
     info "Building system: $attr"
     new="$(nix build --no-link --print-out-paths "$attr")"

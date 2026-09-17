@@ -72,16 +72,16 @@ if [ "$(uname -s)" != Linux ]; then
 fi
 
 for requiredCommand in getent grep cut chsh tee; do
-  command -v "$requiredCommand" >/dev/null 2>&1 \
-    || die "required command not found: $requiredCommand"
+  command -v "$requiredCommand" >/dev/null 2>&1 ||
+    die "required command not found: $requiredCommand"
 done
 
 if [ "$EUID" -ne 0 ]; then
   command -v sudo >/dev/null 2>&1 || die "sudo is required"
 fi
 
-passwdEntry="$(getent passwd "$targetUser")" \
-  || die "user not found: $targetUser"
+passwdEntry="$(getent passwd "$targetUser")" ||
+  die "user not found: $targetUser"
 targetHome="$(printf '%s\n' "$passwdEntry" | cut -d: -f6)"
 currentShell="$(printf '%s\n' "$passwdEntry" | cut -d: -f7)"
 

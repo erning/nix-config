@@ -54,19 +54,35 @@ store_size() {
 # ── Parse arguments ──────────────────────────────────────────────────
 while [ $# -gt 0 ]; do
   case "$1" in
-    -d|--days)
-      [ $# -ge 2 ] || { warn "--days requires an argument"; exit 1; }
-      DAYS="$2"; shift 2 ;;
-    -n|--dry-run)
-      DRY_RUN=1; shift ;;
+    -d | --days)
+      [ $# -ge 2 ] || {
+        warn "--days requires an argument"
+        exit 1
+      }
+      DAYS="$2"
+      shift 2
+      ;;
+    -n | --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
     --optimize)
-      OPTIMIZE=1; shift ;;
+      OPTIMIZE=1
+      shift
+      ;;
     --store-size)
-      SHOW_STORE_SIZE=1; shift ;;
-    -h|--help)
-      usage; exit 0 ;;
+      SHOW_STORE_SIZE=1
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
     *)
-      warn "unknown option: $1"; usage >&2; exit 1 ;;
+      warn "unknown option: $1"
+      usage >&2
+      exit 1
+      ;;
   esac
 done
 
@@ -123,8 +139,8 @@ CACHE_DIR="${HOME}/.cache/nix"
 if [ -d "$CACHE_DIR" ]; then
   info "Removing evaluation/fetcher caches older than 90 days"
   if [ "$DRY_RUN" -eq 1 ]; then
-    find "$CACHE_DIR" -maxdepth 1 \( -name 'eval-cache-*' -o -name 'fetcher-cache-*' \) -mtime +90 -print \
-      | while read -r f; do printf '[dry-run] rm -rf %s\n' "$f"; done
+    find "$CACHE_DIR" -maxdepth 1 \( -name 'eval-cache-*' -o -name 'fetcher-cache-*' \) -mtime +90 -print |
+      while read -r f; do printf '[dry-run] rm -rf %s\n' "$f"; done
   else
     find "$CACHE_DIR" -maxdepth 1 \( -name 'eval-cache-*' -o -name 'fetcher-cache-*' \) -mtime +90 -print -exec rm -rf {} +
   fi

@@ -10,7 +10,6 @@
     "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=11"
   ];
   nix.settings.trusted-users =
-    lib.optional settings.isLinux "@wheel"
-    ++ lib.optional settings.isDarwin "@admin";
+    lib.optional settings.isLinux "@wheel" ++ lib.optional settings.isDarwin "@admin";
   nix.settings.download-buffer-size = 67108864;
 }

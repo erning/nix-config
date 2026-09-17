@@ -1,4 +1,9 @@
-{ inputs, lib, settings, ... }:
+{
+  inputs,
+  lib,
+  settings,
+  ...
+}:
 
 let
   # nixpkgs-unstable has dropped x86_64-darwin, so pinned hosts use their
@@ -30,14 +35,18 @@ in
     # and neither are packages that need them at build time (man pages,
     # shell script checks). Fall back to the cached 25.11 builds.
     lib.optionals (settings.nixpkgsSeries == "26.05") [
-      (final: _: let
-        pkgs2511 = import inputs.nixpkgs-2511 {
-          inherit (final.stdenv.hostPlatform) system;
-          config = builtins.removeAttrs final.config [ "replaceStdenv" ];
-        };
-      in {
-        inherit (pkgs2511) eza yq-go shellcheck;
-      })
+      (
+        final: _:
+        let
+          pkgs2511 = import inputs.nixpkgs-2511 {
+            inherit (final.stdenv.hostPlatform) system;
+            config = builtins.removeAttrs final.config [ "replaceStdenv" ];
+          };
+        in
+        {
+          inherit (pkgs2511) eza yq-go shellcheck;
+        }
+      )
     ]
   )
   ++ (

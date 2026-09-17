@@ -111,11 +111,11 @@ check_reference_patterns() {
   # Check if file follows the standard pattern from go.nix
   # (has optionalAttrs for version-sensitive options)
   case "$basename" in
-  go.nix | ssh.nix)
-    if grep -q 'optionalAttrs' "$file"; then
-      ok "$file: follows reference pattern (optionalAttrs guard)"
-    fi
-    ;;
+    go.nix | ssh.nix)
+      if grep -q 'optionalAttrs' "$file"; then
+        ok "$file: follows reference pattern (optionalAttrs guard)"
+      fi
+      ;;
   esac
 }
 
