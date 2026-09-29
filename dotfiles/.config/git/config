@@ -7,7 +7,7 @@
 [user]
     name = Zhang Erning
     email = zhang@erning.com
-    signingkey = 5ABFAE18
+    signingkey = 1E9957F04D799116E84E334555EC6CA754B5E771
 
 [alias]
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
