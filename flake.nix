@@ -7,8 +7,8 @@
   # cache.nixos.org (priority 40).
   nixConfig = {
     extra-substituters = [
-      "https://mirrors.ustc.edu.cn/nix-channels/store?priority=10"
-      "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=11"
+      "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=10"
+      "https://mirrors.ustc.edu.cn/nix-channels/store?priority=11"
     ];
   };
 
