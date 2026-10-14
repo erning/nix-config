@@ -28,7 +28,7 @@
     HOMEBREW_API_DOMAIN = "${config.home.sessionVariables.HOMEBREW_MIRROR_PREFIX}/homebrew-bottles/api";
   };
 
-  home.sessionPath = [
+  home.sessionPath = lib.mkOrder 620 [
     "$HOMEBREW_PREFIX/bin"
     "$HOMEBREW_PREFIX/sbin"
   ];
