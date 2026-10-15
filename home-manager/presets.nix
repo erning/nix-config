@@ -109,6 +109,7 @@ let
     just.enable = lib.mkDefault true;
     direnv.enable = lib.mkDefault true;
     rspass.enable = lib.mkDefault true;
+    cida-cli.enable = lib.mkDefault true;
     typst.enable = lib.mkDefault true;
     defuddle.enable = lib.mkDefault true;
     yq.enable = lib.mkDefault true;
