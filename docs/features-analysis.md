@@ -31,7 +31,7 @@ Classification criteria:
 | `build-essential.nix` | bison, flex, fontforge, makeWrapper, pkg-config, gnumake, gcc, libiconv, autoconf, automake, libtool |
 | `typst.nix` | typst (+ conditional fonts: libertinus, jetbrains-mono, newcomputermodern if fonts feature enabled) |
 
-## Config-only (13)
+## Config-only (14)
 
 No explicit `home.packages`.
 
@@ -46,6 +46,7 @@ These truly install nothing - they only symlink dotfiles or configure settings.
 | `ghostty.nix` | xdg.configFile (config symlink) |
 | `kitty.nix` | xdg.configFile (kitty.conf, current-theme.conf, kitty.app.png) |
 | `alacritty.nix` | xdg.configFile (alacritty.toml symlink) |
+| `pi-agent.nix` | home.file (.pi/agent/models.magpie.json) |
 
 ### programs.X.enable (implicit package install)
 
@@ -90,7 +91,7 @@ Install packages AND provide configuration.
 | **core** | fish, bash, zsh, starship, eza, fzf, bat, vim, git, ssh |
 | **terminal** | tmux, neovim, nushell, zellij, zoxide, yazi |
 | **languages** | rustup, zig, python, go, nodejs, jdk, kotlin |
-| **devtools** | nix-support, just, direnv, gradle, typst, docker, claude-code-environment |
+| **devtools** | nix-support, just, direnv, gradle, typst, docker, claude-code-environment, pi-agent |
 | **graphical** | fonts, fonts.source-han, zed, ghostty, kitty, alacritty |
 | **development** | core + terminal + languages + devtools |
 | **workstation** | development + graphical |
