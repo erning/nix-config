@@ -23,5 +23,6 @@ in
   features = lib.mkMerge [
     presets.development
     { homebrew.enable = true; }
+    { mise.enable = true; }
   ];
 }
