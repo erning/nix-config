@@ -117,6 +117,7 @@ let
     nvd.enable = lib.mkDefault true;
 
     claude-code-environment.enable = lib.mkDefault true;
+    pi-agent.enable = lib.mkDefault true;
 
     fonts.enable = lib.mkDefault true;
     fonts.source-han.enable = lib.mkDefault true;
