@@ -22,5 +22,6 @@ in
   xdg.configFile = config.lib.dotfiles.configFiles [
     "cce/kimi.env"
     "cce/zhipu.env"
+    "cce/magpie.env"
   ];
 }
