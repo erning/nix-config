@@ -31,6 +31,15 @@ nixos-rebuild switch --flake .#phoenix
 nix run home-manager/master -- switch --flake .#erning@pterosaur
 ```
 
+### GitHub API rate limits
+
+If Nix commands hit GitHub's unauthenticated API rate limit, export the token
+from `gh` for the current shell session:
+
+```bash
+export NIX_CONFIG="${NIX_CONFIG:-}"$'\n'"access-tokens = github.com=$(gh auth token --hostname github.com)"
+```
+
 ### Terminfo for local and SSH sessions
 
 The `terminfo` feature installs Ghostty's terminal descriptions in
