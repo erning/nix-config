@@ -3,12 +3,14 @@
 
   # nixConfig here only affects the flake itself (evaluation-time fetches),
   # not the system configuration. System-level mirrors live in
-  # modules/nix-settings.nix. priority=10/11 keeps mirrors ahead of
+  # modules/nix-settings.nix. priority=11-14 keeps mirrors ahead of
   # cache.nixos.org (priority 40).
   nixConfig = {
     extra-substituters = [
-      "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=10"
-      "https://mirrors.ustc.edu.cn/nix-channels/store?priority=11"
+      "https://mirror.sjtu.edu.cn/nix-channels/store?priority=11"
+      "https://mirrors.nju.edu.cn/nix-channels/store?priority=12"
+      "https://mirrors.bfsu.edu.cn/nix-channels/store?priority=13"
+      "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=14"
     ];
   };
 

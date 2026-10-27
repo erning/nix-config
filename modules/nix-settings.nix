@@ -6,8 +6,10 @@
     "flakes"
   ];
   nix.settings.extra-substituters = [
-    "https://mirrors.ustc.edu.cn/nix-channels/store?priority=10"
-    "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=11"
+    "https://mirror.sjtu.edu.cn/nix-channels/store?priority=11"
+    "https://mirrors.nju.edu.cn/nix-channels/store?priority=12"
+    "https://mirrors.bfsu.edu.cn/nix-channels/store?priority=13"
+    "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store?priority=14"
   ];
   nix.settings.trusted-users =
     lib.optional settings.isLinux "@wheel" ++ lib.optional settings.isDarwin "@admin";
